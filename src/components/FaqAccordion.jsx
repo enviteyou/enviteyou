@@ -76,6 +76,26 @@ const faqGroups = [
       },
     ],
   },
+  {
+    heading: "The Logistics & Rules",
+    items: [
+      {
+        question: "How do I share this with my guests, and how do they view it?",
+        answer:
+          "We give you one simple link. Drop it in WhatsApp, email it, or text it. Guests just tap the link and it instantly opens like a premium website in their phone’s browser, with no zooming or squinting required.",
+      },
+      {
+        question: "What is your refund policy?",
+        answer:
+          "Since this is a digital product with instant access, all sales are final and non-refundable. Please double-check the template details before you hit buy. If you’re unsure about anything, just drop us a message before checking out.",
+      },
+      {
+        question: "I love these templates. Can I buy them and re-sell them to others?",
+        answer:
+          "We’ll keep this one strictly legal: No. These templates are protected under copyright and intellectual property laws. Reselling, modifying, or reverse-engineering them is strictly prohibited and will lead to serious legal action. We put a lot of heart into designing these, so please don't make us send our lawyers.",
+      },
+    ],
+  },
 ];
 
 function AccordionItem({ item, isOpen, onToggle }) {
