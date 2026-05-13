@@ -102,39 +102,39 @@ export default function Hero() {
       </div>
 
       <div className="mx-auto flex min-h-[calc(100vh-1px)] w-full flex-col px-5 pb-0 sm:px-8 lg:px-10">
-        <div className="flex flex-1 flex-col items-center justify-center pt-16 text-center sm:pt-20 lg:pt-24">
+        <div className="flex flex-1 flex-col items-center justify-start pt-8 text-center sm:pt-10 lg:pt-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-black/50">Welcome to</p>
           
-          <h1 className="mt-3 max-w-5xl text-7xl font-bold leading-tight tracking-tight text-black">
+          <h1 className="mt-2 max-w-5xl text-5xl font-bold leading-tight tracking-tight text-black sm:text-6xl lg:text-7xl">
             Elegant Wedding
             <br />
-            <span className="bg-gradient-to-r from-black via-black/80 to-black/60 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-black via-black/80 to-black/60 bg-clip-text text-transparent">
               Invitations
             </span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-lg leading-7 text-black/65">
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
             Beautifully crafted, instantly customizable invitation templates.
             <br />Make your big day unforgettable from the first message.
           </p>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
-          <button className="rounded-full bg-black px-8 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-black/90 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
-            Choose a template
-          </button>
-          <button className="rounded-full border-2 border-black/20 px-8 py-3 text-sm font-semibold text-black transition duration-300 hover:border-black hover:bg-black/5">
-            Explore Gallery
-          </button>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
+            <button className="rounded-full bg-black px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-black/90 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
+              Choose a template
+            </button>
+            <button className="rounded-full border-2 border-black/20 px-7 py-3 text-sm font-semibold text-black transition duration-300 hover:border-black hover:bg-black/5">
+              Explore Gallery
+            </button>
           </div>
         </div>
 
-        <div className="relative left-1/2 mt-12 flex min-h-136 w-screen -translate-x-1/2 items-center justify-center overflow-hidden lg:mt-16">
+        <div className="relative left-1/2 mt-4 flex min-h-88 w-screen -translate-x-1/2 items-center justify-center overflow-hidden lg:mt-6">
           <div className="pointer-events-none absolute inset-x-0 top-1/2 h-56 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.18),transparent_68%)] blur-3xl" />
 
           <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] sm:w-36" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] sm:w-36" />
 
-          <div className="relative h-104 w-screen overflow-hidden sm:h-120 lg:h-136">
+          <div className="relative h-80 w-screen overflow-hidden sm:h-88 lg:h-96">
             <div className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-white via-white/70 to-transparent sm:w-40" />
             <div className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-white via-white/70 to-transparent sm:w-40" />
 
@@ -153,8 +153,8 @@ export default function Hero() {
                     title={slide.title}
                     isActive={isActive}
                     style={{
-                      width: "clamp(220px, 24vw, 300px)",
-                      height: "clamp(310px, 34vw, 430px)",
+                      width: "clamp(190px, 20vw, 250px)",
+                      height: "clamp(270px, 28vw, 360px)",
                       position: "relative",
                       flex: "0 0 auto",
                       transform: index % SLIDES.length === 1 ? "translateY(-10px) rotate(-1deg)" : "translateY(0) rotate(0deg)",

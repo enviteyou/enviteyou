@@ -16,7 +16,7 @@ export const metadata = {
   title: "Wedding Invitation Templates",
   description: "Minimal premium landing page for modern wedding invitation templates.",
   icons: {
-    icon: "/icon.png",
+    icon: "/icon2.png",
   },
 };
 

@@ -82,18 +82,18 @@ export default function Header() {
   if (!mounted) return null;
 
   return (
-    <header className="border-b border-black/8 bg-white px-5 sm:px-8 lg:px-10 py-4">
-      <div className="mx-auto flex items-center justify-between gap-8 max-w-7xl">
+    <header className="border-b border-black/8 bg-white px-5 py-2.5 sm:px-8 sm:py-3 lg:px-8 lg:py-3">
+      <div className="mx-auto flex items-center justify-between gap-6 max-w-7xl">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
             src="/logo.png"
             alt="ENVITE"
-            width={60}
-            height={60}
-            className="h-14 w-auto"
+            width={84}
+            height={84}
+            className="h-12 w-auto"
           />
-          <span className="text-sm font-semibold tracking-wide text-black hidden sm:inline">ENVITE</span>
+         
         </Link>
 
         {/* Center Navigation */}
@@ -107,7 +107,7 @@ export default function Header() {
         </nav>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-6 shrink-0">
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           {/* Currency Selector */}
           <div className="hidden sm:flex items-center">
             <select
