@@ -33,7 +33,7 @@ const SLIDES = [
 function LinearCard({ src, title, style, isActive }) {
   return (
     <div
-      className="absolute overflow-hidden rounded-[1.85rem] border border-white/70 bg-white shadow-[0_28px_80px_rgba(0,0,0,0.24)]"
+      className="overflow-hidden rounded-[1.85rem] border border-white/70 bg-white shadow-[0_28px_80px_rgba(0,0,0,0.24)]"
       style={style}
     >
       <div className="relative h-full w-full bg-white">
@@ -144,22 +144,17 @@ export default function Hero() {
               style={{ transform: "translate3d(0, 0, 0) translateY(-50%)", width: "max-content" }}
             >
               {[...SLIDES, ...SLIDES].map((slide, index) => {
-                const isActive = index % SLIDES.length === 1;
-
                 return (
                   <LinearCard
                     key={`${slide.src}-${index}`}
                     src={slide.src}
                     title={slide.title}
-                    isActive={isActive}
                     style={{
-                      width: "clamp(190px, 20vw, 250px)",
-                      height: "clamp(270px, 28vw, 360px)",
-                      position: "relative",
+                      width: "clamp(220px, 22vw, 280px)",
+                      height: "clamp(280px, 30vw, 380px)",
                       flex: "0 0 auto",
-                      transform: index % SLIDES.length === 1 ? "translateY(-10px) rotate(-1deg)" : "translateY(0) rotate(0deg)",
-                      transition: "transform 500ms ease, opacity 500ms ease",
-                      opacity: index % SLIDES.length === 1 ? 1 : 0.86,
+                      transition: "transform 300ms ease, opacity 300ms ease",
+                      opacity: 1,
                     }}
                   />
                 );
