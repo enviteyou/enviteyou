@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 const footerLinks = {
   Templates: ["Classic", "Modern", "Luxury", "Editorial"],
   Services: ["Custom invites", "Branding", "RSVP pages", "Guest support"],
@@ -26,11 +27,17 @@ export default function Footer() {
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-xl">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-black text-sm font-semibold tracking-[0.28em] text-white shadow-[0_18px_40px_rgba(0,0,0,0.16)]">
-                MP
-              </div>
+              <Link href="/" className="flex shrink-0 items-center">
+                <Image
+                  src="/logo.png"
+                  alt="EnviteYou"
+                  width={160}
+                  height={80}
+                  className="h-12 w-auto"
+                />
+              </Link>
               <div>
-                <p className="text-[0.72rem] uppercase tracking-[0.35em] text-black/45">Missing Piece</p>
+                <p className="text-[0.72rem] uppercase tracking-[0.35em] text-black/45">EnviteYou</p>
                 <p className="text-sm font-medium text-black/85">Wedding invitation templates</p>
               </div>
             </div>
