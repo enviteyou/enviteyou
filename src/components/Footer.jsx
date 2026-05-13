@@ -8,8 +8,10 @@ const footerLinks = {
     { label: "About Us", href: "/about" },
     { label: "Contact us", href: "mailto:care@enviteyou.com" },
     { label: "Privacy Policy", href: "/policy" },
-    { label: "Refund Policy", href: "/policy" },
-    { label: "Terms", href: "/policy" },
+    { label: "Refund Policy", href: "/refund_policy" },
+    {label: "Shipping Policy", href: "/shipping_policy"},
+    {label:"Cookie Policy", href: "/cookie_policy"},
+    { label: "Terms", href: "/tems" },
   ],
 };
 export default function Footer() {
@@ -65,7 +67,7 @@ export default function Footer() {
                 <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-black/45">{title}</h2>
                 <ul className="mt-5 space-y-3 text-sm text-black/70">
                   {items.map((item) => (
-                    <li key={item}>
+                    <li key={typeof item === "string" ? item : item.label}>
                       {typeof item === "string" ? (
                         <a href="#" className="transition duration-200 hover:text-black">
                           {item}
