@@ -93,7 +93,7 @@ export default function Header() {
               width={160}
               height={80}
               priority
-              className="h-10 w-auto max-w-[112px] sm:h-12 sm:max-w-[150px]"
+              className="h-8 w-auto max-w-[86px] sm:h-12 sm:max-w-[150px]"
             />
           </Link>
 
@@ -138,7 +138,7 @@ export default function Header() {
 
             <Link
               href="/pricing"
-              className="inline-flex h-9 items-center justify-center rounded-full border border-[#74313d] bg-[#74313d] px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(116,49,61,0.22)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#5f2530] sm:px-5 sm:text-xs"
+              className="hidden h-9 items-center justify-center rounded-full border border-[#74313d] bg-[#74313d] px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(116,49,61,0.22)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#5f2530] sm:px-5 sm:text-xs lg:inline-flex"
             >
               {t.pricingBtn}
             </Link>
