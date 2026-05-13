@@ -12,7 +12,7 @@ const playwriteCa = Playwrite_CA({ variable: '--font-playwrite-ca' });
 export const metadata = {
   metadataBase: new URL("https://enviteyou.com"),
   title: {
-    default: "EnviteYou | Digital Wedding Invitation Templates",
+    default: "Digital Wedding Invitation Templates | EnviteYou",
     template: "%s | EnviteYou",
   },
   description:
@@ -33,7 +33,7 @@ export const metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "EnviteYou | Digital Wedding Invitation Templates",
+    title: "Digital Wedding Invitation Templates | EnviteYou",
     description:
       "Premium mobile-first wedding invitation websites with RSVP, event details, guest sharing, and elegant digital delivery.",
     url: "/",
@@ -51,7 +51,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "EnviteYou | Digital Wedding Invitation Templates",
+    title: "Digital Wedding Invitation Templates | EnviteYou",
     description:
       "Create premium digital wedding invitations with RSVP, event details, and elegant mobile-first templates.",
     images: ["/logo.png"],
