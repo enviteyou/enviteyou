@@ -77,11 +77,14 @@ export default function Hero() {
     const update = (time, deltaTime) => {
       // Positive rotation moves the back-wall cards from right to left
       currentAngle += deltaTime * 0.015; 
+      
+      // On mobile (<640px), push the cylinder back so it scales down natively and 3 cards fit
+      const isMobile = window.innerWidth < 640;
+      const targetZ = isMobile ? -350 : 300;
 
       gsap.set(track, { 
         rotationY: currentAngle,
-        // Pull the cylinder forward so the center cards (which are pushed back) are larger
-        z: 300 
+        z: targetZ 
       });
     };
 
@@ -130,13 +133,13 @@ export default function Hero() {
         <div className="relative left-1/2 mt-4 flex min-h-72 w-screen -translate-x-1/2 items-center justify-center overflow-hidden sm:min-h-88 lg:mt-6">
           <div className="pointer-events-none absolute inset-x-0 top-1/2 h-56 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.18),transparent_68%)] blur-3xl" />
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" />
 
           {/* 3D Scene Container */}
           <div className="relative h-72 w-screen sm:h-88 lg:h-96" style={{ perspective: "1000px" }}>
-            <div className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-white via-white/70 to-transparent z-10 sm:w-40" />
-            <div className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-white via-white/70 to-transparent z-10 sm:w-40" />
+            <div className="absolute inset-y-0 left-0 w-16 bg-linear-to-r from-white via-white/70 to-transparent z-10 sm:w-40" />
+            <div className="absolute inset-y-0 right-0 w-16 bg-linear-to-l from-white via-white/70 to-transparent z-10 sm:w-40" />
 
             {/* Rotating Cylinder Track */}
             <div

@@ -90,7 +90,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-2 z-50 px-3 py-2 text-black sm:top-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl rounded-[2rem] border border-black/8 bg-white/86 px-3 py-2 shadow-[0_18px_60px_rgba(70,35,25,0.12)] backdrop-blur-xl sm:rounded-full sm:px-5 lg:px-7">
+      <div className="mx-auto max-w-7xl rounded-sm border border-black/8 bg-white/86 px-3 py-2 shadow-[0_18px_60px_rgba(70,35,25,0.12)] backdrop-blur-xl sm:px-5 lg:px-7">
         <div className="flex items-center justify-between gap-2 sm:gap-4 lg:gap-5">
           <Link href="/" className="flex min-w-0 shrink items-center pr-1 lg:pr-6" aria-label="EnviteYou home">
             <Image
