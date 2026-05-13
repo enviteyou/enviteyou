@@ -64,10 +64,15 @@ export default function Header() {
   const navItems = [
     { label: t.howItWorks, href: "/#how-it-works" },
     { label: t.testimonials, href: "/#testimonials" },
-    { label: t.pricing, href: "/pricing" },
     { label: t.blog, href: "/#blog" },
     { label: t.ourStory, href: "/about" },
     { label: t.getInTouch, href: "mailto:care@enviteyou.com" },
+  ];
+
+  const mobileNavItems = [
+    ...navItems.slice(0, 2),
+    { label: t.pricing, href: "/pricing" },
+    ...navItems.slice(2),
   ];
 
   const handleLanguageChange = (newLang) => {
@@ -97,7 +102,7 @@ export default function Header() {
             />
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-10 border-l border-r border-black/8 px-8 xl:gap-12" aria-label="Main navigation">
+          <nav className="hidden flex-1 items-center justify-center gap-10 border-l border-r border-black/8 px-8 lg:flex xl:gap-12" aria-label="Main navigation">
             {navItems.map((item) => (
               <Link
                 key={item.label}
@@ -166,7 +171,7 @@ export default function Header() {
         >
           <nav className="min-h-0" aria-label="Mobile navigation">
             <div className="space-y-2 px-1 pb-2 pt-3">
-              {navItems.map((item) => (
+              {mobileNavItems.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
