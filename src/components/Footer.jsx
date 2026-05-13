@@ -1,11 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 const footerLinks = {
   Templates: ["Classic", "Modern", "Luxury", "Editorial"],
   Services: ["Custom invites", "Branding", "RSVP pages", "Guest support"],
-  Studio: ["About", "Journal", "Contact", "Careers"],
+  Information: [
+    { label: "About Us", href: "/about" },
+    { label: "Contact us", href: "mailto:care@enviteyou.com" },
+    { label: "Privacy Policy", href: "/policy" },
+    { label: "Refund Policy", href: "/policy" },
+    { label: "Terms", href: "/policy" },
+  ],
 };
 export default function Footer() {
   return (
@@ -61,9 +66,15 @@ export default function Footer() {
                 <ul className="mt-5 space-y-3 text-sm text-black/70">
                   {items.map((item) => (
                     <li key={item}>
-                      <a href="#" className="transition duration-200 hover:text-black">
-                        {item}
-                      </a>
+                      {typeof item === "string" ? (
+                        <a href="#" className="transition duration-200 hover:text-black">
+                          {item}
+                        </a>
+                      ) : (
+                        <Link href={item.href} className="transition duration-200 hover:text-black">
+                          {item.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
