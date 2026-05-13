@@ -89,9 +89,9 @@ export default function Header() {
           <Image
             src="/logo.png"
             alt="ENVITE"
-            width={84}
-            height={84}
-            className="h-16 w-auto"
+            width={160}
+            height={80}
+            className="h-12 w-auto"
           />
          
         </Link>
