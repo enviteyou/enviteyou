@@ -89,9 +89,9 @@ export default function Header() {
           <Image
             src="/logo.png"
             alt="ENVITE"
-            width={32}
-            height={32}
-            className="h-8 w-auto"
+            width={60}
+            height={60}
+            className="h-14 w-auto"
           />
           <span className="text-sm font-semibold tracking-wide text-black hidden sm:inline">ENVITE</span>
         </Link>
