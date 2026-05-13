@@ -91,7 +91,7 @@ export default function Header() {
             alt="ENVITE"
             width={84}
             height={84}
-            className="h-12 w-auto"
+            className="h-30 w-auto"
           />
          
         </Link>
