@@ -102,36 +102,30 @@ export default function Hero() {
       </div>
 
       <div className="mx-auto flex min-h-[calc(100vh-1px)] w-full flex-col px-5 pb-0 sm:px-8 lg:px-10">
-        <header className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-black text-sm font-semibold tracking-widest text-white shadow-lg">
-              MP
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-widest text-black/45">Missing Piece</p>
-              <p className="text-sm font-medium text-black/85">Wedding Templates</p>
-            </div>
-          </div>
-
-          <button className="rounded-full border border-black/12 bg-black px-5 py-3 text-sm font-medium text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-black/92">
-            Choose a template
-          </button>
-        </header>
-
-        <div className="mt-6 h-px w-full bg-linear-to-r from-transparent via-black/12 to-transparent" />
-
-        <div className="flex flex-1 flex-col items-center justify-center pt-8 text-center">
-          <h1 className="max-w-5xl text-6xl font-bold leading-none tracking-tight text-black">
-            Wedding Invites
+        <div className="flex flex-1 flex-col items-center justify-center pt-16 text-center sm:pt-20 lg:pt-24">
+          <p className="text-xs font-semibold uppercase tracking-widest text-black/50">Welcome to</p>
+          
+          <h1 className="mt-3 max-w-5xl text-7xl font-bold leading-tight tracking-tight text-black">
+            Elegant Wedding
+            <br />
+            <span className="bg-gradient-to-r from-black via-black/80 to-black/60 bg-clip-text text-transparent">
+              Invitations
+            </span>
           </h1>
 
-          <p className="mt-6 max-w-3xl text-base leading-6 text-black/65">
-            Easy-to-customise, Effortless to Share,<br />Website Templates for your Big Day.
+          <p className="mt-8 max-w-2xl text-lg leading-7 text-black/65">
+            Beautifully crafted, instantly customizable invitation templates.
+            <br />Make your big day unforgettable from the first message.
           </p>
 
-          <button className="mt-10 rounded-full bg-black px-8 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
+          <button className="rounded-full bg-black px-8 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-black/90 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
             Choose a template
           </button>
+          <button className="rounded-full border-2 border-black/20 px-8 py-3 text-sm font-semibold text-black transition duration-300 hover:border-black hover:bg-black/5">
+            Explore Gallery
+          </button>
+          </div>
         </div>
 
         <div className="relative left-1/2 mt-12 flex min-h-136 w-screen -translate-x-1/2 items-center justify-center overflow-hidden lg:mt-16">
