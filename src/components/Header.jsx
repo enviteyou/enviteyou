@@ -90,7 +90,7 @@ export default function Header() {
   return (
     <header className="sticky top-2 z-50 px-3 py-2 text-black sm:top-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl rounded-[2rem] border border-black/8 bg-white/86 px-3 py-2 shadow-[0_18px_60px_rgba(70,35,25,0.12)] backdrop-blur-xl sm:rounded-full sm:px-5 lg:px-7">
-        <div className="flex items-center justify-between gap-2 sm:gap-4 lg:gap-7">
+        <div className="flex items-center justify-between gap-2 sm:gap-4 lg:gap-5">
           <Link href="/" className="flex min-w-0 shrink items-center pr-1 lg:pr-6" aria-label="EnviteYou home">
             <Image
               src="/logo.png"
@@ -102,12 +102,12 @@ export default function Header() {
             />
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-10 border-l border-r border-black/8 px-8 lg:flex xl:gap-12" aria-label="Main navigation">
+          <nav className="hidden flex-1 items-center justify-center gap-6 border-l border-r border-black/8 px-6 lg:flex xl:gap-8" aria-label="Main navigation">
             {navItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-[0.78rem] font-semibold uppercase tracking-[0.28em] text-[#74313d]/76 transition hover:text-[#74313d]"
+                className="whitespace-nowrap text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[#74313d]/76 transition hover:text-[#74313d] xl:text-[0.7rem]"
               >
                 {item.label}
               </Link>
