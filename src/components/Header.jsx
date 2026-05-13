@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const TRANSLATIONS = {
   en: {
@@ -48,13 +49,13 @@ const LANGUAGES = [
 ];
 
 export default function Header() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("EN");
   const [currency, setCurrency] = useState("INR");
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     queueMicrotask(() => {
-      setLanguage(localStorage.getItem("envite-language") || "en");
+      setLanguage(localStorage.getItem("envite-language") || "EN");
       setCurrency(localStorage.getItem("envite-currency") || "INR");
     });
   }, []);
@@ -94,7 +95,7 @@ export default function Header() {
           <Link href="/" className="flex min-w-0 shrink items-center pr-1 lg:pr-6" aria-label="EnviteYou home">
             <Image
               src="/logo.png"
-              alt="EnviteYou"
+              alt="EnviteYou Logo"
               width={160}
               height={80}
               priority
@@ -115,31 +116,37 @@ export default function Header() {
           </nav>
 
           <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-3">
-            <select
-              aria-label="Select currency"
-              value={currency}
-              onChange={(event) => handleCurrencyChange(event.target.value)}
-              className="h-9 rounded-full border border-[#74313d]/10 bg-[#f7efe8] px-2 text-[0.68rem] font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 sm:px-3 sm:text-xs"
-            >
-              {CURRENCIES.map((curr) => (
-                <option key={curr.code} value={curr.code}>
-                  {curr.label}
-                </option>
-              ))}
-            </select>
+            <Select value={currency} onValueChange={handleCurrencyChange}>
+              <SelectTrigger
+                aria-label="Select currency"
+                className="hidden h-9 w-[74px] rounded-full border border-[#74313d]/10 bg-[#f7efe8] px-2 text-[0.68rem] font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
+              >
+                <SelectValue placeholder="Currency" />
+              </SelectTrigger>
+              <SelectContent className="min-w-[80px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+                {CURRENCIES.map((curr) => (
+                  <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d] sm:text-xs">
+                    {curr.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-            <select
-              aria-label="Select language"
-              value={language}
-              onChange={(event) => handleLanguageChange(event.target.value)}
-              className="h-9 rounded-full border border-[#74313d]/10 bg-[#f7efe8] px-2 text-[0.68rem] font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 sm:px-3 sm:text-xs"
-            >
-              {LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.label}
-                </option>
-              ))}
-            </select>
+            <Select value={language} onValueChange={handleLanguageChange}>
+              <SelectTrigger
+                aria-label="Select language"
+                className="hidden h-9 w-[70px] rounded-full border border-[#74313d]/10 bg-[#f7efe8] px-2 text-[0.68rem] font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
+              >
+                <SelectValue placeholder="Language" />
+              </SelectTrigger>
+              <SelectContent className="min-w-[80px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+                {LANGUAGES.map((lang) => (
+                  <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d] sm:text-xs">
+                    {lang.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <Link
               href="/pricing"
@@ -181,6 +188,40 @@ export default function Header() {
                   {item.label}
                 </Link>
               ))}
+
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:hidden border-t border-[#74313d]/10 pt-2">
+                <Select value={currency} onValueChange={handleCurrencyChange}>
+                  <SelectTrigger
+                    aria-label="Select currency mobile"
+                    className="h-10 w-full rounded-2xl border border-[#74313d]/10 bg-[#f7efe8] px-3 text-sm font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+                  >
+                    <SelectValue placeholder="Currency" />
+                  </SelectTrigger>
+                  <SelectContent className="min-w-[120px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+                    {CURRENCIES.map((curr) => (
+                      <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-sm font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d]">
+                        {curr.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={language} onValueChange={handleLanguageChange}>
+                  <SelectTrigger
+                    aria-label="Select language mobile"
+                    className="h-10 w-full rounded-2xl border border-[#74313d]/10 bg-[#f7efe8] px-3 text-sm font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+                  >
+                    <SelectValue placeholder="Language" />
+                  </SelectTrigger>
+                  <SelectContent className="min-w-[120px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+                    {LANGUAGES.map((lang) => (
+                      <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-sm font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d]">
+                        {lang.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </nav>
         </div>

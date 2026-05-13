@@ -33,7 +33,7 @@ const SLIDES = [
 function LinearCard({ src, title, style, isActive }) {
   return (
     <div
-      className="overflow-hidden rounded-[1.85rem] border border-white/70 bg-white shadow-[0_28px_80px_rgba(0,0,0,0.24)]"
+      className="overflow-hidden rounded-md  bg-white shadow-[0_28px_80px_rgba(0,0,0,0.24)]"
       style={style}
     >
       <div className="relative h-full w-full bg-white">
@@ -54,43 +54,42 @@ function LinearCard({ src, title, style, isActive }) {
 
 export default function Hero() {
   const trackRef = useRef(null);
-  const offsetRef = useRef(0);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const track = trackRef.current;
-    if (!track) return undefined;
+    if (!track || prefersReducedMotion) return undefined;
 
-    const setTransform = () => {
-      track.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
-      track.style.willChange = "transform";
+    const gsap = require("gsap").default || require("gsap");
+
+    const cards = Array.from(track.children);
+    if (!cards.length) return undefined;
+
+    // Based on the Framer reference: 12 cards forming a full 3D cylinder
+    const numCards = 12; 
+    const anglePerCard = 360 / numCards; // 30 degrees
+    
+    // We use a radius that allows the cards to form a nice tight circle
+    // Standard formula: radius = (width / 2) / Math.tan(PI / numCards)
+    // For 260px width, radius is about 500px. Let's use 650px for some gap.
+    let currentAngle = 0;
+
+    const update = (time, deltaTime) => {
+      // Positive rotation moves the back-wall cards from right to left
+      currentAngle += deltaTime * 0.015; 
+
+      gsap.set(track, { 
+        rotationY: currentAngle,
+        // Pull the cylinder forward so the center cards (which are pushed back) are larger
+        z: 300 
+      });
     };
 
-    setTransform();
-    if (prefersReducedMotion) return undefined;
+    gsap.ticker.add(update);
 
-    let frame = 0;
-    let lastTime = performance.now();
-
-    const animate = (time) => {
-      const delta = Math.min(32, time - lastTime);
-      lastTime = time;
-      offsetRef.current -= delta * 0.06;
-      const cardWidth = 266;
-      const gap = 24;
-      const cycleWidth = SLIDES.length * (cardWidth + gap);
-
-      if (Math.abs(offsetRef.current) >= cycleWidth) {
-        offsetRef.current += cycleWidth;
-      }
-
-      setTransform();
-      frame = window.requestAnimationFrame(animate);
+    return () => {
+      gsap.ticker.remove(update);
     };
-
-    frame = window.requestAnimationFrame(animate);
-
-    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   return (
@@ -131,32 +130,44 @@ export default function Hero() {
         <div className="relative left-1/2 mt-4 flex min-h-72 w-screen -translate-x-1/2 items-center justify-center overflow-hidden sm:min-h-88 lg:mt-6">
           <div className="pointer-events-none absolute inset-x-0 top-1/2 h-56 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.18),transparent_68%)] blur-3xl" />
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] sm:w-36" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] sm:w-36" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" />
 
-          <div className="relative h-72 w-screen overflow-hidden sm:h-88 lg:h-96">
-            <div className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-white via-white/70 to-transparent sm:w-40" />
-            <div className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-white via-white/70 to-transparent sm:w-40" />
+          {/* 3D Scene Container */}
+          <div className="relative h-72 w-screen sm:h-88 lg:h-96" style={{ perspective: "1000px" }}>
+            <div className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-white via-white/70 to-transparent z-10 sm:w-40" />
+            <div className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-white via-white/70 to-transparent z-10 sm:w-40" />
 
+            {/* Rotating Cylinder Track */}
             <div
               ref={trackRef}
-              className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center gap-6 px-6 sm:px-10 lg:px-14"
-              style={{ transform: "translate3d(0, 0, 0) translateY(-50%)", width: "max-content" }}
+              className="absolute left-1/2 top-1/2"
+              style={{ transformStyle: "preserve-3d" }}
             >
               {[...SLIDES, ...SLIDES].map((slide, index) => {
                 return (
-                  <LinearCard
+                  <div
                     key={`${slide.src}-${index}`}
-                    src={slide.src}
-                    title={slide.title}
                     style={{
-                      width: "clamp(220px, 22vw, 280px)",
-                      height: "clamp(280px, 30vw, 380px)",
-                      flex: "0 0 auto",
-                      transition: "transform 300ms ease, opacity 300ms ease",
-                      opacity: 1,
+                      position: "absolute",
+                      // Center the card around the track's origin axis
+                      left: "-130px", // Assuming width ~260px
+                      top: "-170px",  // Assuming height ~340px
+                      width: "260px",
+                      height: "340px",
+                      transformStyle: "preserve-3d",
+                      // NEGATIVE translateZ creates the bioscope/concave funnel!
+                      transform: `rotateY(${index * 30}deg) translateZ(-650px)`,
+                      // Hides the front half of the cylinder so we only see the back wall curving around us
+                      backfaceVisibility: "hidden", 
                     }}
-                  />
+                  >
+                    <LinearCard
+                      src={slide.src}
+                      title={slide.title}
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </div>
                 );
               })}
             </div>

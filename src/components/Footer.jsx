@@ -38,10 +38,6 @@ export default function Footer() {
                   className="h-12 w-auto max-w-[150px]"
                 />
               </Link>
-              <div>
-                <p className="text-[0.72rem] uppercase tracking-[0.35em] text-black/45">EnviteYou</p>
-                <p className="text-sm font-medium text-black/85">Wedding invitation templates</p>
-              </div>
             </div>
 
             <p className="mt-6 max-w-md text-sm leading-7 text-black/58 sm:text-base">

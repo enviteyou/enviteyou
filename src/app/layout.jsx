@@ -1,6 +1,13 @@
 import "./globals.css";
 import Header from "../components/Header";
 import Footer from "@/components/Footer";
+import { JetBrains_Mono, Inter, Roboto, Playwrite_CA } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const roboto = Roboto({ weight: ['300', '400', '500', '700'], subsets: ['latin'], variable: '--font-roboto' });
+const playwriteCa = Playwrite_CA({ variable: '--font-playwrite-ca' });
 
 export const metadata = {
   metadataBase: new URL("https://enviteyou.com"),
@@ -63,9 +70,9 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className="h-full antialiased"
+      className={cn("h-full antialiased", "font-mono", jetbrainsMono.variable, inter.variable, roboto.variable, playwriteCa.variable)}
     >
-      <body className="min-h-full overflow-x-hidden bg-white text-black">
+      <body className="min-h-full overflow-x-hidden bg-white text-black font-inter">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -83,7 +90,7 @@ export default function RootLayout({ children }) {
         />
         <Header />
         <div className="min-h-screen">{children}</div>
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );
