@@ -94,7 +94,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative isolate overflow-hidden bg-white text-black">
+    <section id="how-it-works" className="relative isolate overflow-hidden bg-white text-black">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.06),transparent_68%)] blur-3xl" />
         <div className="absolute -right-32 top-24 h-112 w-md rounded-full bg-[radial-gradient(circle,rgba(230,200,165,0.22),transparent_70%)] blur-3xl" />
@@ -105,7 +105,7 @@ export default function Hero() {
         <div className="flex flex-1 flex-col items-center justify-start pt-8 text-center sm:pt-10 lg:pt-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-black/50">Welcome to</p>
           
-          <h1 className="mt-2 max-w-5xl text-5xl font-bold leading-tight tracking-tight text-black sm:text-6xl lg:text-7xl">
+          <h1 className="mt-2 max-w-5xl text-4xl font-bold leading-tight tracking-tight text-black min-[380px]:text-5xl sm:text-6xl lg:text-7xl">
             Elegant Wedding
             <br />
             <span className="bg-linear-to-r from-black via-black/80 to-black/60 bg-clip-text text-transparent">
@@ -115,10 +115,10 @@ export default function Hero() {
 
           <p className="mt-4 max-w-2xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
             Beautifully crafted, instantly customizable invitation templates.
-            <br />Make your big day unforgettable from the first message.
+            <br className="hidden sm:block" />Make your big day unforgettable from the first message.
           </p>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
+          <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
             <button className="rounded-full bg-black px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-black/90 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
               Choose a template
             </button>
@@ -128,13 +128,13 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative left-1/2 mt-4 flex min-h-88 w-screen -translate-x-1/2 items-center justify-center overflow-hidden lg:mt-6">
+        <div className="relative left-1/2 mt-4 flex min-h-72 w-screen -translate-x-1/2 items-center justify-center overflow-hidden sm:min-h-88 lg:mt-6">
           <div className="pointer-events-none absolute inset-x-0 top-1/2 h-56 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.18),transparent_68%)] blur-3xl" />
 
           <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] sm:w-36" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] sm:w-36" />
 
-          <div className="relative h-80 w-screen overflow-hidden sm:h-88 lg:h-96">
+          <div className="relative h-72 w-screen overflow-hidden sm:h-88 lg:h-96">
             <div className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-white via-white/70 to-transparent sm:w-40" />
             <div className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-white via-white/70 to-transparent sm:w-40" />
 

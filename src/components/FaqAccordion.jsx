@@ -135,7 +135,7 @@ export default function FaqAccordion() {
   const [openKey, setOpenKey] = useState("How Does This Work?|0");
 
   return (
-    <section className="relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,rgba(248,246,242,0.9),rgba(255,255,255,1))]">
+    <section id="testimonials" className="relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,rgba(248,246,242,0.9),rgba(255,255,255,1))]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-24 top-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.05),transparent_68%)] blur-3xl" />
         <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(230,200,165,0.18),transparent_70%)] blur-3xl" />

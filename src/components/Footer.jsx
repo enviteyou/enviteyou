@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+
 const footerLinks = {
   Templates: ["Classic", "Modern", "Luxury", "Editorial"],
   Services: ["Custom invites", "Branding", "RSVP pages", "Guest support"],
@@ -10,11 +11,12 @@ const footerLinks = {
     { label: "Contact us", href: "mailto:care@enviteyou.com" },
     { label: "Privacy Policy", href: "/policy" },
     { label: "Refund Policy", href: "/refund_policy" },
-    {label: "Shipping Policy", href: "/shipping_policy"},
-    {label:"Cookie Policy", href: "/cookie_policy"},
+    { label: "Shipping Policy", href: "/shipping_policy" },
+    { label: "Cookie Policy", href: "/cookie_policy" },
     { label: "Terms", href: "/tems" },
   ],
 };
+
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-black/8 bg-white text-black">
@@ -23,17 +25,17 @@ export default function Footer() {
         <div className="absolute -right-32 -bottom-20 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(230,200,165,0.2),transparent_70%)] blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10 lg:py-16">
+      <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-xl">
-            <div className="flex items-center gap-3">
-              <Link href="/" className="flex shrink-0 items-center">
+            <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center">
+              <Link href="/" className="flex shrink-0 items-center" aria-label="EnviteYou home">
                 <Image
                   src="/logo.png"
                   alt="EnviteYou"
                   width={160}
                   height={80}
-                  className="h-12 w-auto"
+                  className="h-12 w-auto max-w-[150px]"
                 />
               </Link>
               <div>
@@ -47,13 +49,13 @@ export default function Footer() {
               and a cinematic showcase of invitation designs.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <button className="rounded-full bg-black px-6 py-3 text-sm font-medium text-white shadow-[0_18px_42px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/92">
+            <div className="mt-8 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap">
+              <Link href="/pricing" className="rounded-full bg-black px-6 py-3 text-center text-sm font-medium text-white shadow-[0_18px_42px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90">
                 Choose a template
-              </button>
-              <button className="rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-medium text-black/75 shadow-[0_14px_34px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:border-black/20 hover:text-black">
+              </Link>
+              <a href="mailto:care@enviteyou.com" className="rounded-full border border-black/10 bg-white px-6 py-3 text-center text-sm font-medium text-black/75 shadow-[0_14px_34px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:border-black/20 hover:text-black">
                 Book a consultation
-              </button>
+              </a>
             </div>
 
             <div className="mt-6 grid gap-3 text-sm text-black/60 sm:grid-cols-2">
@@ -95,10 +97,10 @@ export default function Footer() {
         <div className="mt-12 h-px w-full bg-linear-to-r from-transparent via-black/12 to-transparent" />
 
         <div className="mt-6 flex flex-col gap-4 text-sm text-black/48 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Missing Piece Invites. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} EnviteYou. All rights reserved.</p>
 
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <div className="flex flex-wrap items-center gap-4">
               <a href="#" aria-label="Instagram" className="flex items-center gap-2 transition hover:text-black">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                   <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.2" />
