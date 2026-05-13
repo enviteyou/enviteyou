@@ -139,9 +139,9 @@ export default function Header() {
           </div>
 
           {/* Pricing Button */}
-          <button className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-semibold text-white transition duration-300 hover:bg-white hover:text-black hover:shadow-lg uppercase tracking-wide">
+          <Link href="/pricing" className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-semibold text-white transition duration-300 hover:bg-white hover:text-black hover:shadow-lg uppercase tracking-wide">
             {t.pricingBtn}
-          </button>
+          </Link>
         </div>
       </div>
     </header>
