@@ -20,10 +20,10 @@ const ANGLE_PER_CARD = 360 / NUM_CARDS;
 // Pre-calculate static 3D styles to avoid re-rendering allocation overhead
 const SLIDE_STYLES = DOUBLE_SLIDES.map((_, index) => ({
   position: "absolute",
-  left: "-130px", // Center offset for 260px width
-  top: "-170px",  // Center offset for 340px height
-  width: "260px",
-  height: "340px",
+  left: "-150px", // Center offset for 260px width
+  top: "-200px",  // Center offset for 340px height
+  width: "300px",
+  height: "400px",
   transformStyle: "preserve-3d",
   transform: `rotateY(${index * ANGLE_PER_CARD}deg) translateZ(-650px)`,
   backfaceVisibility: "hidden",
@@ -37,7 +37,7 @@ function LinearCard({ src, title, isActive }) {
           src={src}
           alt={title}
           fill
-          sizes="260px"
+          sizes="280px"
           className="object-cover"
           priority={isActive}
         />
@@ -61,12 +61,12 @@ export default function Hero() {
     const setRotationY = gsap.quickSetter(track, "rotationY", "deg");
     const setZ = gsap.quickSetter(track, "z", "px");
 
-    let targetZ = window.innerWidth < 640 ? -350 : 300;
+    let targetZ = window.innerWidth < 640 ? -350 : 500;
     setZ(targetZ);
 
     // Performance: Only check viewport bounds on resize, not every frame
     const handleResize = () => {
-      targetZ = window.innerWidth < 640 ? -350 : 300;
+      targetZ = window.innerWidth < 640 ? -350 : 500;
       setZ(targetZ);
     };
 
@@ -120,16 +120,16 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative left-1/2 mt-4 flex min-h-72 w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:mt-6">
-          <div className="pointer-events-none absolute inset-x-0 top-1/2 h-56 -translate-y-1/2 rounded-full  blur-3xl" />
+        <div className="relative left-1/2 mt-4 flex w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:mt-6">
+          <div className="pointer-events-none absolute inset-x-0 top-1/2  -translate-y-1/2 rounded-full blur-3xl" />
 
           {/* <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" /> */}
           {/* <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" /> */}
 
           {/* 3D Scene Container */}
-          <div className="relative h-72 w-screen sm:h-88 lg:h-96" style={{ perspective: "1000px" }}>
-            <div className="absolute inset-y-0 left-0 w-16 bg-linear-to-r from-white via-white/70 to-transparent z-10 sm:w-40" />
-            <div className="absolute inset-y-0 right-0 w-16 bg-linear-to-l from-white via-white/70 to-transparent z-10 sm:w-40" />
+          <div className="relative h-72 w-screen md:h-130" style={{ perspective: "1000px" }}>
+            <div className="absolute inset-y-0 left-0 w-16 bg-linear-to-r from-white via-white/70 to-transparent z-10" />
+            <div className="absolute inset-y-0 right-0 w-16 bg-linear-to-l from-white via-white/70 to-transparent z-10" />
 
             {/* Rotating Cylinder Track */}
             <div
