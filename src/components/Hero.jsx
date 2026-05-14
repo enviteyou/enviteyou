@@ -155,22 +155,37 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="order-3 mx-auto mt-8 w-full max-w-6xl px-1 pb-10 text-center md:mt-10 md:pb-14">
-          <p className="text-sm font-medium text-black/60 md:text-base">Select Category</p>
-          <div className="mt-5 flex flex-wrap justify-center gap-3 sm:gap-4">
-            {CATEGORIES.map((category, index) => (
-              <button
-                key={category}
-                type="button"
-                className={`rounded-full px-4 py-2 text-sm font-medium transition duration-300 md:px-5 md:py-2.5 md:text-base ${
-                  index === 0
-                    ? "bg-black text-white shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
-                    : "bg-white text-black/85 shadow-[0_10px_24px_rgba(0,0,0,0.06)] ring-1 ring-black/8 hover:-translate-y-0.5 hover:ring-black/15"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+        <div className="order-3 border-t border-black/10">
+          <div className="mx-auto w-full max-w-6xl px-5 py-8 md:px-10 md:py-10">
+            <div className="mb-5 flex">
+              <div className="rounded-sm border border-black/25 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-black/70">
+                New Releases
+              </div>
+            </div>
+            <h2 className="mx-auto max-w-3xl text-center text-2xl font-bold leading-tight tracking-tight text-black sm:text-3xl">
+              Designed for your BIG day. Easy-to-edit. Effortless to Share.
+            </h2>
+            <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-black/60">
+              Pick a style. Add your story. Share in minutes
+            </p>
+          </div>
+          <div className="mx-auto w-full max-w-6xl border-t border-black/10 px-5 py-6 md:px-10">
+            <p className="text-center text-sm font-medium text-black/60">Select Category</p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-3">
+              {CATEGORIES.map((category, index) => (
+                <button
+                  key={category}
+                  type="button"
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition duration-300 md:px-5 md:py-2.5 md:text-base ${
+                    index === 0
+                      ? "bg-black text-white shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
+                      : "bg-white text-black/85 shadow-[0_10px_24px_rgba(0,0,0,0.06)] ring-1 ring-black/8 hover:-translate-y-0.5 hover:ring-black/15"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

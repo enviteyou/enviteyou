@@ -65,7 +65,7 @@ export default function FeaturesShowcase() {
               </div>
 
               {/* Description */}
-              <p className="max-w-sm text-base leading-7 text-black/62">
+              <p className="max-w-sm text-base leading-tight text-black/62">
                 Mobile-first, effortless to share. Costs less than printed cards, but feels far more premium.
               </p>
 
