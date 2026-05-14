@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import Link from "next/link";
+import { templates } from "../lib/templates";
 
 const SLIDES = [
   { src: "/1.png", title: "Bride and Groom" },
@@ -120,7 +122,7 @@ export default function Hero() {
             </span>
           </h1>
 
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
+          <p className="mt-4 max-w-3xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
             Create a beautiful digital wedding website in minutes.
             <br className="hidden sm:block" />Send it to your guests today, and keep it online forever as a digital scrapbook of your big day.
           </p>
@@ -130,6 +132,34 @@ export default function Hero() {
               Explore Templates
             </button>
            
+          </div>
+        </div>
+
+        {/* Templates strip just below the hero */}
+        <div className="order-3 w-full border-t border-black/10 bg-white">
+          <div className="mx-auto w-full max-w-6xl px-5 py-6 md:px-10">
+            <h3 className="text-lg font-semibold text-black">Templates</h3>
+            <p className="text-sm text-black/60">Click a template to view details and customize.</p>
+
+            <div className="mt-4 flex w-full gap-4 overflow-x-auto py-3">
+              {templates.map((t) => (
+                <Link key={t.id} href={`/templateInfo/${t.id}`} className="shrink-0">
+                  <div className="block w-64 rounded-lg border border-black/10 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-transform">
+                    <div className="h-40 w-full overflow-hidden rounded-t-lg bg-black">
+                      {t.preview ? (
+                        <Image src={t.preview} alt={t.name} width={400} height={240} className="object-cover" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center text-white">No preview</div>
+                      )}
+                    </div>
+                    <div className="p-3">
+                      <div className="text-sm font-semibold text-black">{t.name}</div>
+                      <div className="text-xs text-black/60 line-clamp-2">{t.description}</div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 
