@@ -63,7 +63,7 @@ export default function Header() {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const navItems = [
-    { label: t.howItWorks, href: "/#how-it-works" },
+    { label: t.howItWorks, href: "/how-it-works" },
     { label: t.testimonials, href: "/#testimonials" },
     { label: t.blog, href: "/#blog" },
     { label: t.ourStory, href: "/about" },
@@ -99,7 +99,7 @@ export default function Header() {
               width={160}
               height={80}
               priority
-              className="h-8 w-auto max-w-[86px] sm:h-12 sm:max-w-[150px]"
+              className="h-8 w-auto max-w-21.5 sm:h-12 sm:max-w-37.5"
             />
           </Link>
 
@@ -119,13 +119,13 @@ export default function Header() {
             <Select value={currency} onValueChange={handleCurrencyChange}>
               <SelectTrigger
                 aria-label="Select currency"
-                className="hidden h-9 w-[74px] rounded-full border border-[#74313d]/10 bg-[#f7efe8] px-2 text-[0.68rem] font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
+                className="hidden h-9 w-18.5 rounded-full border border-black/10 bg-white px-2 text-[0.68rem] font-semibold text-black/72 outline-none transition hover:border-black/20 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
               >
                 <SelectValue placeholder="Currency" />
               </SelectTrigger>
-              <SelectContent className="min-w-[80px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg">
                 {CURRENCIES.map((curr) => (
-                  <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d] sm:text-xs">
+                  <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {curr.label}
                   </SelectItem>
                 ))}
@@ -135,13 +135,13 @@ export default function Header() {
             <Select value={language} onValueChange={handleLanguageChange}>
               <SelectTrigger
                 aria-label="Select language"
-                className="hidden h-9 w-[70px] rounded-full border border-[#74313d]/10 bg-[#f7efe8] px-2 text-[0.68rem] font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
+                className="hidden h-9 w-17.5 rounded-full border border-black/10 bg-white px-2 text-[0.68rem] font-semibold text-black/72 outline-none transition hover:border-black/20 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
               >
                 <SelectValue placeholder="Language" />
               </SelectTrigger>
-              <SelectContent className="min-w-[80px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg">
                 {LANGUAGES.map((lang) => (
-                  <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d] sm:text-xs">
+                  <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {lang.label}
                   </SelectItem>
                 ))}
@@ -150,7 +150,7 @@ export default function Header() {
 
             <Link
               href="/pricing"
-              className="hidden h-9 items-center justify-center rounded-full border border-[#74313d] bg-[#74313d] px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(116,49,61,0.22)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#5f2530] sm:px-5 sm:text-xs lg:inline-flex"
+              className="hidden h-9 items-center justify-center rounded-full border border-black bg-black px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(0,0,0,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:px-5 sm:text-xs lg:inline-flex"
             >
               {t.pricingBtn}
             </Link>
@@ -158,7 +158,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setMenuOpen((current) => !current)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#74313d]/10 bg-[#f7efe8] text-[#74313d] transition hover:border-[#74313d]/25 lg:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-black/72 transition hover:border-black/20 lg:hidden"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
@@ -183,7 +183,7 @@ export default function Header() {
                   key={item.label}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block rounded-2xl border border-[#74313d]/10 bg-[#f7efe8] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-[#74313d]/76 transition hover:border-[#74313d]/20 hover:bg-[#f1e5dc] hover:text-[#74313d]"
+                  className="block rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-semibold uppercase tracking-wide text-black/72 transition hover:border-black/20 hover:bg-black/[0.03] hover:text-black"
                 >
                   {item.label}
                 </Link>
@@ -193,13 +193,13 @@ export default function Header() {
                 <Select value={currency} onValueChange={handleCurrencyChange}>
                   <SelectTrigger
                     aria-label="Select currency mobile"
-                    className="h-10 w-full rounded-2xl border border-[#74313d]/10 bg-[#f7efe8] px-3 text-sm font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+                    className="h-10 w-full rounded-2xl border border-black/10 bg-white px-3 text-sm font-semibold text-black/72 outline-none transition hover:border-black/20 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
                   >
                     <SelectValue placeholder="Currency" />
                   </SelectTrigger>
-                  <SelectContent className="min-w-[120px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+                  <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg">
                     {CURRENCIES.map((curr) => (
-                      <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-sm font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d]">
+                      <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
                         {curr.label}
                       </SelectItem>
                     ))}
@@ -209,13 +209,13 @@ export default function Header() {
                 <Select value={language} onValueChange={handleLanguageChange}>
                   <SelectTrigger
                     aria-label="Select language mobile"
-                    className="h-10 w-full rounded-2xl border border-[#74313d]/10 bg-[#f7efe8] px-3 text-sm font-semibold text-[#74313d] outline-none transition hover:border-[#74313d]/25 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+                    className="h-10 w-full rounded-2xl border border-black/10 bg-white px-3 text-sm font-semibold text-black/72 outline-none transition hover:border-black/20 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
                   >
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
-                  <SelectContent className="min-w-[120px] rounded-xl border border-[#74313d]/10 bg-[#f7efe8] shadow-lg">
+                  <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg">
                     {LANGUAGES.map((lang) => (
-                      <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-sm font-semibold text-[#74313d] focus:bg-[#f1e5dc] focus:text-[#74313d]">
+                      <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
                         {lang.label}
                       </SelectItem>
                     ))}

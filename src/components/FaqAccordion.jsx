@@ -114,7 +114,7 @@ export default function FaqAccordion() {
   };
 
   return (
-    <section id="testimonials" className="bg-white text-black">
+    <section id="faq" className="bg-white text-black">
       <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8 lg:py-16">
         <h2 className="text-center text-3xl font-semibold tracking-tight sm:text-4xl">Questions ? Answers.</h2>
 

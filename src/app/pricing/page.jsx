@@ -17,7 +17,7 @@ const plans = [
       "Basic RSVP collection",
       "Secure digital delivery",
     ],
-    accent: "from-[#f7efe4] to-[#fffaf3]",
+    accent: "from-white to-[#f5f5f5]",
     cta: "Start Essential",
   },
   {
@@ -34,7 +34,7 @@ const plans = [
       "WhatsApp sharing preview",
       "Priority support for setup",
     ],
-    accent: "from-[#111111] to-[#3a332d]",
+    accent: "from-[#111111] to-[#f5f5f5]",
     featured: true,
     cta: "Choose Signature",
   },
@@ -52,7 +52,7 @@ const plans = [
       "Music, video, or countdown integration",
       "Launch support and final polish",
     ],
-    accent: "from-[#e9d7be] to-[#fdf5ea]",
+    accent: "from-white to-[#f5f5f5]",
     cta: "Plan Bespoke",
   },
 ];
@@ -101,12 +101,12 @@ export default function PricingPage() {
   const guestBand = guestCount <= 100 ? "intimate" : guestCount <= 250 ? "classic" : "grand";
 
   return (
-    <main className="overflow-hidden bg-[#fffaf5] text-black">
+    <main className="overflow-hidden bg-white text-black">
       <section className="relative min-h-[calc(100vh-76px)] border-b border-black/8">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,#fffaf5_0%,#f3e7d8_48%,#ffffff_100%)]" />
-        <div className="absolute left-1/2 top-14 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full border border-black/8 opacity-40 animate-[spin_24s_linear_infinite]" />
-        <div className="absolute left-1/2 top-24 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full border border-black/10 opacity-40 animate-[spin_18s_linear_infinite_reverse]" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-[linear-gradient(180deg,transparent,#fffaf5)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#ffffff_0%,#f4f4f4_48%,#ffffff_100%)]" />
+        <div className="absolute left-1/2 top-14 h-144 w-xl -translate-x-1/2 rounded-full border border-black/8 opacity-40 animate-[spin_24s_linear_infinite]" />
+        <div className="absolute left-1/2 top-24 h-112 w-md -translate-x-1/2 rounded-full border border-black/10 opacity-40 animate-[spin_18s_linear_infinite_reverse]" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-[linear-gradient(180deg,transparent,#ffffff)]" />
 
         <div className="relative mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
           <div>
@@ -131,7 +131,7 @@ export default function PricingPage() {
           <div className="relative mx-auto w-full max-w-md">
             <div className="absolute -inset-5 rounded-[2rem] border border-black/8 bg-white/28 shadow-[0_28px_90px_rgba(0,0,0,0.08)] backdrop-blur-xl" />
             <div className="relative rounded-[1.6rem] border border-black/10 bg-white p-5 shadow-[0_24px_80px_rgba(0,0,0,0.12)]">
-              <div className="aspect-[4/5] overflow-hidden rounded-[1.2rem] bg-[#17120f] text-white">
+              <div className="aspect-4/5 overflow-hidden rounded-[1.2rem] bg-[#17120f] text-white">
                 <div className="flex h-full flex-col justify-between bg-[radial-gradient(circle_at_30%_20%,rgba(233,215,190,0.32),transparent_34%),linear-gradient(155deg,#17120f,#3a2d25)] p-7">
                   <div className="flex items-start justify-between">
                     <div>
@@ -274,8 +274,8 @@ export default function PricingPage() {
               </p>
             </div>
 
-            <div className="overflow-x-auto rounded-[1.4rem] border border-black/8 bg-[#fffaf5]">
-              <table className="w-full min-w-[680px] border-collapse text-left text-sm">
+            <div className="overflow-x-auto rounded-[1.4rem] border border-black/8 bg-white">
+              <table className="w-full min-w-170 border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-black/8 text-xs uppercase tracking-[0.22em] text-black/42">
                     <th className="px-5 py-4 font-semibold">Feature</th>
