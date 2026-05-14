@@ -16,6 +16,15 @@ const SLIDES = [
 const DOUBLE_SLIDES = [...SLIDES, ...SLIDES];
 const NUM_CARDS = DOUBLE_SLIDES.length;
 const ANGLE_PER_CARD = 360 / NUM_CARDS;
+const CATEGORIES = [
+  "All",
+  "Hindu Weddings",
+  "Christian Weddings",
+  "Sikh Weddings",
+  "Muslim Weddings",
+  "South-Indian Weddings",
+  "Save the date",
+];
 
 // Pre-calculate static 3D styles to avoid re-rendering allocation overhead
 const SLIDE_STYLES = DOUBLE_SLIDES.map((_, index) => ({
@@ -143,6 +152,25 @@ export default function Hero() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        <div className="order-3 mx-auto mt-8 w-full max-w-6xl px-1 pb-10 text-center md:mt-10 md:pb-14">
+          <p className="text-sm font-medium text-black/60 md:text-base">Select Category</p>
+          <div className="mt-5 flex flex-wrap justify-center gap-3 sm:gap-4">
+            {CATEGORIES.map((category, index) => (
+              <button
+                key={category}
+                type="button"
+                className={`rounded-full px-4 py-2 text-sm font-medium transition duration-300 md:px-5 md:py-2.5 md:text-base ${
+                  index === 0
+                    ? "bg-black text-white shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
+                    : "bg-white text-black/85 shadow-[0_10px_24px_rgba(0,0,0,0.06)] ring-1 ring-black/8 hover:-translate-y-0.5 hover:ring-black/15"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
         </div>
       </div>

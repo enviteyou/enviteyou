@@ -77,27 +77,27 @@ const faqItems = [
 
 function AccordionItem({ item, isOpen, onToggle }) {
   return (
-    <div className="border-b border-black/25">
+    <div className="border-b border-black/18">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center gap-4 py-4 text-left text-black transition hover:text-black/70 sm:gap-5"
+        className="flex w-full items-start gap-3 py-2.5 text-left text-black transition hover:text-black/70 sm:gap-4 sm:py-3"
         aria-expanded={isOpen}
       >
-        <span className="relative h-5 w-5 shrink-0" aria-hidden="true">
-          <span className="absolute left-1/2 top-1/2 h-px w-4 -translate-x-1/2 -translate-y-1/2 bg-current" />
+        <span className="relative mt-1 h-4 w-4 shrink-0" aria-hidden="true">
+          <span className="absolute left-1/2 top-1/2 h-px w-3.5 -translate-x-1/2 -translate-y-1/2 bg-current" />
           <span
-            className={`absolute left-1/2 top-1/2 h-4 w-px -translate-x-1/2 -translate-y-1/2 bg-current transition duration-200 ${
+            className={`absolute left-1/2 top-1/2 h-3.5 w-px -translate-x-1/2 -translate-y-1/2 bg-current transition duration-200 ${
               isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
             }`}
           />
         </span>
-        <span className="text-base font-medium leading-7 sm:text-xl">{item.question}</span>
+        <span className="text-[15px] font-medium leading-5 sm:text-[17px] sm:leading-6">{item.question}</span>
       </button>
 
       <div className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
         <div className="min-h-0 overflow-hidden">
-          <p className="pb-5 pl-9 text-sm leading-7 text-black/62 sm:pl-10 sm:text-base">{item.answer}</p>
+          <p className="pb-3 pl-7 text-[13px] leading-5 text-black/58 sm:pl-8 sm:text-[15px] sm:leading-6">{item.answer}</p>
         </div>
       </div>
     </div>
@@ -105,20 +105,26 @@ function AccordionItem({ item, isOpen, onToggle }) {
 }
 
 export default function FaqAccordion() {
-  const [openKey, setOpenKey] = useState(null);
+  const [openKeys, setOpenKeys] = useState([]);
+
+  const toggleItem = (index) => {
+    setOpenKeys((current) =>
+      current.includes(index) ? current.filter((key) => key !== index) : [...current, index]
+    );
+  };
 
   return (
     <section id="testimonials" className="bg-white text-black">
-      <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8 lg:py-24">
+      <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8 lg:py-16">
         <h2 className="text-center text-3xl font-semibold tracking-tight sm:text-4xl">Questions ? Answers.</h2>
 
-        <div className="mt-16">
+        <div className="mt-8">
           {faqItems.map((item, index) => (
             <AccordionItem
               key={item.question}
               item={item}
-              isOpen={openKey === index}
-              onToggle={() => setOpenKey((current) => (current === index ? null : index))}
+              isOpen={openKeys.includes(index)}
+              onToggle={() => toggleItem(index)}
             />
           ))}
         </div>
