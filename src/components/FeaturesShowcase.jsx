@@ -70,11 +70,11 @@ export default function FeaturesShowcase() {
               </p>
 
               {/* CTA Button */}
-              <div className="pt-4">
+              {/* <div className="pt-4">
                 <button className="rounded-full bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(0,0,0,0.12)] transition duration-300 ">
                   Choose a template
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 

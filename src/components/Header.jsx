@@ -123,7 +123,7 @@ export default function Header() {
               >
                 <SelectValue placeholder="Currency" />
               </SelectTrigger>
-              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg">
+              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg z-[9999]" side="bottom" align="end">
                 {CURRENCIES.map((curr) => (
                   <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {curr.label}
@@ -139,7 +139,7 @@ export default function Header() {
               >
                 <SelectValue placeholder="Language" />
               </SelectTrigger>
-              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg">
+              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg z-[9999]" side="bottom" align="end">
                 {LANGUAGES.map((lang) => (
                   <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {lang.label}
@@ -197,7 +197,7 @@ export default function Header() {
                   >
                     <SelectValue placeholder="Currency" />
                   </SelectTrigger>
-                  <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg">
+                  <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg z-[9999]">
                     {CURRENCIES.map((curr) => (
                       <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
                         {curr.label}
@@ -213,7 +213,7 @@ export default function Header() {
                   >
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
-                  <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg">
+                  <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg z-[9999]">
                     {LANGUAGES.map((lang) => (
                       <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
                         {lang.label}
