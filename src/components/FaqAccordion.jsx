@@ -81,7 +81,7 @@ function AccordionItem({ item, isOpen, onToggle }) {
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-start gap-3 py-2.5 text-left text-black transition hover:text-black/70 sm:gap-4 sm:py-3"
+        className="flex w-full items-start gap-3 py-2.5 text-left text-black/80 transition hover:text-black/70 sm:gap-4 sm:py-3"
         aria-expanded={isOpen}
       >
         <span className="relative mt-1 h-4 w-4 shrink-0" aria-hidden="true">
@@ -92,7 +92,7 @@ function AccordionItem({ item, isOpen, onToggle }) {
             }`}
           />
         </span>
-        <span className="text-[15px] font-medium leading-5 sm:text-[17px] sm:leading-6">{item.question}</span>
+        <span className="text-[12px] font-medium text-black/80 leading-5 sm:text-[17px] sm:leading-6">{item.question}</span>
       </button>
 
       <div className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
@@ -115,8 +115,8 @@ export default function FaqAccordion() {
 
   return (
     <section id="faq" className="bg-white text-black">
-      <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8 lg:py-16">
-        <h2 className="text-center text-3xl font-semibold tracking-tight sm:text-4xl">Questions ? Answers.</h2>
+      <div className="mx-auto max-w-2xl px-5 py-18 sm:px-8 lg:py-16">
+        <h2 className="text-center text-3xl font-semibold tracking-tight sm:text-3xl">Questions ? Answers.</h2>
 
         <div className="mt-8">
           {faqItems.map((item, index) => (

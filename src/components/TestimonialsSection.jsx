@@ -35,11 +35,11 @@ function Stars({ rating = 5, className = "" }) {
 
 export default function TestimonialsSection() {
   return (
-    <section id="testimonials" className="border-y border-black/8 bg-[#fbf8f3] text-black">
+    <section id="testimonials" className="border-y border-black/8 bg-white text-black">
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-black/42">Customer reviews</p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#6a3137] sm:text-5xl">Customer Reviews</h2>
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-black sm:text-5xl">Customer Reviews</h2>
           <div className="mt-5 flex items-center justify-center gap-3">
             <Stars rating={5} className="text-3xl leading-none sm:text-4xl" />
             <p className="text-2xl font-semibold tracking-tight text-black/78 sm:text-[2rem]">4.96 / 5</p>
@@ -54,7 +54,7 @@ export default function TestimonialsSection() {
                 <Stars rating={row.stars} className="text-lg sm:text-xl" />
                 <div className="h-4 rounded-full bg-black/8">
                   <div
-                    className="h-full rounded-full bg-[#6a3137]"
+                    className="h-full rounded-full bg-black"
                     style={{ width: `${Math.max(row.percent, row.count > 0 ? 4 : 0)}%` }}
                   />
                 </div>
@@ -64,7 +64,7 @@ export default function TestimonialsSection() {
           </div>
 
           <div className="mt-8 flex justify-center">
-            <button className="w-full rounded-[1.2rem] bg-[#6a3137] px-6 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#58262c] sm:max-w-3xl">
+            <button className="w-full rounded-[1.2rem] bg-black px-6 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:max-w-3xl">
               Write a review
             </button>
           </div>
@@ -85,7 +85,7 @@ export default function TestimonialsSection() {
                     <div className="flex items-center gap-2">
                       <h3 className="text-lg font-semibold tracking-tight text-black/86">{testimonial.name}</h3>
                       {testimonial.verified ? (
-                        <span className="rounded-full bg-[#e6f7ea] px-3 py-1 text-xs font-semibold text-[#2b8a4b]">
+                        <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-black/72">
                           Verified
                         </span>
                       ) : null}
@@ -96,7 +96,7 @@ export default function TestimonialsSection() {
                 <time className="text-sm text-black/48">{testimonial.date}</time>
               </div>
 
-              <h4 className="mt-4 text-xl font-semibold tracking-tight text-[#6a3137]">{testimonial.title}</h4>
+              <h4 className="mt-4 text-xl font-semibold tracking-tight text-black">{testimonial.title}</h4>
               <p className="mt-3 max-w-4xl text-base leading-7 text-black/68">{testimonial.body}</p>
             </article>
           ))}

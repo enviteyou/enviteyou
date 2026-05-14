@@ -57,7 +57,7 @@ export default function FeaturesShowcase() {
 
               {/* Heading */}
               <div>
-                <h2 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-5xl">
+                <h2 className="text-3xl font-medium leading-tight tracking-normal sm:text-3xl lg:text-3xl">
                   The Wedding Invite,
                   <br />
                   Reinvented.
@@ -96,10 +96,10 @@ export default function FeaturesShowcase() {
 
                     {/* Content */}
                     <div className="flex flex-col justify-start">
-                      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-black/50 mb-2">
+                      <p className="text-xs font-bold  tracking-[0.15em] text-black mb-2">
                         {feature.label}
                       </p>
-                      <h3 className="text-xl font-medium leading-snug sm:text-2xl text-black/90">
+                      <h3 className="text-xl font-light leading-tight tracking-tighter sm:text-2xl text-black">
                         {feature.title}
                       </h3>
                     </div>
