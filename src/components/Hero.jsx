@@ -167,10 +167,10 @@ export default function Hero() {
               </div>
             </div>
             <h2 className="mx-auto max-w-3xl text-center text-2xl font-bold leading-tight tracking-tight text-black sm:text-3xl">
-              Designed for your BIG day. Easy-to-edit. Effortless to Share.
+              Built for your big day. Simple to edit. Just type, save, and share.
             </h2>
             <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-black/60">
-              Pick a style. Add your story. Share in minutes
+              Select your theme. Tell your story. Send it in minutes.
             </p>
           </div>
           <div className="mx-auto w-full max-w-6xl border-t border-black/10 px-5 py-6 md:px-10">

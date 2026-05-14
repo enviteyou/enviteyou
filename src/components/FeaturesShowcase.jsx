@@ -60,13 +60,13 @@ export default function FeaturesShowcase() {
                 <h2 className="text-3xl font-medium leading-tight tracking-normal sm:text-3xl lg:text-3xl">
                   The Wedding Invite,
                   <br />
-                  Reinvented.
+                  Perfected.
                 </h2>
               </div>
 
               {/* Description */}
               <p className="max-w-sm text-base leading-tight text-black/62">
-                Mobile-first, effortless to share. Costs less than printed cards, but feels far more premium.
+                Smarter than a printed card. More elegant than a WhatsApp video. Built to handle the beautiful chaos of your big day.
               </p>
 
               {/* CTA Button */}
