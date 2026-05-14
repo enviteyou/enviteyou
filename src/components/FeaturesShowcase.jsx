@@ -4,39 +4,34 @@ import React from "react";
 
 const features = [
   {
-    label: "Cost",
-    title: "Cheaper than most WhatsApp and printed invites",
-    icon: "💰",
+    label: "Live Guest Analytics",
+    title:
+      "Access a private tracking dashboard. See your total views, visitor cities, and watch the excitement build in real-time as guests open your link.",
+    icon: "📊",
+  },
+  {
+    label: "The Forever Link",
+    title:
+      "Pay once. Keep it for a lifetime. Your digital wedding website stays online forever as a beautiful memory of your celebrations.",
+    icon: "🔗",
   },
   {
     label: "Elder-Friendly Design",
-    title: "No more squinting at tiny-boring WhatsApp videos",
-    icon: "🔍",
+    title:
+      "No apps to download. No zooming required. One simple tap opens your invite perfectly on any mobile browser, making it easy for guests of all ages.",
+    icon: "👴",
   },
   {
-    label: "Pre-Wedding Highlight",
-    title: "Showcase your shoot like never before",
-    icon: "📸",
+    label: "One-Tap Directions",
+    title:
+      "Ensure the Baraat arrives exactly on time. Integrated Google Maps allows your guests to get driving directions to your venue with a single click.",
+    icon: "📍",
   },
   {
-    label: "Instant Edits",
-    title: "Any change? Update anything instantly even after sharing",
-    icon: "⚙️",
-  },
-  {
-    label: "Ritual-Ready Templates",
-    title: "Includes deities and editable mantras for Hindu weddings",
-    icon: "🙏",
-  },
-  {
-    label: "Private Guest Pages",
-    title: "Invite different guests to different events securely",
-    icon: "🔒",
-  },
-  {
-    label: "Mobile-First Experience",
-    title: "Perfect on any device, looks stunning on mobile screens",
-    icon: "📱",
+    label: "Save the Date, Instantly",
+    title:
+      'Never worry about guests forgetting the Muhurat. A seamless "Add to Calendar" button syncs your event timings directly to their phones.',
+    icon: "📅",
   },
 ];
 
