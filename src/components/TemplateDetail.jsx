@@ -24,7 +24,7 @@ export default function TemplateDetail({ template }) {
   }
 
   return (
-    <article className="overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
+    <article className="overflow-hidden rounded border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
       <div className="relative aspect-[4/3] bg-black">
         {template.preview ? (
           <Image
