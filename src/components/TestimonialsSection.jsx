@@ -1,9 +1,9 @@
 "use client";
 
 const ratingRows = [
-  { stars: 5, label: "5 stars", count: 101, percent: 96 },
-  { stars: 4, label: "4 stars", count: 4, percent: 4 },
-  { stars: 3, label: "3 stars", count: 0, percent: 0 },
+  { stars: 5, label: "5 stars", count: 116, percent: 96 },
+  { stars: 4, label: "4 stars", count: 18, percent: 4 },
+  { stars: 3, label: "3 stars", count: 12, percent: 0 },
   { stars: 2, label: "2 stars", count: 0, percent: 0 },
   { stars: 1, label: "1 star", count: 0, percent: 0 },
 ];
@@ -44,7 +44,7 @@ export default function TestimonialsSection() {
             <Stars rating={5} className="text-3xl leading-none sm:text-4xl" />
             <p className="text-2xl font-semibold tracking-tight text-black/78 sm:text-[2rem]">4.96 / 5</p>
           </div>
-          <p className="mt-3 text-sm text-black/55 sm:text-base">Based on 105 reviews</p>
+          <p className="mt-3 text-sm text-black/55 sm:text-base">Based on 146 reviews</p>
         </div>
 
         <div className="mt-10 rounded-[1.6rem] border border-black/6 bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.04)] sm:p-6">

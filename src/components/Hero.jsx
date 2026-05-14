@@ -171,7 +171,7 @@ export default function Hero() {
           </div>
           <div className="mx-auto w-full max-w-6xl border-t border-black/10 px-5 py-6 md:px-10">
             <p className="text-center text-sm font-medium text-black/60">Select Category</p>
-            <div className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-3">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:flex md:flex-wrap md:justify-center md:gap-3">
               {CATEGORIES.map((category, index) => (
                 <button
                   key={category}
