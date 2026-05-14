@@ -71,7 +71,7 @@ export default function FeaturesShowcase() {
 
               {/* CTA Button */}
               <div className="pt-4">
-                <button className="rounded-full bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(0,0,0,0.12)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90">
+                <button className="rounded-full bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(0,0,0,0.12)] transition duration-300 ">
                   Choose a template
                 </button>
               </div>
@@ -83,13 +83,13 @@ export default function FeaturesShowcase() {
             {features.map((feature, index) => (
               <React.Fragment key={feature.label}>
                 <div 
-                  className="sticky top-16 group overflow-hidden transition-all duration-300 hover:bg-black/2 py-10 px-0 bg-white"
+                  className="sticky top-16 group overflow-hidden transition-all duration-300  py-10 px-0 bg-white"
                   style={{ zIndex: index }}
                 >
                   <div className="flex gap-8 sm:gap-10">
                     {/* Icon */}
                     <div className="flex shrink-0 items-start justify-center pt-1">
-                      <div className="text-4xl sm:text-4xl transition duration-300 group-hover:scale-110">
+                      <div className="text-4xl sm:text-4xl transition duration-300 ">
                         {feature.icon}
                       </div>
                     </div>
