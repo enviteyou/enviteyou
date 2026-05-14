@@ -110,28 +110,26 @@ export default function Hero() {
 
       <div className="mx-auto flex  w-full flex-col px-5 pb-0 md:px-10">
         <div className="order-2 flex flex-col items-center justify-start pt-8 text-center md:order-1 md:pt-12">
-          <p className="text-xs font-semibold uppercase tracking-widest text-black/50">Welcome to</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-black/50">Pay once. No expiry. No hidden fees.</p>
 
-          <h1 className="mt-2 max-w-5xl text-4xl font-bold leading-tight tracking-tight text-black min-[380px]:text-5xl sm:text-6xl lg:text-7xl">
-            Elegant Wedding
+          <h1 className="mt-2 max-w-5xl text-4xl font-bold leading-tight tracking-tight text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
+            Build Your Wedding Website.
             <br />
             <span className="bg-linear-to-r from-black via-black/80 to-black/60 bg-clip-text text-transparent">
-              Invitations
+              Online Forever.
             </span>
           </h1>
 
           <p className="mt-4 max-w-2xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
-            Beautifully crafted, instantly customizable invitation templates.
-            <br className="hidden sm:block" />Make your big day unforgettable from the first message.
+            Create a beautiful digital wedding website in minutes.
+            <br className="hidden sm:block" />Send it to your guests today, and keep it online forever as a digital scrapbook of your big day.
           </p>
 
           <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
             <button className="rounded-full bg-black px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1">
-              Choose a template
+              Explore Templates
             </button>
-            <button className="rounded-full border-2 border-black/20 px-7 py-3 text-sm font-semibold text-black transition duration-300 hover:border-black hover:bg-black/5">
-              Explore Gallery
-            </button>
+           
           </div>
         </div>
 
