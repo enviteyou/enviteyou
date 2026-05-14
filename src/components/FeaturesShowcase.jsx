@@ -42,7 +42,7 @@ export default function FeaturesShowcase() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
           {/* Left Column - Scrolls Normally */}
           <div className="lg:sticky lg:top-16 lg:h-fit">
-            <div className="space-y-6">
+            <div className="space-y-3">
               {/* Badge */}
               <div>
                 <span className="inline-flex rounded-full border border-black/20 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-black/70">
