@@ -94,7 +94,7 @@ export default function Hero() {
       </div>
 
       <div className="mx-auto flex  w-full flex-col px-5 pb-0 md:px-10">
-        <div className="flex flex-col items-center justify-start pt-8 text-center md:pt-12">
+        <div className="order-2 flex flex-col items-center justify-start pt-8 text-center md:order-1 md:pt-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-black/50">Welcome to</p>
 
           <h1 className="mt-2 max-w-5xl text-4xl font-bold leading-tight tracking-tight text-black min-[380px]:text-5xl sm:text-6xl lg:text-7xl">
@@ -120,7 +120,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative left-1/2 mt-4 flex w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:mt-6">
+        <div className="order-1 relative left-1/2 mt-4 flex w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:order-2 md:mt-6">
           <div className="pointer-events-none absolute inset-x-0 top-1/2  -translate-y-1/2 rounded-full blur-3xl" />
 
           {/* <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-[linear-gradient(90deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" /> */}
