@@ -11,6 +11,12 @@ const SLIDES = [
   { src: "/4.png", title: "Arbishek" },
   { src: "/5.png", title: "Shaadi" },
   { src: "/6.png", title: "Kanika" },
+  { src: "/1.png", title: "Bride and Groom" },
+  { src: "/2.png", title: "Countdown Begins" },
+  { src: "/3.png", title: "Lanterns" },
+  { src: "/4.png", title: "Arbishek" },
+  { src: "/5.png", title: "Shaadi" },
+  { src: "/6.png", title: "Kanika" },
 ];
 
 const DOUBLE_SLIDES = [...SLIDES, ...SLIDES];
@@ -34,7 +40,7 @@ const SLIDE_STYLES = DOUBLE_SLIDES.map((_, index) => ({
   width: "300px",
   height: "400px",
   transformStyle: "preserve-3d",
-  transform: `rotateY(${index * ANGLE_PER_CARD}deg) translateZ(-650px)`,
+  transform: `rotateY(${index * ANGLE_PER_CARD}deg) translateZ(-1350px)`,
   backfaceVisibility: "hidden",
 }));
 
@@ -47,7 +53,7 @@ function LinearCard({ src, title, isActive }) {
           alt={title}
           fill
           sizes="280px"
-          className="object-cover"
+          className="object-cover rounded-md"
           priority={isActive}
         />
       </div>
@@ -82,12 +88,12 @@ export default function Hero() {
     window.addEventListener("resize", handleResize, { passive: true });
 
     const update = (time, deltaTime) => {
-      currentAngle += deltaTime * 0.015;
+      currentAngle += deltaTime * 0.01; // Rotate at 0.01 degrees per ms (36 degrees per second)
       setRotationY(currentAngle);
     };
 
     gsap.ticker.add(update);
-
+    
     return () => {
       gsap.ticker.remove(update);
       window.removeEventListener("resize", handleResize);
@@ -136,7 +142,7 @@ export default function Hero() {
           {/* <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0)_100%)] z-10 sm:w-36" /> */}
 
           {/* 3D Scene Container */}
-          <div className="relative h-72 w-screen md:h-130" style={{ perspective: "1000px" }}>
+          <div className="relative h-72 w-screen md:h-130" style={{ perspective: "700px" }}>
             <div className="absolute inset-y-0 left-0 w-16 bg-linear-to-r from-white via-white/70 to-transparent z-10" />
             <div className="absolute inset-y-0 right-0 w-16 bg-linear-to-l from-white via-white/70 to-transparent z-10" />
 
