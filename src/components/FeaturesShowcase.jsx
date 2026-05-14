@@ -94,7 +94,7 @@ export default function FeaturesShowcase() {
                       <p className="text-xs font-bold  tracking-[0.15em] text-black mb-2">
                         {feature.label}
                       </p>
-                      <h3 className="text-lg font-light leading-tight tracking-tighter sm:text-2xl text-black">
+                      <h3 className="text-sm font-light leading-tight tracking-tighter sm:text-2xl text-black">
                         {feature.title}
                       </h3>
                     </div>
