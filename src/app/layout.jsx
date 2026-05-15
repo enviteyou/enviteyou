@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Footer from "@/components/Footer";
 import { JetBrains_Mono, Inter, Roboto, Playwrite_CA } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -72,7 +73,9 @@ export default function RootLayout({ children }) {
       lang="en"
       className={cn("h-full antialiased", "font-mono", jetbrainsMono.variable, inter.variable, roboto.variable, playwriteCa.variable)}
     >
+    
       <body className="min-h-full overflow-x-hidden bg-white text-black font-inter">
+          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -91,6 +94,7 @@ export default function RootLayout({ children }) {
         <Header />
         <div className="min-h-screen">{children}</div>
         <Footer />
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
