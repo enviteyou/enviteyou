@@ -1,6 +1,8 @@
 "use client";
 
+import api from "@/api/axios";
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const tabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"];
 const eventOptions = ["Mehendi", "Haldi", "Sagan", "Cocktail", "Sangeet", "Baraat", "Shaadi", "Reception"];
@@ -84,15 +86,22 @@ function SectionTitle({ icon, title }) {
   );
 }
 
-export default function TemplateForm({ template }) {
+export { initialForm };
+
+export default function TemplateForm({ template, onPreviewChange }) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("Essentials");
   const [selectedInfoCard, setSelectedInfoCard] = useState("Dress Code");
   const [selectedEvent, setSelectedEvent] = useState("Mehendi");
   const [form, setForm] = useState(initialForm);
-
+    
   useEffect(() => {
     if (template?.name) document.title = `${template.name} - Customize`;
   }, [template]);
+
+  useEffect(() => {
+    onPreviewChange?.(form);
+  }, [form, onPreviewChange]);
 
   const activeEventIncluded = useMemo(
     () => form.selectedEvents.includes(selectedEvent),
@@ -118,23 +127,41 @@ export default function TemplateForm({ template }) {
     });
   }
 
-  function submit(event) {
+ async function handleSubmit (event) {
     event.preventDefault();
 
     if (!form.bride || !form.groom || !form.date) {
       alert("Please add both names and the wedding date.");
       setActiveTab("Essentials");
       return;
-    }
+    } 
+    const res = await api.post("/invitations/create", form);
+    console.log(res.data);
+    if (res.data?.success) {
+      const created = res.data.data;
+      const slug = created?.slug;
+      const invitePath = slug ? `/invite/${encodeURIComponent(slug)}` : null;
+      const fullUrl = invitePath ? `${window.location.origin}${invitePath}` : null;
 
-    const payload = { templateId: template?.id || null, ...form };
-    console.log("Saving template data:", payload);
-    alert("Saved demo details. Check the console for the payload.");
+      // Open the generated invite in a new tab and navigate the current window there as well
+      if (fullUrl) {
+        try {
+          window.open(fullUrl, "_blank");
+        } catch (e) {
+          // ignore
+        }
+        router.push(invitePath);
+      } else {
+        alert("Invitation created successfully. Unable to determine invite URL.");
+      }
+    } else {
+      alert("Failed to create invitation. Please try again.");
+    }
   }
 
   return (
     <form
-      onSubmit={submit}
+      onSubmit={handleSubmit}
       className="overflow-hidden rounded border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]"
     >
       <div className="flex items-center justify-between gap-4 border-b border-black/10 px-5 py-4">
@@ -231,7 +258,7 @@ export default function TemplateForm({ template }) {
         {activeTab === "Events" ? (
           <>
             <SectionTitle icon="3" title="Celebration Events" />
-            <p className="border-l-2 border-black bg-black/[0.03] px-4 py-3 text-sm text-black/60">
+            <p className="border-l-2 border-black bg-black/3 px-4 py-3 text-sm text-black/60">
               Select events to include. Click a selected event to edit its detail card.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -307,7 +334,7 @@ export default function TemplateForm({ template }) {
           <>
             <SectionTitle icon="6" title="Things to Know" />
             <ToggleRow title="Show things to know section" note="Helpful info cards for your guests." name="infoEnabled" checked={form.infoEnabled} onChange={update} />
-            <p className="border-l-2 border-black bg-black/[0.03] px-4 py-3 text-sm text-black/60">
+            <p className="border-l-2 border-black bg-black/3 px-4 py-3 text-sm text-black/60">
               Select an info card and edit its value below.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">

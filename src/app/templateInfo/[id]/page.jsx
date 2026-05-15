@@ -1,5 +1,4 @@
-import TemplateDetail from "../../../components/TemplateDetail";
-import TemplateForm from "../../../components/TemplateForm";
+import TemplateCustomizer from "../../../components/TemplateCustomizer";
 import { getTemplateById } from "../../../lib/templates";
 
 export default async function TemplatePage({ params }) {
@@ -21,10 +20,7 @@ export default async function TemplatePage({ params }) {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(360px,0.85fr)_minmax(0,1.15fr)] lg:items-start">
-          <TemplateForm template={template} />
-          <TemplateDetail template={template} />
-        </div>
+        <TemplateCustomizer template={template} />
       </div>
     </main>
   );
