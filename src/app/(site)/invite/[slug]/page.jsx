@@ -3,36 +3,77 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import TemplateDetail from "@/components/TemplateDetail";
-import { getTemplateById } from "@/lib/templates";
 import api from "@/api/axios";
+import { getTemplateById } from "@/lib/templateService";
 
 export default function InviteBySlugPage() {
   const params = useParams();
   const slug = params?.slug;
-  const [invitation, setInvitation] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [result, setResult] = useState({
+    slug: null,
+    invitation: null,
+    error: "",
+  });
+  const [template, setTemplate] = useState(null);
 
   useEffect(() => {
     if (!slug) return;
-    setLoading(true);
-    setError("");
+    let ignore = false;
 
     api
       .get(`/invitations/${encodeURIComponent(slug)}`)
       .then((res) => {
-        setInvitation(res?.data?.data || null);
+        if (!ignore) {
+          setResult({
+            slug,
+            invitation: res?.data?.data || null,
+            error: "",
+          });
+        }
       })
       .catch((err) => {
         const message = err?.response?.data?.message || err.message || "Unable to load invitation";
-        setError(message);
-      })
-      .finally(() => setLoading(false));
+        if (!ignore) {
+          setResult({
+            slug,
+            invitation: null,
+            error: message,
+          });
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, [slug]);
 
+  useEffect(() => {
+    if (!result.invitation) return undefined;
+
+    let ignore = false;
+    const templateId = result.invitation?.templateId || result.invitation?.template || "";
+
+    getTemplateById(templateId)
+      .then((selectedTemplate) => {
+        if (!ignore) {
+          setTemplate(selectedTemplate);
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setTemplate(null);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [result.invitation]);
+
   // Determine template id: prefer an explicit template field if present, else default
-  const templateId = invitation?.templateId || invitation?.template || "mountain";
-  const template = getTemplateById(templateId);
+  const loading = result.slug !== slug;
+  const invitation = result.invitation;
+  const error = result.error;
 
   return (
     <main className="px-4 py-10">

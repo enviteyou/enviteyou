@@ -15,6 +15,7 @@ const initialForm = {
   venue: "",
   whatsapp: "",
   hashtag: "",
+  nameOrder: "brideFirst",
   countdown: true,
   invitation: true,
   blessing: "With the blessings of the divine and the love of our families",
@@ -88,9 +89,8 @@ function SectionTitle({ icon, title }) {
 
 export { initialForm };
 
-export default function TemplateForm({ template, onPreviewChange }) {
+export default function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab }) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("Essentials");
   const [selectedInfoCard, setSelectedInfoCard] = useState("Dress Code");
   const [selectedEvent, setSelectedEvent] = useState("Mehendi");
   const [form, setForm] = useState(initialForm);
@@ -107,6 +107,9 @@ export default function TemplateForm({ template, onPreviewChange }) {
     () => form.selectedEvents.includes(selectedEvent),
     [form.selectedEvents, selectedEvent],
   );
+  const activeTabIndex = tabs.indexOf(activeTab);
+  const isFirstTab = activeTabIndex === 0;
+  const isLastTab = activeTabIndex === tabs.length - 1;
 
   function update(event) {
     const { name, value, type, checked } = event.target;
@@ -127,6 +130,18 @@ export default function TemplateForm({ template, onPreviewChange }) {
     });
   }
 
+  function goToPreviousTab() {
+    if (!isFirstTab) {
+      setActiveTab(tabs[activeTabIndex - 1]);
+    }
+  }
+
+  function goToNextTab() {
+    if (!isLastTab) {
+      setActiveTab(tabs[activeTabIndex + 1]);
+    }
+  }
+
  async function handleSubmit (event) {
     event.preventDefault();
 
@@ -135,7 +150,10 @@ export default function TemplateForm({ template, onPreviewChange }) {
       setActiveTab("Essentials");
       return;
     } 
-    const res = await api.post("/invitations/create", form);
+    const res = await api.post("/invitations/create", {
+      ...form,
+      templateId: template?.id,
+    });
     console.log(res.data);
     if (res.data?.success) {
       const created = res.data.data;
@@ -207,6 +225,28 @@ export default function TemplateForm({ template, onPreviewChange }) {
               <Field label="Groom name">
                 <input className={inputClass} name="groom" value={form.groom} onChange={update} placeholder="e.g. Arjun" />
               </Field>
+            </div>
+            <div className="flex items-center justify-between gap-4 border border-black/10 bg-white p-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">Name display order</p>
+                <p className="mt-2 text-sm font-medium text-black">
+                  {form.nameOrder === "groomFirst" ? "Groom & Bride" : "Bride & Groom"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((current) => ({
+                    ...current,
+                    nameOrder: current.nameOrder === "brideFirst" ? "groomFirst" : "brideFirst",
+                  }))
+                }
+                className="border border-black bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-black hover:text-white"
+              >
+                Switch
+              </button>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Wedding date">
                 <input className={inputClass} name="date" type="date" value={form.date} onChange={update} />
               </Field>
@@ -396,17 +436,29 @@ export default function TemplateForm({ template, onPreviewChange }) {
           </>
         ) : null}
 
-        <div className="flex flex-col gap-3 border-t border-black/10 pt-5 sm:flex-row">
-          <button type="submit" className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
-            Save Details
-          </button>
+        <div className="flex items-center justify-between gap-4 border-t border-black/10 pt-5">
           <button
             type="button"
-            onClick={() => setForm(initialForm)}
-            className="rounded-full border border-black/15 bg-white px-6 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:border-black"
+            onClick={goToPreviousTab}
+            disabled={isFirstTab}
+            className="rounded-full border border-black/15 bg-white px-6 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:border-black disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
           >
-            Reset
+            Previous
           </button>
+
+          {isLastTab ? (
+            <button type="submit" className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
+              Save Details
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={goToNextTab}
+              className="rounded-full border border-black bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
+            >
+              Next
+            </button>
+          )}
         </div>
       </div>
     </form>

@@ -22,6 +22,7 @@ export const templates = [
     palette: "White, sand, charcoal",
     bestFor: "Beach weddings, brunch ceremonies, intimate family events",
     features: ["Countdown timer", "Couple story", "WhatsApp sharing", "Guest-friendly layout"],
+    // category , verndor pricing ,regular price ,sell price , vendor price,title description,featuredImage
   },
   {
     id: "mountain",
