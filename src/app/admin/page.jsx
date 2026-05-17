@@ -1,11 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 import api from "@/api/axios";
 
 export default function AdminDashboard() {
   const [counts, setCounts] = useState({ users: 0, templates: 0 });
   const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // check auth first, redirect if not admin (do not render dashboard)
+    (async () => {
+      try {
+        const res = await api.get('/auth/me');
+        if (res.status !== 200) return router.push('/admin/signin');
+        const data = res.data;
+        if (!data?.user || data.user.role !== 'admin') {
+          alert('Unauthorized access');
+          return router.push('/admin/signin');
+        }
+        setAuthenticated(true);
+      } catch (err) {
+        router.push('/admin/signin');
+      }
+    })();
+  }, [router]);
 
   useEffect(() => {
     async function load() {
@@ -21,7 +42,7 @@ export default function AdminDashboard() {
     load();
   }, []);
 
-  return (
+  return authenticated ? (
     <div className="mx-auto max-w-7xl">
       <div className="mb-6">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Overview</p>
@@ -53,7 +74,7 @@ export default function AdminDashboard() {
         </div>
       </section>
     </div>
-  );
+  ) : null;
 }
 
 function MetricCard({ label, value }) {

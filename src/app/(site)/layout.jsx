@@ -58,7 +58,7 @@ export const metadata = {
     images: ["/logo.png"],
   },
   icons: {
-    icon: "/icon.png",
+    icon: "/icon2.png",
     apple: "/icon.png",
   },
   robots: {

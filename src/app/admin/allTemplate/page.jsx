@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import api from "@/api/axios";
 
 function formatCurrency(value) {
@@ -16,6 +17,25 @@ export default function AllTemplate() {
   const [list, setList] = useState([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get('/auth/me');
+        if (res.status !== 200) return router.push('/admin/signin');
+        const data = res.data;
+        if (!data?.user || data.user.role !== 'admin') {
+          alert('Unauthorized access');
+          return router.push('/admin/signin');
+        }
+        setAuthenticated(true);
+      } catch (err) {
+        router.push('/admin/signin');
+      }
+    })();
+  }, [router]);
 
   useEffect(() => {
     async function load() {
@@ -42,7 +62,7 @@ export default function AllTemplate() {
     );
   }, [list, query]);
 
-  return (
+  return authenticated ? (
     <div className="mx-auto max-w-7xl">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
@@ -116,5 +136,5 @@ export default function AllTemplate() {
         )}
       </section>
     </div>
-  );
+  ) : null
 }

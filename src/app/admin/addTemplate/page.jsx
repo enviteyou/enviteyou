@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import api from "@/api/axios";
 
 const emptyForm = {
@@ -22,6 +23,25 @@ export default function AddTemplate() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get('/auth/me');
+        if (res.status !== 200) return router.push('/admin/signin');
+        const data = res.data;
+        if (!data?.user || data.user.role !== 'admin') {
+          alert('Unauthorized access');
+          return router.push('/admin/signin');
+        }
+        setAuthenticated(true);
+      } catch (err) {
+        router.push('/admin/signin');
+      }
+    })();
+  }, [router]);
 
   function update(k, v) {
     setForm((s) => ({ ...s, [k]: v }));
@@ -52,7 +72,7 @@ export default function AddTemplate() {
     }
   }
 
-  return (
+  return authenticated ? (
     <div className="mx-auto max-w-6xl">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -79,7 +99,15 @@ export default function AddTemplate() {
             <div className="grid gap-5 sm:grid-cols-2">
               <label className={labelClass}>
                 Category
-                <input required placeholder="Classic Indian wedding" value={form.category} onChange={(e) => update("category", e.target.value)} className={inputClass} />
+                <select required value={form.category} onChange={(e) => update("category", e.target.value)} className={inputClass}>
+                  <option value="">Select category</option>
+                  <option value="Hindu Weddings">Hindu Weddings</option>
+                  <option value="Christian Weddings">Christian Weddings</option>
+                  <option value="Sikh Weddings">Sikh Weddings</option>
+                  <option value="Muslim Weddings">Muslim Weddings</option>
+                  <option value="South-Indian Weddings">South-Indian Weddings</option>
+                  <option value="Save the date">Save the date</option>
+                </select>
               </label>
               <label className={labelClass}>
                 Pricing label
@@ -128,5 +156,5 @@ export default function AddTemplate() {
         </aside>
       </form>
     </div>
-  );
+  ) : null;
 }

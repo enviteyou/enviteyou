@@ -88,7 +88,15 @@ export default function UpdateTemplate() {
             <div className="grid gap-5 sm:grid-cols-2">
               <label className={labelClass}>
                 Category
-                <input required placeholder="Category" value={form.category || ""} onChange={(e) => update("category", e.target.value)} className={inputClass} />
+                <select required value={form.category || ""} onChange={(e) => update("category", e.target.value)} className={inputClass}>
+                  <option value="">Select category</option>
+                  <option value="Hindu Weddings">Hindu Weddings</option>
+                  <option value="Christian Weddings">Christian Weddings</option>
+                  <option value="Sikh Weddings">Sikh Weddings</option>
+                  <option value="Muslim Weddings">Muslim Weddings</option>
+                  <option value="South-Indian Weddings">South-Indian Weddings</option>
+                  <option value="Save the date">Save the date</option>
+                </select>
               </label>
               <label className={labelClass}>
                 Pricing label
