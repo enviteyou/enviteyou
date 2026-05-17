@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import TemplateDetail from "@/components/TemplateDetail";
 import { getTemplateById } from "@/lib/templates";
+import api from "@/api/axios";
 
 export default function InviteBySlugPage() {
   const params = useParams();
@@ -17,20 +18,14 @@ export default function InviteBySlugPage() {
     setLoading(true);
     setError("");
 
-    const backend = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-    fetch(`${backend}/invitations/${encodeURIComponent(slug)}`)
-      .then(async (res) => {
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || `Failed to fetch invitation (${res.status})`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setInvitation(data?.data || null);
+    api
+      .get(`/invitations/${encodeURIComponent(slug)}`)
+      .then((res) => {
+        setInvitation(res?.data?.data || null);
       })
       .catch((err) => {
-        setError(err.message || "Unable to load invitation");
+        const message = err?.response?.data?.message || err.message || "Unable to load invitation";
+        setError(message);
       })
       .finally(() => setLoading(false));
   }, [slug]);
