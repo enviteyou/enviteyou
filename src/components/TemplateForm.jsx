@@ -1,12 +1,57 @@
 "use client";
 
 import api from "@/api/axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const tabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"];
 const eventOptions = ["Mehendi", "Haldi", "Sagan", "Cocktail", "Sangeet", "Baraat", "Shaadi", "Reception"];
-const infoCards = ["Dress Code", "Parking", "Wedding Hashtag", "Venue"];
+const defaultEventDetail = {
+  functionName: "",
+  date: "",
+  time: "",
+  venue: "",
+  oneLiner: "",
+  mapsLink: "",
+};
+const eventIcons = {
+  Mehendi: "🌸",
+  Haldi: "🌼",
+  Sagan: "🪔",
+  Cocktail: "🥂",
+  Sangeet: "🎶",
+  Baraat: "🐎",
+  Shaadi: "🌺",
+  Reception: "🕊️",
+};
+const infoCards = [
+  "Dress Code",
+  "Parking",
+  "Wedding Hashtag",
+  "Venue",
+  "Gift Registry",
+  "Stay Options",
+  "Food",
+  "Weather",
+  "Transport",
+  "Kids Welcome",
+  "Photography",
+  "WhatsApp Group",
+];
+const personalityGroups = [
+  {
+    title: "How did you meet your partner?",
+    options: ["Through family / arranged", "At work or college", "Through common friends", "A spontaneous moment"],
+  },
+  {
+    title: "What best describes you together?",
+    options: ["Foodies — always hunting the next meal", "Wanderers — travel is our love language", "Movie-buffs — cozy evenings are our thing", "Social butterflies — we love a good party"],
+  },
+  {
+    title: "How would friends describe your love?",
+    options: ["Hopeless romantics", "Best friends who fell in love", "Opposites who complete each other", "Power couple"],
+  },
+];
 
 const initialForm = {
   bride: "",
@@ -23,8 +68,23 @@ const initialForm = {
   brideMother: "",
   groomFather: "",
   groomMother: "",
-  parentsOrder: "Bride family first",
+  grandparentsEnabled: false,
+  brideGrandfather: "",
+  brideGrandmother: "",
+  groomGrandfather: "",
+  groomGrandmother: "",
+  parentsOrder: "Bride's family first",
   selectedEvents: ["Mehendi", "Shaadi", "Reception"],
+  eventDetails: {
+    Mehendi: { ...defaultEventDetail, functionName: "Mehendi" },
+    Haldi: { ...defaultEventDetail, functionName: "Haldi" },
+    Sagan: { ...defaultEventDetail, functionName: "Sagan" },
+    Cocktail: { ...defaultEventDetail, functionName: "Cocktail" },
+    Sangeet: { ...defaultEventDetail, functionName: "Sangeet" },
+    Baraat: { ...defaultEventDetail, functionName: "Baraat" },
+    Shaadi: { ...defaultEventDetail, functionName: "Shaadi" },
+    Reception: { ...defaultEventDetail, functionName: "Reception" },
+  },
   eventDate: "",
   eventTime: "",
   eventVenue: "",
@@ -32,8 +92,14 @@ const initialForm = {
   storyEnabled: true,
   storyTitle: "Our Story",
   story: "",
+  personalityAnswers: {},
+  generatedTags: "",
+  customHashtags: "",
+  extraTags: "",
   galleryEnabled: true,
   coverImage: "",
+  galleryLayout: 4,
+  galleryImages: [],
   galleryNote: "",
   infoEnabled: true,
   dressCode: "",
@@ -69,7 +135,17 @@ function ToggleRow({ title, note, checked, name, onChange }) {
         <span className="block text-sm font-medium text-black">{title}</span>
         {note ? <span className="mt-1 block text-xs leading-5 text-black/45">{note}</span> : null}
       </span>
-      <input className="h-5 w-5 accent-black" type="checkbox" name={name} checked={checked} onChange={onChange} />
+      <span className="relative inline-flex h-8 w-14 items-center shrink-0">
+        <input
+          className="peer absolute inset-0 z-10 cursor-pointer opacity-0"
+          type="checkbox"
+          name={name}
+          checked={Boolean(checked)}
+          onChange={onChange}
+        />
+        <span className="pointer-events-none absolute inset-0 rounded-full border border-black/15 bg-black/10 transition peer-checked:border-black/35 peer-checked:bg-black/55" />
+        <span className="pointer-events-none absolute left-1 h-6 w-6 rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.18)] transition-transform duration-200 peer-checked:translate-x-6" />
+      </span>
     </label>
   );
 }
@@ -91,9 +167,20 @@ export { initialForm };
 
 export default function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab }) {
   const router = useRouter();
-  const [selectedInfoCard, setSelectedInfoCard] = useState("Dress Code");
+  const [selectedInfoCard, setSelectedInfoCard] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState("Mehendi");
+  const [showCustomModal, setShowCustomModal] = useState(false);
+  const [customEventName, setCustomEventName] = useState("");
+  const [storySubTab, setStorySubTab] = useState("Personality Tags");
   const [form, setForm] = useState(initialForm);
+
+  // ensure infoCardsMap exists in state
+  useEffect(() => {
+    setForm((current) => ({
+      ...current,
+      infoCardsMap: current.infoCardsMap || Object.fromEntries(infoCards.map((c) => [c, ""])),
+    }));
+  }, []);
     
   useEffect(() => {
     if (template?.name) document.title = `${template.name} - Customize`;
@@ -103,13 +190,10 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     onPreviewChange?.(form);
   }, [form, onPreviewChange]);
 
-  const activeEventIncluded = useMemo(
-    () => form.selectedEvents.includes(selectedEvent),
-    [form.selectedEvents, selectedEvent],
-  );
   const activeTabIndex = tabs.indexOf(activeTab);
   const isFirstTab = activeTabIndex === 0;
-  const isLastTab = activeTabIndex === tabs.length - 1;
+  // Treat RSVP as the final step for saving details (show Save on RSVP)
+  const isLastTab = activeTab === "RSVP";
 
   function update(event) {
     const { name, value, type, checked } = event.target;
@@ -119,15 +203,150 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     }));
   }
 
-  function toggleEvent(eventName) {
-    setSelectedEvent(eventName);
+  function updateInfoCardValue(cardTitle, value) {
     setForm((current) => {
-      const selectedEvents = current.selectedEvents.includes(eventName)
+      const map = { ...(current.infoCardsMap || {}) };
+      map[cardTitle] = value;
+
+      const out = { ...current, infoCardsMap: map };
+      // keep legacy fields in sync for a few known keys
+      if (cardTitle === "Dress Code") out.dressCode = value;
+      if (cardTitle === "Parking") out.parking = value;
+      if (cardTitle === "Wedding Hashtag") out.hashtag = value;
+
+      return out;
+    });
+  }
+
+  function toggleEvent(eventName) {
+    setForm((current) => {
+      const isSelected = current.selectedEvents.includes(eventName);
+      const selectedEvents = isSelected
         ? current.selectedEvents.filter((item) => item !== eventName)
         : [...current.selectedEvents, eventName];
 
-      return { ...current, selectedEvents };
+      const eventDetails = {
+        ...(current.eventDetails || {}),
+      };
+
+      if (!eventDetails[eventName]) {
+        eventDetails[eventName] = { ...defaultEventDetail, functionName: eventName };
+      }
+
+      setSelectedEvent((openEvent) => {
+        if (isSelected && openEvent === eventName) {
+          return selectedEvents[0] || "";
+        }
+        if (!isSelected) {
+          return eventName;
+        }
+        return openEvent;
+      });
+
+      return { ...current, selectedEvents, eventDetails };
     });
+  }
+
+  function updateEventDetail(eventName, field, value) {
+    setForm((current) => ({
+      ...current,
+      eventDetails: {
+        ...(current.eventDetails || {}),
+        [eventName]: {
+          ...defaultEventDetail,
+          functionName: eventName,
+          ...(current.eventDetails?.[eventName] || {}),
+          [field]: value,
+        },
+      },
+    }));
+  }
+
+  function addCustomEvent(eventNameInput) {
+    const eventName = eventNameInput.trim();
+    if (!eventName) return;
+
+    setForm((current) => {
+      const alreadyExists = current.selectedEvents.some(
+        (item) => item.toLowerCase() === eventName.toLowerCase(),
+      );
+
+      if (alreadyExists) {
+        const existingEvent = current.selectedEvents.find(
+          (item) => item.toLowerCase() === eventName.toLowerCase(),
+        );
+        setSelectedEvent(existingEvent || eventName);
+        return current;
+      }
+
+      const selectedEvents = [...current.selectedEvents, eventName];
+      const eventDetails = {
+        ...(current.eventDetails || {}),
+        [eventName]: {
+          ...defaultEventDetail,
+          functionName: eventName,
+        },
+      };
+
+      setSelectedEvent(eventName);
+      return { ...current, selectedEvents, eventDetails };
+    });
+  }
+
+  function selectPersonalityOption(groupTitle, option) {
+    setForm((current) => {
+      const answers = { ...(current.personalityAnswers || {}) };
+      if (answers[groupTitle] === option) {
+        // deselect if same clicked
+        delete answers[groupTitle];
+      } else {
+        answers[groupTitle] = option;
+      }
+
+      const selected = Object.values(answers || []);
+      const generatedTags = (selected || []).slice(0, 5).map((t) => t.split(' ').slice(0,3).join('_')).join(', ');
+
+      return { ...current, personalityAnswers: answers, generatedTags };
+    });
+  }
+
+  function openCustomEventPrompt() {
+    setCustomEventName("");
+    setShowCustomModal(true);
+  }
+
+  function closeCustomEventModal() {
+    setShowCustomModal(false);
+    setCustomEventName("");
+  }
+
+  function confirmCustomEvent() {
+    addCustomEvent(customEventName || "");
+    closeCustomEventModal();
+  }
+
+  async function handleGalleryUpload(e, idx) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const fd = new FormData();
+    fd.append("image", file);
+
+    try {
+      const res = await api.post("/invitations/upload-image", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const url = res.data?.url || res.data?.secure_url || res.data?.data || res.data?.result?.secure_url;
+      if (!url) throw new Error("Upload failed");
+      setForm((current) => {
+        const images = [...(current.galleryImages || [])];
+        images[idx] = url;
+        return { ...current, galleryImages: images };
+      });
+    } catch (err) {
+      console.error("Gallery upload error", err?.message || err);
+      alert("Failed to upload image. Try again.");
+    }
   }
 
   function goToPreviousTab() {
@@ -196,13 +415,13 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
       </div>
 
       <div className="border-b border-black/10 px-5">
-        <div className="flex flex-wrap gap-x-7 gap-y-1">
+        <div className="flex flex-wrap gap-x-7 gap-y-0.5">
           {tabs.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className={`border-b-2 py-4 text-xs font-semibold uppercase tracking-[0.22em] transition ${
+              className={`border-b-2 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] transition ${
                 activeTab === tab
                   ? "border-black text-black"
                   : "border-transparent text-black/35 hover:text-black"
@@ -285,13 +504,50 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
                 <input className={inputClass} name="groomMother" value={form.groomMother} onChange={update} placeholder="Mrs. Sunita Kapoor" />
               </Field>
             </div>
-            <Field label="Parents display order">
-              <select className={inputClass} name="parentsOrder" value={form.parentsOrder} onChange={update}>
-                <option>Bride family first</option>
-                <option>Groom family first</option>
-                <option>Both families together</option>
-              </select>
-            </Field>
+            <div className="flex items-center justify-between gap-4 border border-black/10 bg-white px-4 py-4 sm:px-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">Parents display order</p>
+                <p className="mt-2 text-sm font-medium text-black">{form.parentsOrder}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((current) => ({
+                    ...current,
+                    parentsOrder:
+                      current.parentsOrder === "Bride's family first"
+                        ? "Groom's family first"
+                        : "Bride's family first",
+                  }))
+                }
+                className="border border-black bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-black hover:text-white"
+              >
+                Switch
+              </button>
+            </div>
+            <ToggleRow
+              title="Include Grandparents' Names"
+              note="Shows grandparents on the invite card."
+              name="grandparentsEnabled"
+              checked={form.grandparentsEnabled}
+              onChange={update}
+            />
+            {form.grandparentsEnabled ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Bride's grandfather">
+                  <input className={inputClass} name="brideGrandfather" value={form.brideGrandfather} onChange={update} placeholder="Late Shri Mohan Sharma" />
+                </Field>
+                <Field label="Bride's grandmother">
+                  <input className={inputClass} name="brideGrandmother" value={form.brideGrandmother} onChange={update} placeholder="Late Smt Kamla Sharma" />
+                </Field>
+                <Field label="Groom's grandfather">
+                  <input className={inputClass} name="groomGrandfather" value={form.groomGrandfather} onChange={update} placeholder="Late Shri Vijay Kapoor" />
+                </Field>
+                <Field label="Groom's grandmother">
+                  <input className={inputClass} name="groomGrandmother" value={form.groomGrandmother} onChange={update} placeholder="Late Smt Radha Kapoor" />
+                </Field>
+              </div>
+            ) : null}
           </>
         ) : null}
 
@@ -299,7 +555,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           <>
             <SectionTitle icon="3" title="Celebration Events" />
             <p className="border-l-2 border-black bg-black/3 px-4 py-3 text-sm text-black/60">
-              Select events to include. Click a selected event to edit its detail card.
+              Choose events for your celebration, then open any one section below to edit details.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               {eventOptions.map((eventName) => {
@@ -310,36 +566,148 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
                     type="button"
                     onClick={() => toggleEvent(eventName)}
                     className={`flex items-center justify-between border px-4 py-3 text-left text-sm transition ${
-                      selected ? "border-black bg-black text-white" : "border-black/10 bg-white text-black hover:border-black"
+                      selected ? "border-black bg-black/5 text-black" : "border-black/10 bg-white text-black hover:border-black"
                     }`}
                   >
-                    {eventName}
-                    <span className={`h-5 w-5 rounded-full border ${selected ? "border-white bg-white text-black" : "border-black/20"}`}>
-                      {selected ? "✓" : ""}
+                    <span className="flex items-center gap-2">
+                      <span>{eventIcons[eventName] || "✨"}</span>
+                      <span>{eventName}</span>
+                    </span>
+                    <span
+                      className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs ${
+                        selected ? "border-black bg-black text-white" : "border-black/20 text-transparent"
+                      }`}
+                    >
+                      ✓
                     </span>
                   </button>
                 );
               })}
             </div>
-            <div className="border border-black/10 p-4">
-              <p className="text-sm font-semibold text-black">{selectedEvent} details</p>
-              <p className="mt-1 text-xs text-black/45">
-                {activeEventIncluded ? "This event is visible on the website." : "Select this event above to show it on the website."}
-              </p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <Field label="Date">
-                  <input className={inputClass} name="eventDate" type="date" value={form.eventDate} onChange={update} />
-                </Field>
-                <Field label="Time">
-                  <input className={inputClass} name="eventTime" type="time" value={form.eventTime} onChange={update} />
-                </Field>
-                <Field label="Venue">
-                  <input className={inputClass} name="eventVenue" value={form.eventVenue} onChange={update} placeholder="Event venue" />
-                </Field>
-                <Field label="Notes">
-                  <input className={inputClass} name="eventNotes" value={form.eventNotes} onChange={update} placeholder="Dress code, entry note, etc." />
-                </Field>
+            <button
+              type="button"
+              onClick={openCustomEventPrompt}
+              className="w-full border border-dashed border-black/30 px-5 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-black transition hover:border-black"
+            >
+              + Add Custom Event
+            </button>
+
+            {showCustomModal ? (
+              <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/40" onClick={closeCustomEventModal} />
+                <div className="relative w-full max-w-md rounded bg-white p-6 shadow-lg">
+                  <h4 className="text-sm font-semibold text-black">Add custom event</h4>
+                  <p className="mt-2 text-xs text-black/60">Give your event a name (e.g. "Reception Afterparty").</p>
+                  <div className="mt-4">
+                    <input
+                      className={inputClass}
+                      value={customEventName}
+                      onChange={(e) => setCustomEventName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") confirmCustomEvent();
+                        if (e.key === "Escape") closeCustomEventModal();
+                      }}
+                      placeholder="Event name"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="mt-4 flex justify-end gap-2">
+                    <button type="button" onClick={closeCustomEventModal} className="border px-4 py-2 text-sm">
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={confirmCustomEvent}
+                      className="border border-black bg-black px-4 py-2 text-sm font-semibold text-white"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
               </div>
+            ) : null}
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-black/45">Event details - open one section</p>
+            <div className="grid gap-3">
+              {form.selectedEvents.map((eventName) => {
+                const isOpen = selectedEvent === eventName;
+                const detail = form.eventDetails?.[eventName] || { ...defaultEventDetail, functionName: eventName };
+                return (
+                  <div key={eventName} className="border border-black/10 bg-white">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEvent((current) => (current === eventName ? "" : eventName))}
+                      className="flex w-full items-center justify-between bg-black/5 px-4 py-3 text-sm font-medium text-black"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="text-black/35">☰</span>
+                        <span>{eventIcons[eventName] || "✨"}</span>
+                        <span>{eventName}</span>
+                      </span>
+                      <span className="text-black/55">{isOpen ? "▴" : "▾"}</span>
+                    </button>
+
+                    {isOpen ? (
+                      <div className="grid gap-4 p-4">
+                        <Field label="Function name">
+                          <input
+                            className={inputClass}
+                            value={detail.functionName || eventName}
+                            onChange={(event) => updateEventDetail(eventName, "functionName", event.target.value)}
+                            placeholder={eventName}
+                          />
+                        </Field>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <Field label="Date">
+                            <input
+                              className={inputClass}
+                              type="date"
+                              value={detail.date || ""}
+                              onChange={(event) => updateEventDetail(eventName, "date", event.target.value)}
+                            />
+                          </Field>
+                          <Field label="Time">
+                            <input
+                              className={inputClass}
+                              type="time"
+                              value={detail.time || ""}
+                              onChange={(event) => updateEventDetail(eventName, "time", event.target.value)}
+                            />
+                          </Field>
+                        </div>
+                        <Field label="Venue">
+                          <input
+                            className={inputClass}
+                            value={detail.venue || ""}
+                            onChange={(event) => updateEventDetail(eventName, "venue", event.target.value)}
+                            placeholder="e.g. Garden Pavilion"
+                          />
+                        </Field>
+                        <Field label="One-liner">
+                          <input
+                            className={inputClass}
+                            value={detail.oneLiner || ""}
+                            onChange={(event) => updateEventDetail(eventName, "oneLiner", event.target.value)}
+                            placeholder="Write one short line for this function"
+                          />
+                        </Field>
+                        <Field label="Google maps link (optional)">
+                          <input
+                            className={inputClass}
+                            value={detail.mapsLink || ""}
+                            onChange={(event) => updateEventDetail(eventName, "mapsLink", event.target.value)}
+                            placeholder="https://maps.google.com/..."
+                          />
+                        </Field>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+              {form.selectedEvents.length === 0 ? (
+                <p className="border border-dashed border-black/20 px-4 py-5 text-sm text-black/50">
+                  Select at least one event above to add details.
+                </p>
+              ) : null}
             </div>
           </>
         ) : null}
@@ -348,12 +716,100 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           <>
             <SectionTitle icon="4" title="Couple Story" />
             <ToggleRow title="Show story section" note="Tell guests how your journey began." name="storyEnabled" checked={form.storyEnabled} onChange={update} />
-            <Field label="Story title">
-              <input className={inputClass} name="storyTitle" value={form.storyTitle} onChange={update} />
-            </Field>
-            <Field label="Story text">
-              <textarea className={`${textAreaClass} min-h-36`} name="story" value={form.story} onChange={update} placeholder="Write your love story here..." />
-            </Field>
+
+            <div className="mt-3 flex items-center justify-between">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setStorySubTab("Personality Tags")}
+                  className={`px-3 py-1 text-xs font-semibold border-b-2 transition ${
+                    storySubTab === "Personality Tags" ? "border-black text-black" : "border-transparent text-black/45 hover:text-black"
+                  }`}
+                >
+                  Personality Tags
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStorySubTab("Our Story")}
+                  className={`px-3 py-1 text-xs font-semibold border-b-2 transition ${
+                    storySubTab === "Our Story" ? "border-black text-black" : "border-transparent text-black/45 hover:text-black"
+                  }`}
+                >
+                  Our Story
+                </button>
+              </div>
+            </div>
+
+            {storySubTab === "Personality Tags" ? (
+              <>
+                <p className="mt-3 text-sm text-black/60">Answer these questions — we'll generate personality tags automatically.</p>
+                <div className="grid gap-4 mt-3">
+                  {personalityGroups.map((group) => (
+                    <div key={group.title} className="border border-black/10 bg-white">
+                      <div className="p-4">
+                        <p className="text-sm italic text-black/70">{group.title}</p>
+                        <div className="mt-3 grid gap-2">
+                          {group.options.map((opt) => {
+                            const selected = (form.personalityAnswers || {})[group.title] === opt;
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => selectPersonalityOption(group.title, opt)}
+                                className={`flex items-center text-sm text-left border px-4 py-3 transition ${
+                                  selected ? "border-black bg-black/5 text-black" : "border-black/10 bg-white text-black hover:border-black"
+                                }`}
+                              >
+                                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-black/20 bg-white mr-3">
+                                  {selected ? <span className="h-2 w-2 rounded-full bg-black" /> : null}
+                                </span>
+                                <span>{opt}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  <div>
+                    <p className="text-xs font-semibold text-black/60">Generated tags</p>
+                    <div className="mt-2 border p-3">
+                      {form.generatedTags ? (
+                        <div className="flex flex-wrap gap-2">
+                          {form.generatedTags.split(",").map((tag) => (
+                            <span key={tag} className="rounded border border-black/10 bg-white px-3 py-1 text-sm text-black/70">
+                              {tag.trim()}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-black/60">Answer the quiz above to see your tags</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <Field label="Custom hashtag (overrides main in story)">
+                    <input className={inputClass} name="customHashtags" value={form.customHashtags} onChange={update} placeholder="#YourCustomHashtag" />
+                  </Field>
+
+                  <Field label="Extra tags (comma-separated)">
+                    <input className={inputClass} name="extraTags" value={form.extraTags} onChange={update} placeholder="e.g. Chai lovers, Foodies" />
+                  </Field>
+                </div>
+              </>
+            ) : null}
+
+            {storySubTab === "Our Story" ? (
+              <>
+                <Field label="Story title">
+                  <input className={inputClass} name="storyTitle" value={form.storyTitle} onChange={update} />
+                </Field>
+                <Field label="Story text">
+                  <textarea className={`${textAreaClass} min-h-36`} name="story" value={form.story} onChange={update} placeholder="Write your love story here..." />
+                </Field>
+              </>
+            ) : null}
           </>
         ) : null}
 
@@ -361,12 +817,44 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           <>
             <SectionTitle icon="5" title="Photo Gallery" />
             <ToggleRow title="Show gallery section" note="Add a cover image and notes for your photo gallery." name="galleryEnabled" checked={form.galleryEnabled} onChange={update} />
-            <Field label="Cover image link">
-              <input className={inputClass} name="coverImage" value={form.coverImage} onChange={update} placeholder="https://..." />
-            </Field>
-            <Field label="Gallery note">
-              <textarea className={textAreaClass} name="galleryNote" value={form.galleryNote} onChange={update} placeholder="A small note above your memories..." />
-            </Field>
+            <p className="mt-3 text-sm text-black/60">Photo layout</p>
+            <div className="mt-2 flex gap-3">
+              {[0,1,2,4].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setForm((c)=>({...c, galleryLayout: n}))}
+                  className={`border p-3 text-xs ${form.galleryLayout===n? 'border-black bg-black/5 text-black':'border-black/10 bg-white text-black'}`} 
+                >
+                  {n===0? 'Skip' : `${n} Photo${n>1?'s':''}`}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 grid gap-3">
+              <Field label="Gallery images">
+                <div className={`grid gap-3 ${form.galleryLayout===1? 'grid-cols-1': form.galleryLayout===2? 'grid-cols-2': form.galleryLayout===4? 'grid-cols-2 sm:grid-cols-2': 'hidden'}`}>
+                  {Array.from({length: form.galleryLayout===0?0: form.galleryLayout===1?1: form.galleryLayout===2?2:4}).map((_, idx) => (
+                    <div key={idx} className="border border-dashed border-black/20 p-6 text-center">
+                      {form.galleryImages?.[idx] ? (
+                        <img src={form.galleryImages[idx]} className="mx-auto h-40 object-cover" alt={`photo-${idx+1}`} />
+                      ) : (
+                        <>
+                          <label className="cursor-pointer text-sm text-black/60">
+                            <input type="file" accept="image/*" className="hidden" onChange={(e)=>handleGalleryUpload(e, idx)} />
+                            Click to upload photo {idx+1}
+                          </label>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Field>
+
+              <Field label="Gallery note">
+                <textarea className={textAreaClass} name="galleryNote" value={form.galleryNote} onChange={update} placeholder="A small note above your memories..." />
+              </Field>
+            </div>
           </>
         ) : null}
 
@@ -374,34 +862,42 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           <>
             <SectionTitle icon="6" title="Things to Know" />
             <ToggleRow title="Show things to know section" note="Helpful info cards for your guests." name="infoEnabled" checked={form.infoEnabled} onChange={update} />
-            <p className="border-l-2 border-black bg-black/3 px-4 py-3 text-sm text-black/60">
-              Select an info card and edit its value below.
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {infoCards.map((card) => (
-                <button
-                  key={card}
-                  type="button"
-                  onClick={() => setSelectedInfoCard(card)}
-                  className={`flex items-center justify-between border px-4 py-3 text-sm transition ${
-                    selectedInfoCard === card ? "border-black bg-black text-white" : "border-black/10 text-black hover:border-black"
-                  }`}
-                >
-                  {card}
-                  <span>{selectedInfoCard === card ? "✓" : ""}</span>
-                </button>
-              ))}
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Dress code">
-                <textarea className={textAreaClass} name="dressCode" value={form.dressCode} onChange={update} placeholder="Ethnic Indian attire" />
-              </Field>
-              <Field label="Parking">
-                <textarea className={textAreaClass} name="parking" value={form.parking} onChange={update} placeholder="Complimentary valet parking" />
-              </Field>
-              <Field label="Google maps link">
-                <input className={inputClass} name="mapsLink" value={form.mapsLink} onChange={update} placeholder="https://maps.google.com/..." />
-              </Field>
+            <p className="border-l-2 border-black bg-black/3 px-4 py-3 text-sm text-black/60">Select info cards for guests. Click a selected chip to edit its value.</p>
+            <div className="mt-4 grid gap-3">
+              <div className="grid gap-2 sm:grid-cols-2">
+                {infoCards.map((card) => {
+                  const active = Boolean(form.infoCardsMap?.[card]);
+                  const selected = selectedInfoCard === card;
+                  return (
+                    <div key={card}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedInfoCard(card)}
+                        className={`flex w-full items-center justify-between border px-4 py-3 text-sm transition ${
+                          selected ? "border-black bg-black/5 text-black" : active ? "border-black/10 bg-white text-black" : "border-black/10 bg-white text-black"
+                        }`}
+                      >
+                        <span>{card}</span>
+                        <span className={`h-4 w-4 rounded-full border ${active ? "bg-black text-white border-black" : "border-black/20 bg-white text-transparent"}`}>
+                          ✓
+                        </span>
+                      </button>
+
+                      {selected ? (
+                        <div className="mt-2 border border-black/10 bg-white p-3">
+                          <p className="text-xs font-semibold text-black/60">Edit value</p>
+                          <textarea
+                            className={`${textAreaClass} mt-2`}
+                            value={form.infoCardsMap?.[card] || ""}
+                            onChange={(e) => updateInfoCardValue(card, e.target.value)}
+                            placeholder={`Enter ${card} details`}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </>
         ) : null}

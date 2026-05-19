@@ -75,11 +75,24 @@ export default function TemplateDetail({ template, formData, activeTab }) {
   const secondName = reverseOrder ? brideName : groomName;
   const coupleNames = formData?.bride || formData?.groom ? `${firstName} & ${secondName}` : "Bride & Groom";
   const events = formData?.selectedEvents?.length ? formData.selectedEvents : ["Mehendi", "Shaadi", "Reception"];
-  const hasEventDetails = formData?.eventDate || formData?.eventTime || formData?.eventVenue || formData?.eventNotes;
+  const firstEvent = events[0];
+  const firstEventDetail = formData?.eventDetails?.[firstEvent] || {};
+  const hasEventDetails =
+    firstEventDetail?.date ||
+    firstEventDetail?.time ||
+    firstEventDetail?.venue ||
+    firstEventDetail?.oneLiner ||
+    formData?.eventDate ||
+    formData?.eventTime ||
+    formData?.eventVenue ||
+    formData?.eventNotes;
+  const showGrandparents =
+    Boolean(formData?.grandparentsEnabled) ||
+    Boolean(formData?.brideGrandfather || formData?.brideGrandmother || formData?.groomGrandfather || formData?.groomGrandmother);
   const eventLine = [
-    formData?.eventDate ? formatDate(formData.eventDate) : null,
-    formData?.eventTime || null,
-    formData?.eventVenue || null,
+    firstEventDetail?.date ? formatDate(firstEventDetail.date) : formData?.eventDate ? formatDate(formData.eventDate) : null,
+    firstEventDetail?.time || formData?.eventTime || null,
+    firstEventDetail?.venue || formData?.eventVenue || null,
   ]
     .filter(Boolean)
     .join(" | ");
@@ -88,9 +101,9 @@ export default function TemplateDetail({ template, formData, activeTab }) {
     <article className="rounded border border-black/10 bg-white p-3 shadow-[0_24px_70px_rgba(0,0,0,0.08)] sm:p-5">
       <div
         ref={previewScrollRef}
-        className="mx-auto max-h-[calc(100vh-3rem)] w-full max-w-[390px] overflow-y-auto rounded bg-white shadow-[0_22px_60px_rgba(0,0,0,0.14)] scrollbar-thin scrollbar-track-white scrollbar-thumb-black [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-white [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black"
+        className="mx-auto max-h-[calc(100vh-3rem)] w-full max-w-97.5 overflow-y-auto rounded bg-white shadow-[0_22px_60px_rgba(0,0,0,0.14)] scrollbar-thin scrollbar-track-white scrollbar-thumb-black [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-white [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black"
       >
-        <section ref={essentialsRef} className="relative aspect-[9/12] overflow-hidden bg-black">
+        <section ref={essentialsRef} className="relative aspect-9/12 overflow-hidden bg-black">
           {template.preview ? (
             <img
               src={template.preview}
@@ -164,6 +177,18 @@ export default function TemplateDetail({ template, formData, activeTab }) {
                   </>
                 )}
               </div>
+              {showGrandparents ? (
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <InfoBox
+                    label="Bride's grandparents"
+                    value={`${getValue(formData?.brideGrandfather, "Bride's grandfather")} / ${getValue(formData?.brideGrandmother, "Bride's grandmother")}`}
+                  />
+                  <InfoBox
+                    label="Groom's grandparents"
+                    value={`${getValue(formData?.groomGrandfather, "Groom's grandfather")} / ${getValue(formData?.groomGrandmother, "Groom's grandmother")}`}
+                  />
+                </div>
+              ) : null}
             </section>
           ) : null}
 
@@ -178,9 +203,11 @@ export default function TemplateDetail({ template, formData, activeTab }) {
             </div>
             {hasEventDetails ? (
               <div className="mt-3 border border-black/10 p-3">
-                <p className="text-xs font-semibold text-black">Selected event detail</p>
+                <p className="text-xs font-semibold text-black">{firstEvent || "Selected"} event detail</p>
                 <p className="mt-1 text-xs leading-5 text-black/60">{eventLine || "Event date, time and venue"}</p>
-                {formData?.eventNotes ? <p className="mt-1 text-xs leading-5 text-black/60">{formData.eventNotes}</p> : null}
+                {firstEventDetail?.oneLiner || formData?.eventNotes ? (
+                  <p className="mt-1 text-xs leading-5 text-black/60">{firstEventDetail?.oneLiner || formData?.eventNotes}</p>
+                ) : null}
               </div>
             ) : null}
           </section>
@@ -191,20 +218,74 @@ export default function TemplateDetail({ template, formData, activeTab }) {
               <p className="mt-2 text-xs leading-5 text-black/60">
                 {getValue(formData?.story, "Your story will appear here as soon as you write it.")}
               </p>
+              {formData?.generatedTags || formData?.customHashtags || formData?.extraTags ? (
+                <div className="mt-4 grid gap-2">
+                  {formData?.generatedTags ? (
+                    <div>
+                      <p className="text-xs font-semibold text-black/45">Generated tags</p>
+                      <div className="mt-1 flex flex-wrap gap-2">
+                        {formData.generatedTags.split(",").map((tag) => (
+                          <span key={tag} className="rounded border border-black/10 bg-white px-3 py-1 text-sm text-black/70">
+                            {tag.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {formData?.customHashtags ? (
+                    <div>
+                      <p className="text-xs font-semibold text-black/45">Custom hashtag</p>
+                      <div className="mt-1">
+                        <span className="rounded border border-black/10 bg-white px-3 py-1 text-sm text-black/70">{formData.customHashtags}</span>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {formData?.extraTags ? (
+                    <div>
+                      <p className="text-xs font-semibold text-black/45">Extra tags</p>
+                      <div className="mt-1 flex flex-wrap gap-2">
+                        {formData.extraTags.split(",").map((tag) => (
+                          <span key={tag} className="rounded border border-black/10 bg-white px-3 py-1 text-sm text-black/70">
+                            {tag.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
             </section>
           ) : null}
 
           {formData?.galleryEnabled ? (
             <section ref={galleryRef} className="border-b border-black/10 py-5">
               <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-black/45">Gallery</p>
-              <p className="mt-2 text-xs leading-5 text-black/60">
-                {getValue(formData?.galleryNote, "Your photo gallery note will appear here.")}
-              </p>
-              {formData?.coverImage ? (
-                <div className="relative mt-3 aspect-[4/3] overflow-hidden border border-black/10 bg-black">
-                  <img src={formData.coverImage} alt="Wedding gallery cover" className="h-full w-full object-cover" />
-                </div>
-              ) : null}
+              <p className="mt-2 text-xs leading-5 text-black/60">{getValue(formData?.galleryNote, "Your photo gallery note will appear here.")}</p>
+              <div className="mt-3 grid gap-3">
+                {Array.isArray(formData?.galleryImages) && formData.galleryImages.length > 0 ? (
+                  <div className={formData.galleryLayout === 1 ? "" : formData.galleryLayout === 2 ? "grid grid-cols-2 gap-3" : formData.galleryLayout === 4 ? "grid grid-cols-2 gap-3" : ""}>
+                    {formData.galleryLayout === 1 && formData.galleryImages[0] ? (
+                      <div className="relative aspect-[16/9] overflow-hidden border border-black/10">
+                        <img src={formData.galleryImages[0]} alt="gallery-1" className="h-full w-full object-cover" />
+                      </div>
+                    ) : null}
+
+                    {(formData.galleryLayout === 2 || formData.galleryLayout === 4) ? (
+                      formData.galleryImages.slice(0, formData.galleryLayout).map((src, i) => (
+                        <div key={i} className="relative aspect-[4/3] overflow-hidden border border-black/10">
+                          {src ? <img src={src} alt={`gallery-${i}`} className="h-full w-full object-cover" /> : null}
+                        </div>
+                      ))
+                    ) : null}
+                  </div>
+                ) : formData?.coverImage ? (
+                  <div className="relative mt-3 aspect-4/3 overflow-hidden border border-black/10 bg-black">
+                    <img src={formData.coverImage} alt="Wedding gallery cover" className="h-full w-full object-cover" />
+                  </div>
+                ) : null}
+              </div>
             </section>
           ) : (
             <div ref={galleryRef} />
@@ -212,10 +293,22 @@ export default function TemplateDetail({ template, formData, activeTab }) {
 
           <div ref={infoRef} className="grid grid-cols-2 gap-2 py-5">
             {formData?.infoEnabled ? (
-              <>
-                <InfoBox label="Dress code" value={getValue(formData?.dressCode, "Dress code details")} />
-                <InfoBox label="Parking" value={getValue(formData?.parking, "Parking details")} />
-              </>
+              (() => {
+                const infoMap = formData?.infoCards && typeof formData.infoCards === 'object'
+                  ? formData.infoCards
+                  : null;
+                const entries = infoMap ? Object.entries(infoMap) : [];
+                if (entries.length > 0) {
+                  return entries.slice(0, 4).map(([k, v]) => <InfoBox key={k} label={k} value={getValue(v, "-")} />);
+                }
+
+                return (
+                  <>
+                    <InfoBox label="Dress code" value={getValue(formData?.dressCode, "Dress code details")} />
+                    <InfoBox label="Parking" value={getValue(formData?.parking, "Parking details")} />
+                  </>
+                );
+              })()
             ) : null}
           </div>
 
