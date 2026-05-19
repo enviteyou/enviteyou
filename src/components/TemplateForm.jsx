@@ -1,7 +1,7 @@
 "use client";
 
 import api from "@/api/axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const tabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"];
@@ -167,6 +167,7 @@ export { initialForm };
 
 export default function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab }) {
   const router = useRouter();
+  const formRef = useRef(null);
   const [selectedInfoCard, setSelectedInfoCard] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState("Mehendi");
   const [showCustomModal, setShowCustomModal] = useState(false);
@@ -193,7 +194,8 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
   const activeTabIndex = tabs.indexOf(activeTab);
   const isFirstTab = activeTabIndex === 0;
   // Treat MUSIC as the final step for saving details (show Save on MUSIC tab), even though Gallery and Info come after it for users to edit those sections if they want
-  const isLastTab = activeTab === "Music";
+  const isLastTab = activeTab === tabs[tabs.length - 1] || activeTab === "Music";
+  console.log("isLastTab:", isLastTab);
 
   function update(event) {
     const { name, value, type, checked } = event.target;
@@ -351,18 +353,24 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
 
   function goToPreviousTab() {
     if (!isFirstTab) {
-      setActiveTab(tabs[activeTabIndex - 1]);
+      navigateToTab(tabs[activeTabIndex - 1]);
     }
   }
 
   function goToNextTab() {
     if (!isLastTab) {
-      setActiveTab(tabs[activeTabIndex + 1]);
+      navigateToTab(tabs[activeTabIndex + 1]);
     }
   }
 
- async function handleSubmit (event) {
-    event.preventDefault();
+  function navigateToTab(tabName) {
+    setActiveTab(tabName);
+    requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+ async function handleSubmit () {
 
     if (!form.bride || !form.groom || !form.date) {
       alert("Please add both names and the wedding date.");
@@ -398,7 +406,8 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
 
   return (
     <form
-      onSubmit={handleSubmit}
+      ref={formRef}
+      onSubmit={(event) => event.preventDefault()}
       className="overflow-hidden rounded border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]"
     >
       <div className="flex items-center justify-between gap-4 border-b border-black/10 px-5 py-4">
@@ -420,7 +429,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
             <button
               key={tab}
               type="button"
-              onClick={() => setActiveTab(tab)}
+              onClick={() => navigateToTab(tab)}
               className={`border-b-2 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] transition ${
                 activeTab === tab
                   ? "border-black text-black"
@@ -943,7 +952,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           </button>
 
           {isLastTab ? (
-            <button type="submit" className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
+            <button type="button" onClick={handleSubmit} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
               Save Details
             </button>
           ) : (
