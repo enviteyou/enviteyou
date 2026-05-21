@@ -4,74 +4,76 @@ import { useState } from "react";
 
 const faqItems = [
   {
-    question: "Do I need a software to edit these templates?",
+    question:
+      "Do I need to be a tech genius or know how to code to use this?",
     answer:
-      "No. EnviteYou works directly in your browser. You can add your names, event details, venue, photos, and RSVP information without coding or installing software.",
+      "Not at all. If you can order food online or upload a picture to Instagram, you’re overqualified to use our platform. No coding, no software downloads - just a simple, step-by-step form to fill out.",
   },
   {
-    question: "What is EnviteYou?",
+    question: "How exactly do I add my details to the template?",
     answer:
-      "EnviteYou is a digital wedding invitation platform for creating elegant wedding invite websites that can be shared with guests through a simple link.",
+      "We’ve built a form that’s easier to fill out than a coffee shop loyalty card. Just type in your names, event dates, and venue, and watch the website update automatically. (Note: The level of customization depends on the plan you choose!)",
   },
   {
-    question: "Will this open like a website?",
+    question: "Be honest, how long does it take to make?",
     answer:
-      "Yes. Your invite opens like a mobile-friendly website in any modern browser, so guests do not need to download an app.",
+      "About 10 minutes. Honestly, it will probably take you longer to agree on which couple's photo to upload than it will to actually create the invite.",
   },
   {
-    question: "What if I want to separate guests to separate events?",
+    question: "Will my grandparents actually know how to open this?",
     answer:
-      "Higher-tier plans can support multiple event sections and guest-specific RSVP flows, depending on the setup you choose.",
+      "Absolutely. If they can forward a floral 'Good Morning' message on WhatsApp, they can open this invite. There are no apps to install or passwords to forget - just one link that opens beautifully on any smartphone.",
   },
   {
-    question: "How do I get started?",
+    question:
+      "Why should I use this instead of just sending a WhatsApp video?",
     answer:
-      "Choose a template or pricing plan, complete your purchase, and add your wedding details. Your digital invitation link is delivered online.",
+      "Because a 50MB video eats up phone storage, buffers endlessly on bad Wi-Fi, and is impossible to search when your uncle is lost on the highway. Our invites load instantly and feature clickable Google Maps links, so your guests actually find the venue on time.",
   },
   {
-    question: "How long does it take to edit the invite?",
+    question: "Can I add my own background music?",
     answer:
-      "Most couples can complete the basic invite details in minutes. Custom or bespoke experiences can take longer depending on the design scope.",
+      "Yes! Because an Indian wedding without a dramatic background score is just a corporate meeting. Pick a track from our library or upload your favorite .MP3 file to set the perfect mood.",
   },
   {
-    question: "What happens after I buy the template?",
+    question: "Will I get a custom web link (domain name)?",
     answer:
-      "After successful payment, you receive digital access to your purchased invitation template or setup flow.",
+      "Our standard plans come with a clean, free link (like enviteyou.com/invitations/RahulWedsPriya). Want to go full VIP? Upgrade to our custom plan to get your very own domain (like RahulWedsPriya.in), subject to availability and pricing.",
   },
   {
-    question: "Can I purchase now and use it later?",
+    question:
+      "The Baraat time just changed. Can I edit the invite after I’ve shared the link?",
     answer:
-      "Yes. You can purchase your digital invite and complete the details when you are ready.",
+      "Because the Baraat is never actually on time, right? Our higher-tier plans allow you to make live edits even after the link is sent out. Our basic plan locks the details once generated—so choose based on how unpredictable your schedule is!",
   },
   {
-    question: "Can I purchase it using my phone?",
+    question:
+      "Is there an expiry date? Will the website disappear after the wedding?",
     answer:
-      "Yes. EnviteYou is built mobile-first, so you can browse, purchase, and manage your invite from your phone.",
+      "No expiry date here. You get lifetime access! Your website stays online as a digital memory box of your big day, long after the last piece of mithai is eaten.",
   },
   {
-    question: "Is there an expiry to the template?",
+    question:
+      "Do you make completely custom, one-of-a-kind invites from scratch?",
     answer:
-      "Template access depends on your selected plan and purchase terms. Your invite is delivered digitally after payment.",
+      "We do. For couples who want a website as unique as their love story, we offer a bespoke service. No templates, no pre-made libraries - just a premium, custom-designed experience that includes a proper domain name.",
   },
   {
-    question: "Will I need to buy a domain name?",
+    question:
+      "How do I share this with my guests, and how do they view it?",
     answer:
-      "No, standard plans include a clean EnviteYou link. Custom domains can be discussed for bespoke plans.",
+      "We give you one simple link. Drop it in WhatsApp, email it, or text it. Guests just tap the link and it instantly opens like a premium website in their phone’s browser - no zooming or squinting required.",
   },
   {
-    question: "How do I add my details in the template?",
+    question: "What is your refund policy?",
     answer:
-      "You add your details through a simple form or guided setup. The invitation content is then updated for your guests to view.",
+      "Since this is a digital product with instant access, all sales are final and non-refundable. Please double-check the template details before you hit buy. If you’re unsure about anything, just drop us a message before checking out!",
   },
   {
-    question: "Can I add music?",
+    question:
+      "I love these templates. Can I buy them and re-sell them to others?",
     answer:
-      "Yes, music can be added depending on the selected plan and browser support for guest playback.",
-  },
-  {
-    question: "What's included in the template?",
-    answer:
-      "Templates can include event details, couple story, gallery, venue links, RSVP, schedule, and mobile sharing features depending on your plan.",
+      "We’ll keep this one strictly legal: No. These templates are protected under copyright and intellectual property laws. Reselling, modifying, or reverse-engineering them is strictly prohibited and will lead to serious legal action. We put a lot of heart into designing these - please don't make us send our lawyers.",
   },
 ];
 
@@ -116,7 +118,7 @@ export default function FaqAccordion() {
   return (
     <section id="faq" className="bg-white text-black">
       <div className="mx-auto max-w-2xl px-5 py-18 sm:px-8 lg:py-16">
-        <h2 className="text-center text-3xl font-semibold tracking-tight sm:text-3xl">Questions ? Answers.</h2>
+        <h2 className="text-center text-3xl font-semibold tracking-tight sm:text-3xl">Questions ? <br /> Answers.</h2>
 
         <div className="mt-8">
           {faqItems.map((item, index) => (

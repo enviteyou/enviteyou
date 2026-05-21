@@ -111,10 +111,10 @@ export default function Hero() {
 
       <div className="mx-auto flex  w-full flex-col px-5 pb-0 md:px-10">
         <div className="order-2 flex flex-col items-center justify-start pt-8 text-center md:order-1 md:pt-12">
-          <p className="text-xs font-semibold uppercase tracking-widest text-black/50">Pay once. No expiry. No hidden fees.</p>
+          <p className="text-xs font-semibold  tracking-widest text-black/50">Pay once. No expiry. No hidden fees.</p>
 
-          <h1 className="mt-2 max-w-5xl text-4xl font-bold leading-tight tracking-tight text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
-            Build Your Wedding Website.
+          <h1 className="mt-2 max-w-5xl text-2xl font-bold leading-tight tracking-tight text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
+            Build Your Wedding Website,
             <br />
             <span className="bg-linear-to-r from-black via-black/80 to-black/60 bg-clip-text text-transparent">
               Online Forever.
@@ -169,7 +169,7 @@ export default function Hero() {
                 New Releases
               </div>
             </div>
-            <h2 className="mx-auto max-w-3xl text-center text-2xl font-bold leading-tight tracking-tight text-black sm:text-3xl">
+            <h2 className="mx-auto max-w-3xl text-center text-xl font-bold leading-tight tracking-tight text-black sm:text-3xl">
               Built for your big day. Simple to edit. Just type, save, and share.
             </h2>
             <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-black/60">
@@ -177,13 +177,13 @@ export default function Hero() {
             </p>
           </div>
           <div className="mx-auto w-full max-w-6xl border-t border-black/10 px-5 py-6 md:px-10">
-            <p className="text-center text-sm font-medium text-black/60">Select Category</p>
-              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:flex md:flex-wrap md:justify-center md:gap-3">
+            <p className="text-left text-sm font-medium text-black/60 md:text-center">Select Category</p>
+            <div className="mt-4 flex flex-wrap justify-start gap-2 md:justify-center md:gap-3">
               {CATEGORIES.map((category, index) => (
                 <button
                   key={category}
                   type="button"
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition duration-300 md:px-5 md:py-2.5 md:text-base ${
+                  className={`inline-flex w-fit shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition duration-300 md:px-5 md:py-2.5 md:text-base ${
                     index === 0
                       ? "bg-black text-white shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
                       : "bg-white text-black/85 shadow-[0_10px_24px_rgba(0,0,0,0.06)] ring-1 ring-black/8 hover:-translate-y-0.5 hover:ring-black/15"
