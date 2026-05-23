@@ -7,7 +7,9 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
       },
     ],
+  domains: ["images.unsplash.com"],
   },
 };
 
 export default nextConfig;
+  

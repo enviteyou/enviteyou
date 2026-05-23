@@ -82,6 +82,10 @@ export default function UpdateTemplate() {
 
           <div className="mt-6 grid gap-5">
             <label className={labelClass}>
+              Template ID
+              <input value={form.templateId || ""} onChange={(e) => update("templateId", e.target.value)} className={inputClass} />
+            </label>
+            <label className={labelClass}>
               Title
               <input required placeholder="Template title" value={form.title || ""} onChange={(e) => update("title", e.target.value)} className={inputClass} />
             </label>

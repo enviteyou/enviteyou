@@ -16,6 +16,7 @@ export function normalizeTemplate(template, index = 0) {
   if (!template) return null;
 
   const id = template.id || template._id || String(index);
+  const templateId = String(template.templateId || template.id || template._id || index + 1);
   const name = template.title?.trim() || template.name?.trim() || "Wedding Template";
   const description = template.description?.trim() || "A premium digital invitation template.";
   const category = template.category?.trim() || "Wedding";
@@ -25,6 +26,7 @@ export function normalizeTemplate(template, index = 0) {
   return {
     ...template,
     id,
+    templateId,
     name,
     title: name,
     description,
@@ -72,7 +74,7 @@ export async function getTemplateById(id) {
 
   return (
     templates.find((template) => {
-      const candidates = [template.id, template._id, template.title, template.name, template.category];
+      const candidates = [template.templateId, template.id, template._id, template.title, template.name, template.category];
       return candidates.some((value) => String(value).toLowerCase().trim() === normalizedId);
     }) || null
   );

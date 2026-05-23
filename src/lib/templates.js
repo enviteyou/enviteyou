@@ -1,6 +1,7 @@
 export const templates = [
   {
-    id: "city",
+    id: "1",
+    templateId: "1",
     name: "City Lights",
     price: "INR 3,999",
     tag: "Modern reception",
@@ -12,7 +13,8 @@ export const templates = [
     features: ["RSVP ready", "Event schedule", "Google Maps venue link", "Photo gallery"],
   },
   {
-    id: "beach",
+    id: "2",
+    templateId: "2",
     name: "Coastal Vows",
     price: "INR 3,999",
     tag: "Soft and romantic",
@@ -25,7 +27,8 @@ export const templates = [
     // category , verndor pricing ,regular price ,sell price , vendor price,title description,featuredImage
   },
   {
-    id: "mountain",
+    id: "3",
+    templateId: "3",
     name: "Heritage Mahal",
     price: "INR 3,999",
     tag: "Classic Indian wedding",
@@ -41,5 +44,5 @@ export const templates = [
 export function getTemplateById(id) {
   if (!id) return null;
   const normalized = String(id).toLowerCase().trim();
-  return templates.find((template) => template.id.toLowerCase() === normalized) || null;
+  return templates.find((template) => String(template.templateId || template.id).toLowerCase() === normalized) || null;
 }

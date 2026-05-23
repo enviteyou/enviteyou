@@ -6,7 +6,7 @@ import { getTemplates } from "@/lib/templateService";
 
 function TemplateCard({ template }) {
   return (
-    <Link href={`/templateInfo/${template.id}`} className="shrink-0">
+    <Link href={`/templateInfo/${template.templateId || template.id}`} className="shrink-0">
       <div className="block w-64 rounded-lg border border-black/10 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-transform hover:-translate-y-1">
         <div className="h-40 w-full overflow-hidden rounded-t-lg bg-black">
           {template.preview ? (
@@ -60,7 +60,7 @@ export default function Templates() {
         ) : state.templates.length ? (
           <div className="mt-4 flex w-full gap-4 overflow-x-auto py-3">
             {state.templates.map((template) => (
-              <TemplateCard key={template.id} template={template} />
+              <TemplateCard key={template.templateId || template.id} template={template} />
             ))}
           </div>
         ) : (

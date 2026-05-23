@@ -24,7 +24,7 @@ export default function TemplatePage() {
 
         const normalizedId = String(id).toLowerCase().trim();
         const template = templates.find((item) => {
-          const candidates = [item.id, item._id, item.title, item.name, item.category];
+          const candidates = [item.templateId, item.id, item._id, item.title, item.name, item.category];
           return candidates.some((value) => String(value).toLowerCase().trim() === normalizedId);
         }) || null;
 
@@ -76,7 +76,7 @@ export default function TemplatePage() {
 
           <div className="grid gap-4 sm:grid-cols-3">
             {templates.map((t) => (
-              <Link key={t.id} href={`/templateInfo/${t.id}`} className="rounded-lg border p-4 text-sm hover:shadow">
+              <Link key={t.templateId || t.id} href={`/templateInfo/${t.templateId || t.id}`} className="rounded-lg border p-4 text-sm hover:shadow">
                 <p className="font-semibold">{t.name}</p>
                 <p className="text-xs text-black/60">{t.tag}</p>
               </Link>

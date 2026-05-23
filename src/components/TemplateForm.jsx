@@ -379,7 +379,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     } 
     const res = await api.post("/invitations/create", {
       ...form,
-      templateId: template?.id,
+      templateId: template?.templateId || template?.id,
     });
     console.log(res.data);
     if (res.data?.success) {
@@ -395,7 +395,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         } catch (e) {
           // ignore
         }
-        router.push(invitePath);
+        router.replace(invitePath);
       } else {
         alert("Invitation created successfully. Unable to determine invite URL.");
       }
@@ -442,7 +442,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         </div>
       </div>
 
-      <div className="grid gap-6 p-5 sm:p-6">
+      <div className="grid gap-6 p-5 sm:p-6 max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-thin scrollbar-track-white scrollbar-thumb-black [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full">
         {activeTab === "Essentials" ? (
           <>
             <SectionTitle icon="1" title="Wedding Essentials" />

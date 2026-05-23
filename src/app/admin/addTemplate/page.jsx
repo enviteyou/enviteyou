@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import api from "@/api/axios";
 
 const emptyForm = {
+  templateId: "",
   category: "",
   pricing: "",
   regularPrice: "",
@@ -92,6 +93,10 @@ export default function AddTemplate() {
           </div>
 
           <div className="mt-6 grid gap-5">
+            <label className={labelClass}>
+              Template ID
+              <input placeholder="1" value={form.templateId} onChange={(e) => update("templateId", e.target.value)} className={inputClass} />
+            </label>
             <label className={labelClass}>
               Title
               <input required placeholder="Heritage Mahal" value={form.title} onChange={(e) => update("title", e.target.value)} className={inputClass} />
