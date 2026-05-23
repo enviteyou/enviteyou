@@ -1160,17 +1160,22 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                 {/* ------------------------------------------------------------- */}
                 {/* FULL FORM DETAILS SECTION */}
                 {/* ------------------------------------------------------------- */}
-                <section className="border-t border-[#d1ab75] bg-[#fdf9ef] px-4 py-16 text-[#3c261f]">
-                    <div className="mx-auto flex max-w-4xl flex-col gap-8">
+                <section className="border-t border-[#d1ab75]/50 bg-[radial-gradient(circle_at_top,rgba(255,250,243,0.96),rgba(253,249,239,1)_42%,rgba(246,236,220,0.96))] px-4 py-16 text-[#3c261f]">
+                    <div className="mx-auto flex max-w-5xl flex-col gap-8">
                         <div className="text-center">
-                            <p className="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-[#7d2432]">All form details</p>
-                            <h3 className="mt-3 text-3xl font-serif italic text-[#3c261f] md:text-4xl">Everything you added in the form</h3>
-                            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#5a3a31]">
+                            <div className="inline-flex items-center gap-3 rounded-full border border-[#d1ab75]/40 bg-white/80 px-4 py-2 shadow-[0_10px_24px_rgba(125,36,50,0.06)]">
+                                <span className="size-2 rounded-full bg-[#7d2432]"></span>
+                                <p className="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-[#7d2432]">All form details</p>
+                            </div>
+                            <h3 className="mx-auto mt-5 max-w-full text-2xl font-serif text-[#3c261f] leading-tight sm:text-3xl md:text-4xl whitespace-nowrap truncate">
+                                Everything you added in the form
+                            </h3>
+                            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#5a3a31] sm:text-[15px]">
                                 This section mirrors the remaining form data so the template shows the full invitation content.
                             </p>
                         </div>
 
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-5 lg:grid-cols-2 xl:gap-6">
                             <DetailCard title="Basics" icon="✦">
                                 <DetailItem label="Countdown" value={formData?.countdown ? "Enabled" : "Disabled"} />
                                 <DetailItem label="Invitation" value={formData?.invitation ? "Enabled" : "Disabled"} />
@@ -1451,12 +1456,11 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
 
 function DetailCard({ title, icon, children }) {
     return (
-        <div className="border border-[#d1ab75]/40 bg-white/80 p-5 shadow-[0_12px_40px_rgba(125,36,50,0.08)] backdrop-blur-sm">
-            <div className="mb-4 flex items-center gap-3 border-b border-[#d1ab75]/30 pb-3">
-                <span className="flex size-8 items-center justify-center rounded-full border border-[#d1ab75]/40 bg-[#fdf9ef] text-sm text-[#7d2432]">{icon}</span>
-                <h4 className="text-sm font-bold uppercase tracking-[0.25em] text-[#7d2432]">{title}</h4>
+        <div className="group overflow-hidden rounded-3xl border border-[#d1ab75]/35 bg-white/90 shadow-[0_18px_50px_rgba(125,36,50,0.08)] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-0.5">
+            <div className="border-b border-[#d1ab75]/25 bg-linear-to-r from-[#fffaf4] via-white to-[#fff7ef] px-5 py-4 text-center">
+                <h4 className="mx-auto text-sm font-bold uppercase tracking-[0.25em] text-[#7d2432]">{title}</h4>
             </div>
-            <div className="space-y-2">{children}</div>
+            <div className="space-y-3 px-5 py-5">{children}</div>
         </div>
     );
 }
@@ -1465,9 +1469,13 @@ function DetailItem({ label, value }) {
     if (!value) return null;
 
     return (
-        <div className="flex items-start justify-between gap-3 text-sm leading-6 text-[#5a3a31]">
-            {label ? <span className="shrink-0 font-semibold text-[#3c261f]">{label}</span> : <span className="shrink-0 text-[#3c261f]">•</span>}
-            <span className="text-right">{value}</span>
+        <div className="rounded-2xl bg-[#fdf9ef]/60 px-3 py-3 text-sm leading-6 text-[#5a3a31]">
+            {label ? (
+                <span className="block text-[10px] font-bold uppercase tracking-[0.22em] text-[#7d2432]">{label}</span>
+            ) : (
+                <span className="block text-[#3c261f]">•</span>
+            )}
+            <span className="mt-1 block whitespace-normal wrap-break-word text-[#3c261f]">{value}</span>
         </div>
     );
 }
