@@ -53,7 +53,8 @@ export async function getTemplates() {
     credentials:"include",
     next: { revalidate: 120 }, // Revalidate every 60 seconds
   });
-  const rawTemplates = Array.isArray(response?.data) ? response.data : Array.isArray(response?.data?.data) ? response.data.data : [];
+  const data = await response.json();
+  const rawTemplates = Array.isArray(data) ? data : Array.isArray(data?.data) ?   data.data : [];
 
   return normalizeTemplates(rawTemplates);
 }
