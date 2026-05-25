@@ -112,11 +112,11 @@ export default function Hero() {
       <div className="mx-auto flex  w-full flex-col px-5 pb-0 md:px-10">
         <div className="order-2 flex flex-col items-center justify-start pt-8 text-center md:order-1 md:pt-12">
           <p className="text-xs font-semibold  tracking-widest text-black/50">Pay once. No expiry. No hidden fees.</p>
-
-          <h1 className="mt-2 max-w-5xl text-2xl font-bold leading-tight tracking-tight text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
+           
+          <h1 className="mt-2 max-w-5xl text-xl font-bold leading-tight tracking-normal text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
             Build Your Wedding Website,
-            <br />
-            <span className="bg-linear-to-r from-black via-black/80 to-black/60 bg-clip-text text-transparent">
+            
+            <span className="mt-2 max-w-5xl text-xl font-bold leading-tight tracking-normal text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
               Online Forever.
             </span>
           </h1>

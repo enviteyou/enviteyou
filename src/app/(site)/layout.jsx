@@ -69,13 +69,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html
-      lang="en"
-      className={cn("h-full antialiased", "font-mono", jetbrainsMono.variable, inter.variable, roboto.variable, playwriteCa.variable)}
+    <div
+      className={cn(
+        "min-h-full overflow-x-hidden bg-white text-black antialiased",
+        "font-inter",
+        "font-mono",
+        jetbrainsMono.variable,
+        inter.variable,
+        roboto.variable,
+        playwriteCa.variable
+      )}
     >
-    
-      <body className="min-h-full overflow-x-hidden bg-white text-black font-inter">
-          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -94,8 +99,7 @@ export default function RootLayout({ children }) {
         <Header />
         <div className="min-h-screen">{children}</div>
         <Footer />
-        </GoogleOAuthProvider>
-      </body>
-    </html>
+      </GoogleOAuthProvider>
+    </div>
   );
 }

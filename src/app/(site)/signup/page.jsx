@@ -1,26 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import api from "@/api/axios";
 
-const ROLES = {
-	customer: "user",
-	wholesaler: "wholesaler",
-};
-
 export default function SignupPage() {
-	const [activeTab, setActiveTab] = useState("customer");
+	// role selection removed — default to normal "user" role
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
 		password: "",
+		number:"",
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
 
-	const role = useMemo(() => ROLES[activeTab], [activeTab]);
+	const role = "user";
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
@@ -30,11 +26,7 @@ export default function SignupPage() {
 		}));
 	};
 
-	const switchTab = (tabKey) => {
-		setActiveTab(tabKey);
-		setError("");
-		setSuccess("");
-	};
+	// role selection removed; kept for compatibility
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -55,6 +47,7 @@ export default function SignupPage() {
 				name: "",
 				email: "",
 				password: "",
+				number:"",
 			});
 		} catch (requestError) {
 			const message =
@@ -72,32 +65,7 @@ export default function SignupPage() {
 			<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
 				<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black">EnviteYou Account</p>
 				<h1 className="mt-2 text-3xl font-bold tracking-tight text-black">Create an account</h1>
-				<p className="mt-1 text-sm text-black/65">Choose your account type before signing up.</p>
-
-				<div className="mt-6 grid grid-cols-2 gap-2 rounded-2xl border border-black/10 bg-white p-1.5">
-					<button
-						type="button"
-						onClick={() => switchTab("customer")}
-						className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
-							activeTab === "customer"
-								? "bg-black text-white shadow"
-								: "text-black/70 hover:bg-black/5"
-						}`}
-					>
-						Customer
-					</button>
-					<button
-						type="button"
-						onClick={() => switchTab("wholesaler")}
-						className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
-							activeTab === "wholesaler"
-								? "bg-black text-white shadow"
-								: "text-black/70 hover:bg-black/5"
-						}`}
-					>
-						Wholesaler
-					</button>
-				</div>
+				<p className="mt-1 text-sm text-black/65">Create a normal EnviteYou account.</p>
 
 				<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 					<div>
@@ -133,6 +101,22 @@ export default function SignupPage() {
 					</div>
 
 					<div>
+						<label htmlFor="number" className="mb-1 block text-sm font-medium text-black/75">
+							Phone Number
+						</label>
+						<input
+							id="number"
+							name="number"
+							type="tel"
+							required
+							value={formData.number}
+							onChange={handleChange}
+							className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
+							placeholder="Your phone number"
+						/>
+					</div>
+
+					<div>
 						<label htmlFor="password" className="mb-1 block text-sm font-medium text-black/75">
 							Password
 						</label>
@@ -149,9 +133,7 @@ export default function SignupPage() {
 						/>
 					</div>
 
-					<div className="rounded-xl border border-dashed border-black/15 bg-black/3 px-3 py-2 text-xs font-medium text-black/70">
-						Selected role: <span className="font-bold uppercase">{role}</span>
-					</div>
+					{/* role is fixed to `user` — no selection UI */}
 
 					{error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
 					{success ? <p className="text-sm font-medium text-emerald-700">{success}</p> : null}

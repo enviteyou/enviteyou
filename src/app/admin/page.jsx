@@ -70,6 +70,9 @@ export default function AdminDashboard() {
             <a href="/admin/allTemplate" className="border border-black bg-white px-5 py-3 text-center text-sm font-semibold text-black transition hover:bg-black hover:text-white">
               View Catalog
             </a>
+            <a href="/admin/manageVendor" className="border border-black bg-white px-5 py-3 text-center text-sm font-semibold text-black transition hover:bg-black hover:text-white">
+              Manage Vendors
+            </a>
           </div>
         </div>
       </section>

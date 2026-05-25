@@ -3,12 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import api from "@/api/axios";
-import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 
-export default function SigninPage() {
-	// role selection removed — default to normal "user" role
-  const router = useRouter();
+export default function VendorSigninPage() {
+	const router = useRouter();
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -16,8 +14,6 @@ export default function SigninPage() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
-
-	const role = "user";
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
@@ -27,8 +23,6 @@ export default function SigninPage() {
 		}));
 	};
 
-	// role selection removed; kept for compatibility
-
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		setError("");
@@ -36,20 +30,15 @@ export default function SigninPage() {
 		setIsSubmitting(true);
 
 		try {
-			const payload = {
-				...formData,
-				role,
-			};
-
-			const response = await api.post("/auth/login", payload);
+			const response = await api.post("/auth/vendor/login", formData);
 			const token = response?.data?.token;
-			const message = token ? "Login successful." : response?.data?.message || "Login successful.";
+			const message = token ? "Vendor login successful." : response?.data?.message || "Vendor login successful.";
 			setSuccess(message);
-     setTimeout(() => {
-        router.push("/");
-      }, 2000);
+			setTimeout(() => {
+				router.push("/");
+			}, 2000);
 		} catch (requestError) {
-			const message = requestError?.response?.data?.message || "Unable to login right now. Please try again.";
+			const message = requestError?.response?.data?.message || "Unable to login vendor right now. Please try again.";
 			setError(message);
 		} finally {
 			setIsSubmitting(false);
@@ -57,12 +46,12 @@ export default function SigninPage() {
 	};
 
 	return (
-		<main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
-
-			<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
-				<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black">EnviteYou Account</p>
-				<h1 className="mt-2 text-3xl font-bold tracking-tight text-black">Welcome back</h1>
-				<p className="mt-1 text-sm text-black/65">Sign in to your EnviteYou account.</p>
+		<main className="w-full max-w-xl rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_24px_70px_rgba(0,0,0,0.08)] sm:p-8 lg:ml-auto">
+			<div>
+				<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">EnviteYou Vendor</p>
+				<h1 className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">Welcome back</h1>
+				<p className="mt-1 text-sm text-black/65">Sign in to your vendor account.</p>
+			</div>
 
 				<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 					<div>
@@ -97,8 +86,6 @@ export default function SigninPage() {
 						/>
 					</div>
 
-					{/* role is fixed to `user` — no selection UI */}
-
 					{error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
 					{success ? <p className="text-sm font-medium text-emerald-700">{success}</p> : null}
 
@@ -111,46 +98,12 @@ export default function SigninPage() {
 					</button>
 				</form>
 
-        <div className="p-4">
-        <GoogleLogin
-        theme="outline"
-        onSuccess={async (credentialResponse)=>{
-          try {
-            const token = credentialResponse?.credential;
-            if(!token) return;
-            const res = await api.post("/auth/google",{
-              token,
-              role
-            });
-            const data = res?.data || {};
-            setSuccess(data?.message || "Google login successful.");
-            setTimeout(() => {
-              router.push("/");
-            }, 2000);
-          } catch (error) {
-            console.error("Google login error:", error);
-           setError(error.response?.data?.message || "An error occurred during Google login. Please try again.");
-           setSuccess("");
-           return;
-          }
-        }}
-        onError={()=>{
-          setError("Google login failed. Please try again.");
-          setSuccess("");
-        }}
-         width="100%"
-         size="large"
-         shape="rectangular"
-         />
-        </div>
-
 				<p className="mt-5 text-center text-sm text-black/65">
 					New here?{" "}
-					<Link href="/signup" className="font-semibold text-black underline decoration-black/35 underline-offset-4">
-						Create account
+					<Link href="/vendor/signup" className="font-semibold text-black underline decoration-black/35 underline-offset-4">
+						Create vendor account
 					</Link>
 				</p>
-			</section>
 		</main>
 	);
 }
