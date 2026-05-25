@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import Templates from "./Templates";
-
+import Templates from "@/components/Templates";
+import Category from "@/components/Category";
 const SLIDES = [
   { src: "/1.png", title: "Bride and Groom" },
   { src: "/2.png", title: "Countdown Begins" },
@@ -23,15 +23,7 @@ const SLIDES = [
 const DOUBLE_SLIDES = [...SLIDES, ...SLIDES];
 const NUM_CARDS = DOUBLE_SLIDES.length;
 const ANGLE_PER_CARD = 360 / NUM_CARDS;
-const CATEGORIES = [
-  "All",
-  "Hindu Weddings",
-  "Christian Weddings",
-  "Sikh Weddings",
-  "Muslim Weddings",
-  "South-Indian Weddings",
-  "Save the date",
-];
+
 
 // Pre-calculate static 3D styles to avoid re-rendering allocation overhead
 const SLIDE_STYLES = DOUBLE_SLIDES.map((_, index) => ({
@@ -65,6 +57,7 @@ function LinearCard({ src, title, isActive }) {
 
 export default function Hero() {
   const trackRef = useRef(null);
+  const [activeCategory, setActiveCategory] = useState("All");
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -134,7 +127,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <Templates />
+        
 
         <div className="order-1 relative left-1/2 mt-4 flex w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:order-2 md:mt-6">
           <div className="pointer-events-none absolute inset-x-0 top-1/2  -translate-y-1/2 rounded-full blur-3xl" />
@@ -165,7 +158,7 @@ export default function Hero() {
         <div className="order-3 border-t border-black/10">
           <div className="mx-auto w-full max-w-6xl px-5 py-8 md:px-10 md:py-10">
             <div className="mb-5 flex">
-              <div className="rounded-sm border border-black/25 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-black/70">
+              <div className="rounded-sm border text-center border-black/25 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-black/70">
                 New Releases
               </div>
             </div>
@@ -176,24 +169,8 @@ export default function Hero() {
               Select your theme. Tell your story. Send it in minutes.
             </p>
           </div>
-          <div className="mx-auto w-full max-w-6xl border-t border-black/10 px-5 py-6 md:px-10">
-            <p className="text-left text-sm font-medium text-black/60 md:text-center">Select Category</p>
-            <div className="mt-4 flex flex-wrap justify-start gap-2 md:justify-center md:gap-3">
-              {CATEGORIES.map((category, index) => (
-                <button
-                  key={category}
-                  type="button"
-                  className={`inline-flex w-fit shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition duration-300 md:px-5 md:py-2.5 md:text-base ${
-                    index === 0
-                      ? "bg-black text-white shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
-                      : "bg-white text-black/85 shadow-[0_10px_24px_rgba(0,0,0,0.06)] ring-1 ring-black/8 hover:-translate-y-0.5 hover:ring-black/15"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
+          <Category activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+          <Templates activeCategory={activeCategory} />
         </div>
       </div>
     </section>

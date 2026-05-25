@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import api from "@/api/axios";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const TRANSLATIONS = {
@@ -52,6 +54,8 @@ export default function Header() {
   const [language, setLanguage] = useState("EN");
   const [currency, setCurrency] = useState("INR");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -59,6 +63,28 @@ export default function Header() {
       setCurrency(localStorage.getItem("envite-currency") || "INR");
     });
   }, []);
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await api.get("/auth/me");
+        setIsAuthenticated(Boolean(response?.data?.success && response?.data?.user));
+      } catch {
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuthStatus();
+
+    const onAuthChange = () => {
+      checkAuthStatus();
+    };
+
+    window.addEventListener("authChange", onAuthChange);
+    return () => {
+      window.removeEventListener("authChange", onAuthChange);
+    };
+  }, [pathname]);
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
@@ -70,11 +96,7 @@ export default function Header() {
     { label: t.getInTouch, href: "mailto:care@enviteyou.com" },
   ];
 
-  const mobileNavItems = [
-    ...navItems.slice(0, 2),
-    { label: t.pricing, href: "/pricing" },
-    ...navItems.slice(2),
-  ];
+  const mobileNavItems = navItems;
 
   const handleLanguageChange = (newLang) => {
     setLanguage(newLang);
@@ -149,10 +171,10 @@ export default function Header() {
             </Select>
 
             <Link
-              href="/pricing"
+              href={isAuthenticated ? "/my-account" : "/signin"}
               className="hidden h-9 items-center justify-center rounded-full border border-black bg-black px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(0,0,0,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:px-5 sm:text-xs lg:inline-flex"
             >
-              {t.pricingBtn}
+              {isAuthenticated ? "My Account" : "Login"}
             </Link>
 
             <button
@@ -188,6 +210,14 @@ export default function Header() {
                   {item.label}
                 </Link>
               ))}
+
+              <Link
+                href={isAuthenticated ? "/my-account" : "/signin"}
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-2xl border border-black bg-black px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-black/90"
+              >
+                {isAuthenticated ? "My Account" : "Login"}
+              </Link>
 
               <div className="mt-2 grid grid-cols-2 gap-2 sm:hidden border-t border-[#74313d]/10 pt-2">
                 <Select value={currency} onValueChange={handleCurrencyChange}>

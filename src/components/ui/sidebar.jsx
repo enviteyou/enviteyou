@@ -7,7 +7,7 @@ const navItems = [
   { label: "Dashboard", href: "/admin" },
   { label: "Add Template", href: "/admin/addTemplate" },
   { label: "All Templates", href: "/admin/allTemplate" },
-  { label: "Vendors", href: "/admin/vendor" },
+  { label: "Vendors", href: "/admin/manageVendor" },
 ];
 
 export default function Sidebar() {

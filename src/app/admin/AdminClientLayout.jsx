@@ -20,7 +20,7 @@ export default function AdminClientLayout({ children }) {
 
     (async () => {
       try {
-        const res = await api.get('/auth/me');
+        const res = await api.get('/auth/me-admin');
         if (res.status !== 200) {
           router.push('/admin/signin');
           return;

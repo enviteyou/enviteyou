@@ -4,6 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getTemplates } from "@/lib/templateService";
 
+function normalizeCategory(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
 function TemplateCard({ template }) {
   return (
     <Link href={`/templateInfo/${template.templateId || template.id}`} className="shrink-0">
@@ -24,7 +31,7 @@ function TemplateCard({ template }) {
   );
 }
 
-export default function Templates() {
+export default function Templates({ activeCategory = "All" }) {
   const [state, setState] = useState({ loading: true, error: "", templates: [] });
 
   useEffect(() => {
@@ -47,6 +54,12 @@ export default function Templates() {
     };
   }, []);
 
+  const filteredTemplates = state.templates.filter((template) => {
+    if (activeCategory === "All") return true;
+
+    return normalizeCategory(template.category) === normalizeCategory(activeCategory);
+  });
+
   return (
     <div className="order-3 w-full border-t border-black/10 bg-white">
       <div className="mx-auto w-full max-w-6xl px-5 py-6 md:px-10">
@@ -57,14 +70,16 @@ export default function Templates() {
           <div className="mt-4 flex w-full gap-4 overflow-x-auto py-3 text-sm text-black/50">Loading templates...</div>
         ) : state.error ? (
           <div className="mt-4 rounded border border-black/10 bg-white px-4 py-3 text-sm text-red-600">{state.error}</div>
-        ) : state.templates.length ? (
+        ) : filteredTemplates.length ? (
           <div className="mt-4 flex w-full gap-4 overflow-x-auto py-3">
-            {state.templates.map((template) => (
+            {filteredTemplates.map((template) => (
               <TemplateCard key={template.templateId || template.id} template={template} />
             ))}
           </div>
         ) : (
-          <div className="mt-4 rounded border border-black/10 bg-white px-4 py-3 text-sm text-black/50">No templates available.</div>
+          <div className="mt-4 rounded border border-black/10 bg-white px-4 py-3 text-sm text-black/50">
+            No templates available for {activeCategory}.
+          </div>
         )}
       </div>
     </div>

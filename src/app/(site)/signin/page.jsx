@@ -45,6 +45,7 @@ export default function SigninPage() {
 			const token = response?.data?.token;
 			const message = token ? "Login successful." : response?.data?.message || "Login successful.";
 			setSuccess(message);
+			window.dispatchEvent(new Event("authChange"));
      setTimeout(() => {
         router.push("/");
       }, 2000);
@@ -124,6 +125,7 @@ export default function SigninPage() {
             });
             const data = res?.data || {};
             setSuccess(data?.message || "Google login successful.");
+						window.dispatchEvent(new Event("authChange"));
             setTimeout(() => {
               router.push("/");
             }, 2000);

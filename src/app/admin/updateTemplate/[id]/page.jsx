@@ -14,7 +14,25 @@ export default function UpdateTemplate() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [authenticated, setAuthenticated] = useState(false);
   const router = useRouter();
+
+   useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get('/auth/me-admin');
+        if (res.status !== 200) return router.push('/admin/signin');
+        const data = res.data;
+        if (!data?.user || data.user.role !== 'admin') {
+          alert('Unauthorized access');
+          return router.push('/admin/signin');
+        }
+        setAuthenticated(true);
+      } catch (err) {
+        router.push('/admin/signin');
+      }
+    })();
+  }, [router]);
 
   useEffect(() => {
     async function load() {
@@ -27,8 +45,8 @@ export default function UpdateTemplate() {
       }
     }
 
-    if (id) load();
-  }, [id]);
+    if (id && authenticated) load();
+  }, [id, authenticated]);
 
   function update(k, v) {
     setForm((s) => ({ ...s, [k]: v }));
@@ -61,7 +79,7 @@ export default function UpdateTemplate() {
     );
   }
 
-  return (
+  return authenticated ? (
     <div className="mx-auto max-w-6xl">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -152,5 +170,5 @@ export default function UpdateTemplate() {
         </aside>
       </form>
     </div>
-  );
+  ): null;
 }

@@ -14,7 +14,8 @@ export default function AdminDashboard() {
     // check auth first, redirect if not admin (do not render dashboard)
     (async () => {
       try {
-        const res = await api.get('/auth/me');
+        const res = await api.get('/auth/me-admin');
+        console.log('Admin auth check response:', res.data);
         if (res.status !== 200) return router.push('/admin/signin');
         const data = res.data;
         if (!data?.user || data.user.role !== 'admin') {

@@ -18,7 +18,7 @@ export default function AdminVendorPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get("/auth/me");
+        const res = await api.get("/auth/me-admin");
         if (res.status !== 200) return router.push("/admin/signin");
         const data = res.data;
         if (!data?.user || data.user.role !== "admin") {
