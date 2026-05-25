@@ -442,7 +442,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         </div>
       </div>
 
-      <div className="grid gap-6 p-5 sm:p-6 max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-thin scrollbar-track-white scrollbar-thumb-black [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full">
+      <div className="grid gap-6 p-5 sm:p-6">
         {activeTab === "Essentials" ? (
           <>
             <SectionTitle icon="1" title="Wedding Essentials" />

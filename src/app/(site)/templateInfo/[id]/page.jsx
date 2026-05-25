@@ -89,7 +89,7 @@ export default function TemplatePage() {
 
   return (
     <main className="bg-white px-5 py-10 text-black sm:px-8 lg:px-10 lg:py-14">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl lg:min-h-[calc(100dvh-7rem)]">
         <div className="mb-8 max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">Build your wedding website</p>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight text-black sm:text-5xl">Customize your selected template.</h1>

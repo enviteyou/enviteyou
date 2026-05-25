@@ -138,7 +138,7 @@ export default function UpdateTemplate() {
           <h2 className="mt-2 text-xl font-semibold tracking-tight">Featured image</h2>
           {form.featuredImage ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={form.featuredImage} alt={form.title || "Template"} className="mt-5 aspect-[4/3] w-full border border-black/10 object-cover" />
+            <img src={form.featuredImage} alt={form.title || "Template"} className="mt-5 aspect-4/3 w-full border border-black/10 object-cover" />
           ) : null}
           <label className="mt-4 flex cursor-pointer flex-col items-center justify-center border border-dashed border-black/25 bg-black/2 p-5 text-center transition hover:border-black">
             <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="hidden" />

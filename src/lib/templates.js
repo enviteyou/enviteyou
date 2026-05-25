@@ -39,6 +39,19 @@ export const templates = [
     bestFor: "Haldi, mehendi, sangeet, wedding ceremony",
     features: ["Multiple event blocks", "Family notes", "Save-the-date", "Forever online link"],
   },
+  {
+    id: "4",
+    templateId: "4",
+    name: "Royal Crescent",
+    price: "INR 3,999",
+    tag: "Luxury palace invite",
+    description:
+      "A regal wedding invitation with animated scenes, ceremony cards, and a grand palace-style presentation for premium celebrations.",
+    preview: "/4.png",
+    palette: "Gold, midnight blue, ivory",
+    bestFor: "Grand weddings, palace venues, multi-day celebrations",
+    features: ["Animated storytelling", "Ceremony timeline", "Audio ambience", "Luxury visual style"],
+  },
 ];
 
 export function getTemplateById(id) {
