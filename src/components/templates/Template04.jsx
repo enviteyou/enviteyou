@@ -60,7 +60,7 @@ if (typeof window !== 'undefined') {
     ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
-export default function Template04({ formData = {}, template = {}, embedded = false }) {
+export default function Template04({ formData = {}, template = {}, embedded = false, fullscreen = false }) {
     const containerRef = useRef(null);
     const audioStartedRef = useRef(false);
     const { isPlaying, toggleAudio, playAudio, audioNode } = useAudio('/assets/template/04/kesariya-rang.mp3');
@@ -125,6 +125,8 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
     // Scene 4 Refs
     const scene4ContainerRef = useRef(null);
     const scene4ContentRef = useRef(null);
+
+    const isEdgeToEdge = embedded || fullscreen;
 
     const brideName = String(formData?.bride || 'Priya').trim();
     const groomName = String(formData?.groom || 'Arjun').trim();
@@ -369,7 +371,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
     }, { scope: containerRef });
 
     return (
-        <div className="w-full min-h-screen bg-[#050B14]">
+        <div className={`w-full ${isEdgeToEdge ? '' : 'min-h-screen'} bg-[#050B14]`}>
             {audioNode}
             <button
                 onClick={toggleAudio}
@@ -385,7 +387,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
       */}
             <div
                 ref={containerRef}
-                className="max-w-md mx-auto w-full h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37]"
+                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37]`}
             >
                 {/* === Background Layers === */}
                 <div ref={skyRef} className="absolute inset-0 z-0">
@@ -524,7 +526,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             {/* === SCENE 2: Ganesha === */}
             <div
                 ref={scene2ContainerRef}
-                className="max-w-md mx-auto w-full min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-10"
+                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-10`}
             >
                 {/* Background Pattern */}
                 <div className="absolute inset-0 z-0">
@@ -583,7 +585,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             {/* === SCENE 3: Invitation Details === */}
             <div
                 ref={scene3ContainerRef}
-                className="max-w-md mx-auto w-full min-h-dvh relative overflow-hidden bg-[#F4EBD9] text-[#3d2c1d] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-20"
+                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} min-h-dvh relative overflow-hidden bg-[#F4EBD9] text-[#3d2c1d] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-20`}
             >
                 {/* Background Texture */}
                 <div className="absolute inset-0 z-0">
@@ -688,7 +690,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             {/* === SCENE 4: Wedding Celebrations === */}
             <div
                 ref={scene4ContainerRef}
-                className="max-w-md mx-auto w-full min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-20 pb-16 px-6 z-30"
+                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-20 pb-16 px-6 z-30`}
             >
                 {/* Background Pattern */}
                 <div className="absolute inset-0 z-0">

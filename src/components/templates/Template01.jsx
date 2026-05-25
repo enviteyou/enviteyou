@@ -197,7 +197,7 @@ const defaultEvents = [
     { title: "Reception", date: "3 JUL 2026 • 8:30 PM", venue: "SNJ Laxmi Dham, Vrindavan", desc: "Dance, dine, and celebrate as the newlyweds take the floor." }
 ];
 
-export default function Template01({ formData = {}, template = {}, embedded = false }) {
+export default function Template01({ formData = {}, template = {}, embedded = false, fullscreen = false }) {
     const { isPlaying: isAudioPlaying, toggleAudio, playAudio, audioNode } = useAudio("/assets/template/01/kesariya-rang.mp3");
     const [hasStarted, setHasStarted] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null); // 3D Lightbox selected image state
@@ -530,8 +530,8 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
 
 
     return (
-        <div className={`bg-white ${embedded ? 'w-full h-full' : 'min-h-screen'} flex justify-center`}>
-            <div className={`w-full max-w-120 relative bg-[#fcf8f2] min-h-screen font-serif selection:bg-[#7d2432] selection:text-white shadow-2xl ring-1 ring-white/10 ${hasStarted ? "overflow-x-hidden" : "overflow-hidden h-screen"}`}>
+        <div className={`bg-white ${embedded || fullscreen ? 'w-full h-full' : 'min-h-screen'} flex justify-center`}>
+            <div className={`w-full relative bg-[#fcf8f2] min-h-screen font-serif selection:bg-[#7d2432] selection:text-white ${fullscreen ? 'max-w-none shadow-none ring-0' : 'max-w-120 shadow-2xl ring-1 ring-white/10'} ${hasStarted ? "overflow-x-hidden" : "overflow-hidden h-screen"}`}>
                 {audioNode}
                 <FallingPetals />
 

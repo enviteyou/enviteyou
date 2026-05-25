@@ -40,12 +40,10 @@ export default function TemplateDetail({ template, formData, fullscreen = false 
 
   if (fullscreen) {
     return (
-      <div className="bg-[#faf7f3] px-3 pb-5 pt-6 sm:px-5 sm:py-5">
-        <div className="mx-auto w-full max-w-97.5 overflow-visible rounded-[24px] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.14)]">
-          <section className="relative bg-black">
-            <SelectedTemplate formData={formData} template={template} embedded />
-          </section>
-        </div>
+      <div className="w-full bg-[#faf7f3]">
+        <section className="relative w-full bg-black">
+          <SelectedTemplate formData={formData} template={template} embedded fullscreen />
+        </section>
       </div>
     );
   }

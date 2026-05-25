@@ -75,22 +75,22 @@ export default function InviteBySlugPage() {
 	const error = result.error;
 
 	return (
-		<main className="w-full px-4 py-4 sm:px-6 lg:px-0 lg:py-0">
+		<main className="w-full px-0 py-0 sm:px-6 sm:py-4 lg:px-0 lg:py-0">
 			{loading ? (
-				<div className="mx-auto flex min-h-[60vh] max-w-3xl items-center justify-center text-center text-black/60">
+				<div className="mx-auto flex min-h-[100dvh] w-full max-w-3xl items-center justify-center px-4 text-center text-black/60 sm:px-0">
 					Loading invitation...
 				</div>
 			) : error ? (
-				<div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-black/10  text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+				<div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-black/10 p-6 text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm">
 					<p className="text-xs font-semibold uppercase tracking-[0.22em] text-black/40">Invitation unavailable</p>
 					<p className="mt-3 text-base text-red-600">{error}</p>
 				</div>
 			) : invitation ? (
-				<div className="mx-auto grid w-full  gap-8 lg:grid-cols-[minmax(0,1fr)]">
-					<TemplateDetail template={template} formData={invitation} />
+				<div className="mx-auto grid w-full gap-8 lg:grid-cols-[minmax(0,1fr)]">
+					<TemplateDetail template={template} formData={invitation} fullscreen />
 				</div>
 			) : (
-				<div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-black/10  p-6 text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+				<div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-black/10 p-6 text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm">
 					<p className="text-xs font-semibold uppercase tracking-[0.22em] text-black/40">Invitation unavailable</p>
 					<p className="mt-3 text-base text-black/60">Invitation not found.</p>
 				</div>
