@@ -81,7 +81,7 @@ export default function InviteBySlugPage() {
 					Loading invitation...
 				</div>
 			) : error ? (
-				<div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-black/10  p-6 text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+				<div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-black/10  text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm">
 					<p className="text-xs font-semibold uppercase tracking-[0.22em] text-black/40">Invitation unavailable</p>
 					<p className="mt-3 text-base text-red-600">{error}</p>
 				</div>
