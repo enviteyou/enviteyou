@@ -45,7 +45,14 @@ export function normalizeTemplates(templates = []) {
 }
 
 export async function getTemplates() {
-  const response = await api.get("/templates");
+  const response = await fetch("http://localhost:5000/templates", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials:"include",
+    next: { revalidate: 120 }, // Revalidate every 60 seconds
+  });
   const rawTemplates = Array.isArray(response?.data) ? response.data : Array.isArray(response?.data?.data) ? response.data.data : [];
 
   return normalizeTemplates(rawTemplates);
