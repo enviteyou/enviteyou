@@ -45,7 +45,7 @@ export function normalizeTemplates(templates = []) {
 }
 
 export async function getTemplates() {
-  const response = await fetch("http://localhost:5000/templates", {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/templates`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
