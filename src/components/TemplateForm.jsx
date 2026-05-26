@@ -3,6 +3,7 @@
 import api from "@/api/axios";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const tabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"];
 const eventOptions = ["Mehendi", "Haldi", "Sagan", "Cocktail", "Sangeet", "Baraat", "Shaadi", "Reception"];
@@ -347,7 +348,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
       });
     } catch (err) {
       console.error("Gallery upload error", err?.message || err);
-      alert("Failed to upload image. Try again.");
+      toast.error("Failed to upload image. Try again.");
     }
   }
 
@@ -373,34 +374,61 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
  async function handleSubmit () {
 
     if (!form.bride || !form.groom || !form.date) {
-      alert("Please add both names and the wedding date.");
+      toast.error("Please add both names and the wedding date.");
       setActiveTab("Essentials");
       return;
-    } 
-    const res = await api.post("/invitations/create", {
-      ...form,
-      templateId: template?.templateId || template?.id,
-    });
-    console.log(res.data);
-    if (res.data?.success) {
-      const created = res.data.data;
-      const slug = created?.slug;
-      const invitePath = slug ? `/invite/${encodeURIComponent(slug)}` : null;
-      const fullUrl = invitePath ? `${window.location.origin}${invitePath}` : null;
+    }
 
-      // Open the generated invite in a new tab and navigate the current window there as well
-      if (fullUrl) {
-        try {
-          window.open(fullUrl, "_blank");
-        } catch (e) {
-          // ignore
-        }
-        router.replace(invitePath);
-      } else {
-        alert("Invitation created successfully. Unable to determine invite URL.");
+    try {
+      const meResponse = await api.get("/auth/me");
+      if (!(meResponse?.data?.success && meResponse?.data?.user)) {
+        toast.info("You need to sign in before creating an invitation.");
+        router.push("/signin");
+        return;
       }
-    } else {
-      alert("Failed to create invitation. Please try again.");
+    } catch {
+      toast.info("You need to sign in before creating an invitation.");
+      router.push("/signin");
+      return;
+    }
+
+    try {
+      const res = await api.post("/invitations/create", {
+        ...form,
+        templateId: template?.templateId || template?.id,
+      });
+      console.log(res.data);
+
+      if (res.data?.success) {
+        const created = res.data.data;
+        const slug = created?.slug;
+        const invitePath = slug ? `/invite/${encodeURIComponent(slug)}` : null;
+        const fullUrl = invitePath ? `${window.location.origin}${invitePath}` : null;
+
+        // Open the generated invite in a new tab and navigate the current window there as well
+        if (fullUrl) {
+          try {
+            window.open(fullUrl, "_blank");
+          } catch (e) {
+            // ignore
+          }
+          toast.success("Invitation created successfully.");
+          router.replace(invitePath);
+        } else {
+          toast.success("Invitation created successfully.");
+          toast.info("Unable to determine invite URL.");
+        }
+      } else {
+        toast.error("Failed to create invitation. Please try again.");
+      }
+    } catch (error) {
+      const status = error?.response?.status;
+      if (status === 401 || status === 409) {
+        toast.info("You need to sign in before creating an invitation.");
+        router.push("/signin");
+        return;
+      }
+      toast.error(error?.response?.data?.message || "Failed to create invitation. Please try again.");
     }
   }
 
