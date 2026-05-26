@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getTemplates } from "@/lib/templateService";
 
 function normalizeCategory(value) {
   return String(value || "")
@@ -31,30 +29,8 @@ function TemplateCard({ template }) {
   );
 }
 
-export default function Templates({ activeCategory = "All" }) {
-  const [state, setState] = useState({ loading: true, error: "", templates: [] });
-
-  useEffect(() => {
-    let ignore = false;
-
-    getTemplates()
-      .then((templates) => {
-        if (!ignore) {
-          setState({ loading: false, error: "", templates });
-        }
-      })
-      .catch((error) => {
-        if (!ignore) {
-          setState({ loading: false, error: error?.response?.data?.message || error.message || "Unable to load templates", templates: [] });
-        }
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  const filteredTemplates = state.templates.filter((template) => {
+export default function Templates({ templates = [], activeCategory = "All" }) {
+  const filteredTemplates = templates.filter((template) => {
     if (activeCategory === "All") return true;
 
     return normalizeCategory(template.category) === normalizeCategory(activeCategory);
@@ -66,11 +42,7 @@ export default function Templates({ activeCategory = "All" }) {
         <h3 className="text-lg font-semibold text-black">Templates</h3>
         <p className="text-sm text-black/60">Click a template to view details and customize.</p>
 
-        {state.loading ? (
-          <div className="mt-4 flex w-full gap-4 overflow-x-auto py-3 text-sm text-black/50">Loading templates...</div>
-        ) : state.error ? (
-          <div className="mt-4 rounded border border-black/10 bg-white px-4 py-3 text-sm text-red-600">{state.error}</div>
-        ) : filteredTemplates.length ? (
+        {filteredTemplates.length ? (
           <div className="mt-4 flex w-full gap-4 overflow-x-auto py-3">
             {filteredTemplates.map((template) => (
               <TemplateCard key={template.templateId || template.id} template={template} />

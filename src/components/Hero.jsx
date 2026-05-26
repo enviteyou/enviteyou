@@ -55,7 +55,7 @@ function LinearCard({ src, title, isActive }) {
   );
 }
 
-export default function Hero() {
+export default function Hero({ templates = [] }) {
   const trackRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState("All");
 
@@ -170,7 +170,7 @@ export default function Hero() {
             </p>
           </div>
           <Category activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
-          <Templates activeCategory={activeCategory} />
+          <Templates templates={templates} activeCategory={activeCategory} />
         </div>
       </div>
     </section>

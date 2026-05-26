@@ -1,68 +1,15 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import TemplateCustomizer from "@/components/TemplateCustomizer";
 import { getTemplates } from "@/lib/templateService";
 
-export default function TemplatePage() {
-  const params = useParams();
+export default async function TemplatePage({ params }) {
   const id = params?.id;
-  const [state, setState] = useState({ loading: true, template: null, templates: [], error: "" });
-
-  useEffect(() => {
-    if (!id) return undefined;
-
-    let ignore = false;
-
-    setState((current) => ({ ...current, loading: true, error: "" }));
-
-    getTemplates()
-      .then((templates) => {
-        if (ignore) return;
-
-        const normalizedId = String(id).toLowerCase().trim();
-        const template = templates.find((item) => {
-          const candidates = [item.templateId, item.id, item._id, item.title, item.name, item.category];
-          return candidates.some((value) => String(value).toLowerCase().trim() === normalizedId);
-        }) || null;
-
-        setState({ loading: false, template, templates, error: "" });
-      })
-      .catch((error) => {
-        if (!ignore) {
-          setState({
-            loading: false,
-            template: null,
-            templates: [],
-            error: error?.response?.data?.message || error.message || "Unable to load templates",
-          });
-        }
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, [id]);
-
-  if (state.loading) {
-    return (
-      <main className="bg-white px-5 py-10 text-black sm:px-8 lg:px-10 lg:py-14">
-        <div className="mx-auto max-w-7xl text-sm text-black/60">Loading template...</div>
-      </main>
-    );
-  }
-
-  const { template, templates, error } = state;
-
-  if (error) {
-    return (
-      <main className="bg-white px-5 py-10 text-black sm:px-8 lg:px-10 lg:py-14">
-        <div className="mx-auto max-w-7xl rounded border border-black/10 bg-white p-6 text-sm text-red-600">{error}</div>
-      </main>
-    );
-  }
+  const templates = await getTemplates();
+  const normalizedId = String(id).toLowerCase().trim();
+  const template = templates.find((item) => {
+    const candidates = [item.templateId, item.id, item._id, item.title, item.name, item.category];
+    return candidates.some((value) => String(value).toLowerCase().trim() === normalizedId);
+  }) || null;
 
   if (!template) {
     return (
