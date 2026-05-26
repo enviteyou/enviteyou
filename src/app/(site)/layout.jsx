@@ -69,37 +69,38 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <div
-      className={cn(
-        "min-h-full overflow-x-hidden bg-white text-black antialiased",
-        "font-inter",
-        // "font-mono",
-        jetbrainsMono.variable,
-        inter.variable,
-        roboto.variable,
-        playwriteCa.variable
-      )}
-    >
-      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "EnviteYou",
-              legalName: "Elevate Ecommerce Synergies",
-              url: "https://enviteyou.com",
-              logo: "https://enviteyou.com/logo.png",
-              email: "care@enviteyou.com",
-              telephone: "+91 8828287278",
-            }),
-          }}
-        />
-        <Header />
-        <div className="min-h-screen">{children}</div>
-        <Footer />
-      </GoogleOAuthProvider>
-    </div>
+    <html lang="en">
+      <body
+        className={cn(
+          "min-h-full overflow-x-hidden bg-white text-black antialiased",
+          "font-inter",
+          jetbrainsMono.variable,
+          inter.variable,
+          roboto.variable,
+          playwriteCa.variable
+        )}
+      >
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "EnviteYou",
+              }),
+            }}
+          />
+
+          <Header />
+
+          <main className="min-h-screen">
+            {children}
+          </main>
+
+          <Footer />
+        </GoogleOAuthProvider>
+      </body>
+    </html>
   );
 }
