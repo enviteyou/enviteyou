@@ -3,7 +3,8 @@ import TemplateCustomizer from "@/components/TemplateCustomizer";
 import { getTemplates } from "@/lib/templateService";
 
 export default async function TemplatePage({ params }) {
-  const id = params?.id;
+  const resolvedParams = await params;
+  const id = resolvedParams?.id;
   const templates = await getTemplates();
   const normalizedId = String(id).toLowerCase().trim();
   const template = templates.find((item) => {
