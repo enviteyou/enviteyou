@@ -73,7 +73,7 @@ export default function RootLayout({ children }) {
       className={cn(
         "min-h-full overflow-x-hidden bg-white text-black antialiased",
         "font-inter",
-        "font-mono",
+        // "font-mono",
         jetbrainsMono.variable,
         inter.variable,
         roboto.variable,
