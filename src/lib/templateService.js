@@ -51,7 +51,7 @@ export async function getTemplates() {
       "Content-Type": "application/json",
     },
     credentials:"include",
-    next: { revalidate: 120 }, // Revalidate every 60 seconds
+    next: { revalidate: 3600 }, // Revalidate every 60 seconds
   });
   const data = await response.json();
   const rawTemplates = Array.isArray(data) ? data : Array.isArray(data?.data) ?   data.data : [];

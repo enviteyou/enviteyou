@@ -78,7 +78,7 @@ export default function FeaturesShowcase() {
             {features.map((feature, index) => (
               <React.Fragment key={feature.label}>
                 <div 
-                  className="sticky top-16 md:top-30  overflow-hidden transition-all duration-300  py-10 px-0 bg-white"
+                  className="sticky top-16 md:top-20  overflow-hidden transition-all duration-300  py-10 px-0 bg-white"
                   style={{ zIndex: index }}
                 >
                   <div className="flex gap-8 sm:gap-10">

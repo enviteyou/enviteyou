@@ -86,7 +86,7 @@ export default function MyAccountPage() {
           <button
             type="button"
             onClick={handleLogout}
-            className="mt-auto rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-left text-sm font-semibold text-red-700 transition hover:bg-red-100"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-left text-sm font-semibold text-red-700 transition hover:bg-red-100 mt-2"
           >
             Log out
           </button>
