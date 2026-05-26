@@ -16,44 +16,28 @@ export default function ComparisonTable() {
         <h2 className="text-center text-2xl font-semibold">What Cards and Video Invites Can’t Do (But These Templates Can)</h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-black/60">See how your invite can go from one-time share to a lasting experience — without extra cost or hassle.</p>
 
-        {/* Desktop table */}
-        <div className="mt-8 hidden md:block">
+        {/* Responsive, non-scroll table: compact spacing on mobile, full layout on md+ */}
+        <div className="mt-6">
           <table className="w-full table-fixed border-collapse">
-            <thead>
-              <tr className="text-left">
-                <th className="w-1/4 px-4 py-4 font-medium text-sm">Feature</th>
-                <th className="w-1/4 px-4 py-4 font-medium text-sm">Printed Cards</th>
-                <th className="w-1/4 px-4 py-4 font-medium text-sm">WhatsApp Videos</th>
-                <th className="w-1/4 px-4 py-4 font-medium text-sm">EnviteYou</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.label} className="border-t border-black/10">
-                  <td className="px-4 py-6 align-top text-sm font-medium">{r.label}</td>
-                  <td className="px-4 py-6 align-top text-sm text-black/70">{r.left}</td>
-                  <td className="px-4 py-6 align-top text-sm text-black/70">{r.middle}</td>
-                  <td className="px-4 py-6 align-top text-sm font-semibold">{r.right}</td>
+              <thead>
+                <tr className="text-left">
+                  <th className="w-28 md:w-40 px-1 md:px-3 py-1 md:py-3 font-medium text-[11px] md:text-sm">Feature</th>
+                  <th className="w-1/3 px-1 md:px-3 py-1 md:py-3 font-medium text-[11px] md:text-sm text-center md:text-left whitespace-nowrap">Printed</th>
+                  <th className="w-1/3 px-1 md:px-3 py-1 md:py-3 font-medium text-[11px] md:text-sm text-center md:text-left whitespace-nowrap">WhatsApp</th>
+                  <th className="w-1/3 px-1 md:px-3 py-1 md:py-3 font-medium text-[11px] md:text-sm text-center md:text-left whitespace-nowrap">EnviteYou</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile stacked cards */}
-        <div className="mt-6 grid gap-4 md:hidden">
-          {rows.map((r) => (
-            <div key={r.label} className="rounded-lg border border-black/10 bg-white p-4">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-medium">{r.label}</div>
-                <div className="text-sm font-semibold text-black">{r.right}</div>
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-black/70">
-                <div className="px-2 py-1 rounded bg-white/80">Printed: {r.left}</div>
-                <div className="px-2 py-1 rounded bg-white/80">Video: {r.middle}</div>
-              </div>
-            </div>
-          ))}
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.label} className="border-t border-black/10">
+                    <td className="px-1 md:px-3 py-1 md:py-3 align-top text-[11px] md:text-sm font-medium whitespace-nowrap truncate">{r.label}</td>
+                    <td className="px-1 md:px-3 py-1 md:py-3 align-top text-[11px] md:text-sm text-black/70 text-center md:text-left whitespace-nowrap truncate">{r.left}</td>
+                    <td className="px-1 md:px-3 py-1 md:py-3 align-top text-[11px] md:text-sm text-black/70 text-center md:text-left whitespace-nowrap truncate">{r.middle}</td>
+                    <td className="px-1 md:px-3 py-1 md:py-3 align-top text-[11px] md:text-sm font-semibold text-center md:text-left whitespace-nowrap truncate">{r.right}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
         </div>
       </div>
     </section>
