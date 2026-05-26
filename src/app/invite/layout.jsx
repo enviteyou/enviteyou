@@ -1,4 +1,9 @@
 import "../(site)/globals.css"
+export const metadata = {
+	icons: {
+		icon: "/icon2.png",
+	},
+}
 export default function InviteLayout({ children }) {
 	return (
 		<div className="min-h-screen text-black">
