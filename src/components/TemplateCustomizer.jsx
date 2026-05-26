@@ -1,17 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TemplateDetail from "./TemplateDetail";
 import TemplateForm, { initialForm } from "./TemplateForm";
 
 export default function TemplateCustomizer({ template }) {
+  const templateKey = useMemo(
+    () => String(template?.templateId || template?.id || template?._id || template?.name || "").trim().toLowerCase(),
+    [template?.templateId, template?.id, template?._id, template?.name],
+  );
   const [previewData, setPreviewData] = useState(initialForm);
   const [activeTab, setActiveTab] = useState("Essentials");
+
+  useEffect(() => {
+    setPreviewData(initialForm);
+    setActiveTab("Essentials");
+  }, [templateKey]);
 
   return (
     <div className="grid gap-6 scroll-smooth lg:min-h-[calc(100dvh-15rem)] lg:grid-cols-[minmax(360px,0.88fr)_minmax(0,1.12fr)] lg:items-start xl:gap-8">
       <div className="min-h-0 pb-20 lg:overflow-y-auto lg:pr-2 lg:pb-0">
         <TemplateForm
+          key={templateKey || "template-form"}
           template={template}
           onPreviewChange={setPreviewData}
           activeTab={activeTab}
@@ -19,7 +29,7 @@ export default function TemplateCustomizer({ template }) {
         />
       </div>
       <div id="template-detail" className="scroll-mt-24 lg:sticky lg:top-6 lg:self-start">
-        <TemplateDetail template={template} formData={previewData} />
+        <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} />
       </div>
 
       <a

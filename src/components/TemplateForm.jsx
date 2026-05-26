@@ -39,6 +39,7 @@ const infoCards = [
   "Photography",
   "WhatsApp Group",
 ];
+const draftStoragePrefix = "envite-template-draft";
 const personalityGroups = [
   {
     title: "How did you meet your partner?",
@@ -166,6 +167,32 @@ function SectionTitle({ icon, title }) {
 
 export { initialForm };
 
+function getTemplateStorageKey(template) {
+  const templateId = String(template?.templateId || template?.id || template?._id || template?.name || "").trim().toLowerCase();
+  return templateId ? `${draftStoragePrefix}:${templateId}` : "";
+}
+
+function normalizeStoredForm(data) {
+  const stored = data && typeof data === "object" ? data : {};
+  const infoCardsMap = {
+    ...Object.fromEntries(infoCards.map((card) => [card, ""])),
+    ...(stored.infoCardsMap || {}),
+  };
+
+  return {
+    ...initialForm,
+    ...stored,
+    selectedEvents: Array.isArray(stored.selectedEvents) ? stored.selectedEvents : initialForm.selectedEvents,
+    eventDetails: {
+      ...initialForm.eventDetails,
+      ...(stored.eventDetails || {}),
+    },
+    personalityAnswers: stored.personalityAnswers || {},
+    infoCardsMap,
+    galleryImages: Array.isArray(stored.galleryImages) ? stored.galleryImages : [],
+  };
+}
+
 export default function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab }) {
   const router = useRouter();
   const formRef = useRef(null);
@@ -174,16 +201,67 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [customEventName, setCustomEventName] = useState("");
   const [storySubTab, setStorySubTab] = useState("Personality Tags");
-  const [form, setForm] = useState(initialForm);
+  const templateStorageKey = getTemplateStorageKey(template);
+  const [form, setForm] = useState(() => {
+    if (!templateStorageKey || typeof window === "undefined") {
+      return initialForm;
+    }
 
-  // ensure infoCardsMap exists in state
+    try {
+      const storedRaw = window.localStorage.getItem(templateStorageKey);
+      if (!storedRaw) return initialForm;
+
+      const parsed = JSON.parse(storedRaw);
+      const storedForm = parsed?.form || parsed;
+      const storedTemplateId = String(parsed?.templateId || storedForm?.templateId || "").trim().toLowerCase();
+      const currentTemplateId = String(template?.templateId || template?.id || template?._id || template?.name || "").trim().toLowerCase();
+
+      if (storedTemplateId && storedTemplateId !== currentTemplateId) {
+        return initialForm;
+      }
+
+      return normalizeStoredForm(storedForm);
+    } catch {
+      return initialForm;
+    }
+  });
+
   useEffect(() => {
-    setForm((current) => ({
-      ...current,
-      infoCardsMap: current.infoCardsMap || Object.fromEntries(infoCards.map((c) => [c, ""])),
-    }));
-  }, []);
-    
+    if (!templateStorageKey) return;
+
+    try {
+      const storedRaw = window.localStorage.getItem(templateStorageKey);
+      if (!storedRaw) return;
+
+      const parsed = JSON.parse(storedRaw);
+      const storedForm = parsed?.form || parsed;
+      const storedTemplateId = String(parsed?.templateId || storedForm?.templateId || "").trim().toLowerCase();
+      const currentTemplateId = String(template?.templateId || template?.id || template?._id || template?.name || "").trim().toLowerCase();
+
+      if (!storedTemplateId || storedTemplateId === currentTemplateId) {
+        setForm((current) => normalizeStoredForm({ ...current, ...storedForm }));
+      }
+    } catch {
+      // ignore localStorage parse failures
+    }
+  }, [templateStorageKey, template?.templateId, template?.id, template?._id, template?.name]);
+
+  useEffect(() => {
+    if (!templateStorageKey) return;
+
+    try {
+      window.localStorage.setItem(
+        templateStorageKey,
+        JSON.stringify({
+          templateId: String(template?.templateId || template?.id || template?._id || template?.name || "").trim().toLowerCase(),
+          form,
+        }),
+      );
+    } catch {
+      // ignore localStorage failures
+    }
+  }, [form, templateStorageKey, template?.templateId, template?.id, template?._id, template?.name]);
+
   useEffect(() => {
     if (template?.name) document.title = `${template.name} - Customize`;
   }, [template]);
@@ -371,6 +449,16 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     });
   }
 
+  function clearTemplateDraft() {
+    if (!templateStorageKey) return;
+
+    try {
+      window.localStorage.removeItem(templateStorageKey);
+    } catch {
+      // ignore localStorage failures
+    }
+  }
+
  async function handleSubmit () {
 
     if (!form.bride || !form.groom || !form.date) {
@@ -404,6 +492,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         const slug = created?.slug;
         const invitePath = slug ? `/invite/${encodeURIComponent(slug)}` : null;
         const fullUrl = invitePath ? `${window.location.origin}${invitePath}` : null;
+        clearTemplateDraft();
 
         // Open the generated invite in a new tab and navigate the current window there as well
         if (fullUrl) {
