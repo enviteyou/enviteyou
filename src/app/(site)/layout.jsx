@@ -69,8 +69,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
+     <GoogleOAuthProvider
+      clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+    >
+      <div
         className={cn(
           "min-h-full overflow-x-hidden bg-white text-black antialiased",
           "font-inter",
@@ -80,27 +82,26 @@ export default function RootLayout({ children }) {
           playwriteCa.variable
         )}
       >
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                name: "EnviteYou",
-              }),
-            }}
-          />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "EnviteYou",
+            }),
+          }}
+        />
 
-          <Header />
+        <Header />
 
-          <main className="min-h-screen">
-            {children}
-          </main>
+        <main className="min-h-screen">
+          {children}
+        </main>
 
-          <Footer />
-        </GoogleOAuthProvider>
-      </body>
-    </html>
+        <Footer />
+      </div>
+    </GoogleOAuthProvider>
   );
+  
 }

@@ -1,26 +1,29 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { getVendorSession } from "@/lib/vendorAuth";
 
 export default function VendorIndexPage() {
-  return (
-    <section className="mx-auto max-w-md rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black">EnviteYou Vendor</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight text-black">Vendor access</h1>
-      <p className="mt-1 text-sm text-black/65">Sign in or create a vendor account to manage your listings.</p>
+  const router = useRouter();
 
-      <div className="mt-6 grid grid-cols-1 gap-3">
-        <Link
-          href="/vendor/signup"
-          className="block rounded-xl bg-black px-4 py-3 text-center text-white font-semibold"
-        >
-          Create vendor account
-        </Link>
-        <Link
-          href="/vendor/signin"
-          className="block rounded-xl border border-black/10 px-4 py-3 text-center font-semibold text-black"
-        >
-          Vendor sign in
-        </Link>
-      </div>
-    </section>
-  );
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const session = await getVendorSession();
+      if (!mounted) return;
+      if (session?.user) {
+        toast.success(session.message || "Authenticated");
+        router.replace("/vendor/dashboard");
+      } else {
+        // show backend message (eg. Not authenticated)
+        if (session?.message) toast.error(session.message);
+        router.replace("/vendor/signin");
+      }
+    })();
+    return () => (mounted = false);
+  }, [router]);
+
+  return null;
 }

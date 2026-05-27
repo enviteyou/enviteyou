@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import api from "@/api/axios";
-
+import { toast } from "sonner";
+import VendorAuthShell from "@/components/vendor/VendorAuthShell";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 export default function VendorSignupPage() {
 	const [formData, setFormData] = useState({
 		name: "",
@@ -15,6 +17,7 @@ export default function VendorSignupPage() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
+	const router = useRouter();
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
@@ -35,8 +38,15 @@ export default function VendorSignupPage() {
 				...formData,
 				role: "vendor",
 			});
+			if(response?.data?.success) {
+				setSuccess(response.data.message || "Vendor registration successful.");
+				router.push("/vendor/signin");
+			} else {
+				setError(response?.data?.message || "Unable to register vendor right now. Please try again.");
+				return;
+			}
 			const message = response?.data?.message || "Vendor registration successful.";
-			setSuccess(message);
+			toast.success(message);
 			setFormData({
 				name: "",
 				email: "",
@@ -54,14 +64,21 @@ export default function VendorSignupPage() {
 	};
 
 	return (
-		<main className="w-full max-w-xl rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_24px_70px_rgba(0,0,0,0.08)] sm:p-8 lg:ml-auto">
-			<div>
-				<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">EnviteYou Vendor</p>
-				<h1 className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">Create vendor account</h1>
-				<p className="mt-1 text-sm text-black/65">
-					Register your business to start managing vendor access.
-				</p>
-			</div>
+		<VendorAuthShell
+			title="Vendor Portal"
+			subtitle="Manage your business profile, track approval status, and access the vendor dashboard from one place."
+			footerText="Built for vendor sign up, sign in, and portal access."
+			footerLinkHref="/vendor/signin"
+			footerLinkText="Sign in"
+		>
+			<main className="w-full max-w-xl rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_24px_70px_rgba(0,0,0,0.08)] sm:p-8 lg:ml-auto">
+				<div>
+					<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">EnviteYou Vendor</p>
+					<h1 className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">Create vendor account</h1>
+					<p className="mt-1 text-sm text-black/65">
+						Register your business to start managing vendor access.
+					</p>
+				</div>
 
 			<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 				<div>
@@ -157,12 +174,10 @@ export default function VendorSignupPage() {
 				</button>
 			</form>
 
-			<p className="mt-5 text-center text-sm text-black/65">
-				Already have a vendor account?{" "}
-				<Link href="/vendor/signin" className="font-semibold text-black underline decoration-black/35 underline-offset-4">
-					Sign in
+				<Link href="/vendor/signin" className="mt-5 text-center text-sm text-black/65">
+					Already have a vendor account? Sign in
 				</Link>
-			</p>
-		</main>
+			</main>
+		</VendorAuthShell>
 	);
 }

@@ -77,7 +77,7 @@ export default function InviteBySlugPage() {
 	return (
 		<main className="w-full px-0 py-0 sm:px-6 sm:py-4 lg:px-0 lg:py-0">
 			{loading ? (
-				<div className="mx-auto flex min-h-[100dvh] w-full max-w-3xl items-center justify-center px-4 text-center text-black/60 sm:px-0">
+				<div className="mx-auto flex min-h-dvh w-full max-w-3xl items-center justify-center px-4 text-center text-black/60 sm:px-0">
 					Loading invitation...
 				</div>
 			) : error ? (
