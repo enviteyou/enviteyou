@@ -79,7 +79,7 @@ export default function VendorDashboardShell({ children }) {
       <div className="flex min-h-screen">
         <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white lg:block">
           <Link href="/vendor/dashboard" className="flex items-center gap-3 border-b border-white/8 pb-6">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#b89143]/35 bg-[#151515] text-[#F5F5DC]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#b89143]/35 bg-[#151515] text-[#c8a24c]">
               <span className="text-lg font-semibold">E</span>
             </div>
             <div>
@@ -99,7 +99,7 @@ export default function VendorDashboardShell({ children }) {
                   href={item.href}
                   className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition ${
                     active
-                      ? "border-[#F5F5DC]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
+                      ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
                       : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
                   }`}
                 >
@@ -111,9 +111,9 @@ export default function VendorDashboardShell({ children }) {
           </nav>
 
           <div className="mt-auto pt-6">
-            <div className="rounded-[1.5rem] border border-[#F5F5DC]/40 bg-[linear-gradient(180deg,rgba(20,20,20,0.98),rgba(10,10,10,1))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+            <div className="rounded-[1.5rem] border border-[#c8a24c]/40 bg-[linear-gradient(180deg,rgba(20,20,20,0.98),rgba(10,10,10,1))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#F5F5DC]/30 bg-[#0f0f0f] text-[#F5F5DC]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c8a24c]/30 bg-[#0f0f0f] text-[#c8a24c]">
                   <LifeBuoy className="h-5 w-5" />
                 </div>
                 <div>
@@ -124,7 +124,7 @@ export default function VendorDashboardShell({ children }) {
               <Button
                 type="button"
                 variant="outline"
-                className="mt-4 h-11 w-full justify-start border-[#F5F5DC]/45 bg-transparent text-white hover:bg-white/10"
+                className="mt-4 h-11 w-full justify-start border-[#c8a24c]/45 bg-transparent text-white hover:bg-white/10"
                 onClick={() => window.open("https://wa.me/919999999999", "_blank")}
               >
                 <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-current">◎</span>
@@ -169,10 +169,10 @@ export default function VendorDashboardShell({ children }) {
 
                 <button type="button" className="relative flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
                   <Bell className="h-5 w-5 text-black/70" />
-                  <span className="absolute right-0 top-0 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#F5F5DC] px-1 text-[10px] font-semibold text-white">3</span>
+                  <span className="absolute right-0 top-0 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#c8a24c] px-1 text-[10px] font-semibold text-white">3</span>
                 </button>
 
-                <button type="button" className="flex h-11 w-11 items-center justify-center rounded-full bg-black text-sm font-semibold text-[#F5F5DC] shadow-[0_10px_24px_rgba(0,0,0,0.1)]">
+                <button type="button" className="flex h-11 w-11 items-center justify-center rounded-full bg-black text-sm font-semibold text-[#c8a24c] shadow-[0_10px_24px_rgba(0,0,0,0.1)]">
                   {(vendorName || workspace)
                     .split(" ")
                     .filter(Boolean)
