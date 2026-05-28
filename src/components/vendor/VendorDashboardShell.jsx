@@ -84,7 +84,7 @@ export default function VendorDashboardShell({ children }) {
             </div>
             <div>
               <p className="text-xl font-semibold tracking-tight">EnviteYou</p>
-              <p className="text-xs uppercase tracking-[0.28em] text-[#F5F5DC]">Partner Studio</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-[#c8a24c]">Partner Studio</p>
             </div>
           </Link>
 
