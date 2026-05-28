@@ -5,6 +5,26 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+function loadRazorpayScript() {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve(false);
+      return;
+    }
+
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
 const tabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"];
 const eventOptions = ["Mehendi", "Haldi", "Sagan", "Cocktail", "Sangeet", "Baraat", "Shaadi", "Reception"];
 const defaultEventDetail = {
@@ -201,6 +221,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [customEventName, setCustomEventName] = useState("");
   const [storySubTab, setStorySubTab] = useState("Personality Tags");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const templateStorageKey = getTemplateStorageKey(template);
   const [form, setForm] = useState(() => {
     if (!templateStorageKey || typeof window === "undefined") {
@@ -460,6 +481,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
   }
 
  async function handleSubmit () {
+   if (isSubmitting) return;
 
     if (!form.bride || !form.groom || !form.date) {
       toast.error("Please add both names and the wedding date.");
@@ -481,34 +503,81 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     }
 
     try {
-      const res = await api.post("/invitations/create", {
+      setIsSubmitting(true);
+
+      const orderResponse = await api.post("/payments/create-order");
+      const order = orderResponse?.data?.order;
+      const razorpayKeyId = orderResponse?.data?.keyId;
+
+      if (!order?.id || !razorpayKeyId) {
+        throw new Error("Unable to start payment checkout.");
+      }
+
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        throw new Error("Unable to load payment gateway.");
+      }
+
+      const invitationData = {
         ...form,
         templateId: template?.templateId || template?.id,
+      };
+
+      const verificationResponse = await new Promise((resolve, reject) => {
+        const razorpay = new window.Razorpay({
+          key: razorpayKeyId,
+          amount: order.amount,
+          currency: order.currency || "INR",
+          name: "EnviteYou",
+          description: `Invitation payment for ${form.bride} & ${form.groom}`,
+          order_id: order.id,
+          prefill: {
+            name: form.bride || "Customer",
+            contact: form.whatsapp || "",
+          },
+          theme: {
+            color: "#111111",
+          },
+          handler: async (response) => {
+            try {
+              const verifyResponse = await api.post("/payments/verify-and-create-invitation", {
+                ...response,
+                invitationData,
+              });
+              resolve(verifyResponse);
+            } catch (error) {
+              reject(error);
+            }
+          },
+          modal: {
+            ondismiss: () => reject(new Error("Payment was cancelled.")),
+          },
+        });
+
+        razorpay.on("payment.failed", (response) => {
+          reject(new Error(response?.error?.description || "Payment failed. Please try again."));
+        });
+
+        razorpay.open();
       });
-      console.log(res.data);
 
-      if (res.data?.success) {
-        const created = res.data.data;
-        const slug = created?.slug;
-        const invitePath = slug ? `/invite/${encodeURIComponent(slug)}` : null;
-        const fullUrl = invitePath ? `${window.location.origin}${invitePath}` : null;
-        clearTemplateDraft();
+      const created = verificationResponse?.data?.data;
+      const slug = created?.slug;
+      const invitePath = slug ? `/invite/${encodeURIComponent(slug)}` : null;
+      const fullUrl = invitePath ? `${window.location.origin}${invitePath}` : null;
+      clearTemplateDraft();
 
-        // Open the generated invite in a new tab and navigate the current window there as well
-        if (fullUrl) {
-          try {
-            window.open(fullUrl, "_blank");
-          } catch (e) {
-            // ignore
-          }
-          toast.success("Invitation created successfully.");
-          router.replace(invitePath);
-        } else {
-          toast.success("Invitation created successfully.");
-          toast.info("Unable to determine invite URL.");
+      if (fullUrl) {
+        try {
+          window.open(fullUrl, "_blank");
+        } catch {
+          // ignore popup blocking
         }
-      } else {
-        toast.error("Failed to create invitation. Please try again.");
+      }
+
+      toast.success("Payment successful and invitation created.");
+      if (invitePath) {
+        router.replace(invitePath);
       }
     } catch (error) {
       const status = error?.response?.status;
@@ -517,7 +586,9 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         router.push("/signin");
         return;
       }
-      toast.error(error?.response?.data?.message || "Failed to create invitation. Please try again.");
+      toast.error(error?.response?.data?.message || error?.message || "Payment or invitation creation failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -1069,8 +1140,8 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           </button>
 
           {isLastTab ? (
-            <button type="button" onClick={handleSubmit} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
-              Save Details
+            <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60">
+              {isSubmitting ? "Processing Payment..." : "Pay & Create Invitation"}
             </button>
           ) : (
             <button

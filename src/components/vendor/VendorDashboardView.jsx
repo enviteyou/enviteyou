@@ -208,7 +208,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Overview</p>
           <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Create New Website</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-black/60">Fill wedding details and generate a premium website in minutes.</p>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-black/60">Fill wedding details and generate a premium invitation in minutes.</p>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">

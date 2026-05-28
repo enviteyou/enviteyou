@@ -9,10 +9,12 @@ import Link from "next/link";
 export default function VendorSignupPage() {
 	const [formData, setFormData] = useState({
 		name: "",
+		businessName: "",
 		email: "",
 		password: "",
 		number: "",
 		googleMyBusinessLink: "",
+		gstNumber: "",
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
@@ -49,10 +51,12 @@ export default function VendorSignupPage() {
 			toast.success(message);
 			setFormData({
 				name: "",
+				businessName: "",
 				email: "",
 				password: "",
 				number: "",
 				googleMyBusinessLink: "",
+				gstNumber: "",
 			});
 		} catch (requestError) {
 			const message = requestError?.response?.data?.message || "Unable to register vendor right now. Please try again.";
@@ -94,6 +98,22 @@ export default function VendorSignupPage() {
 						onChange={handleChange}
 						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
 						placeholder="Your name"
+					/>
+				</div>
+
+				<div>
+					<label htmlFor="businessName" className="mb-1 block text-sm font-medium text-black/75">
+						Business name
+					</label>
+					<input
+						id="businessName"
+						name="businessName"
+						type="text"
+						required
+						value={formData.businessName}
+						onChange={handleChange}
+						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
+						placeholder="Your business name"
 					/>
 				</div>
 
@@ -160,6 +180,23 @@ export default function VendorSignupPage() {
 						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
 						placeholder="https://g.page/..."
 					/>
+				</div>
+
+				<div>
+					<label htmlFor="gstNumber" className="mb-1 block text-sm font-medium text-black/75">
+						GST number
+						<span className="ml-2 text-xs font-normal text-black/45">Optional</span>
+					</label>
+					<input
+						id="gstNumber"
+						name="gstNumber"
+						type="text"
+						value={formData.gstNumber}
+						onChange={handleChange}
+						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
+						placeholder="GST number"
+					/>
+					<p className="mt-1 text-xs font-semibold text-black/55">Get faster chance of approval</p>
 				</div>
 
 				{error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}

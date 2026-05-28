@@ -11,9 +11,9 @@ import { getVendorSession } from "@/lib/vendorAuth";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
-  { label: "Create New Website", href: "/vendor/dashboard/create-new-website", icon: CalendarPlus },
+  { label: "Create New Invitation", href: "/vendor/dashboard/create-new-website", icon: CalendarPlus },
   { label: "Template Library", href: "/vendor/dashboard/template-library", icon: LayoutGrid },
-  { label: "My Websites", href: "/vendor/dashboard/my-websites", icon: Monitor },
+  { label: "My Invitations", href: "/vendor/dashboard/my-websites", icon: Monitor },
   { label: "Payments", href: "/vendor/dashboard/payments", icon: CreditCard },
   { label: "Clients", href: "/vendor/dashboard/clients", icon: Users },
   { label: "Support & Help", href: "/vendor/dashboard/support-help", icon: LifeBuoy },
@@ -22,10 +22,17 @@ const NAV_ITEMS = [
 export default function VendorDashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [workspace, setWorkspace] = useState("Royal Wedding Studio");
+  const [workspace, setWorkspace] = useState("Business name");
+  const [vendorName, setVendorName] = useState("");
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const workspaceOptions = useMemo(() => ["Royal Wedding Studio", "Royal Studio Mumbai", "Golden Palace Events"], []);
+  const workspaceOptions = useMemo(() => {
+    const labels = [workspace].filter(Boolean);
+    if (vendorName && !labels.includes(vendorName)) {
+      labels.unshift(vendorName);
+    }
+    return labels;
+  }, [vendorName, workspace]);
 
   useEffect(() => {
     let mounted = true;
@@ -41,6 +48,9 @@ export default function VendorDashboardShell({ children }) {
         return;
       }
 
+      const businessLabel = session.user.businessName || session.user.name || "Business name";
+      setVendorName(businessLabel);
+      setWorkspace(businessLabel);
       setIsAuthorized(true);
       setCheckingAuth(false);
     })();
@@ -132,7 +142,7 @@ export default function VendorDashboardShell({ children }) {
                   setWorkspace(value);
                   toast.success(`Workspace switched to ${value}`);
                 }}>
-                  <SelectTrigger className="h-12 min-w-[240px] rounded-2xl border border-black/10 bg-white px-4 text-left text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
+                  <SelectTrigger className="h-12 min-w-60 rounded-2xl border border-black/10 bg-white px-4 text-left text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
                     <SelectValue placeholder="Select workspace" />
                   </SelectTrigger>
                   <SelectContent align="start" className="rounded-2xl border border-black/10 bg-white shadow-xl">
@@ -163,7 +173,13 @@ export default function VendorDashboardShell({ children }) {
                 </button>
 
                 <button type="button" className="flex h-11 w-11 items-center justify-center rounded-full bg-black text-sm font-semibold text-[#F5F5DC] shadow-[0_10px_24px_rgba(0,0,0,0.1)]">
-                  RW
+                  {(vendorName || workspace)
+                    .split(" ")
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map((part) => part[0])
+                    .join("")
+                    .toUpperCase() || "VB"}
                 </button>
               </div>
             </div>
