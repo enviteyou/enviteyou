@@ -295,7 +295,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
   const isFirstTab = activeTabIndex === 0;
   // Treat MUSIC as the final step for saving details (show Save on MUSIC tab), even though Gallery and Info come after it for users to edit those sections if they want
   const isLastTab = activeTab === tabs[tabs.length - 1] || activeTab === "Music";
-  console.log("isLastTab:", isLastTab);
+  
 
   function update(event) {
     const { name, value, type, checked } = event.target;
