@@ -45,7 +45,7 @@ function TemplateCard({ template }) {
           </div>
         </div>
 
-        <div className="mt-auto border-t border-black/8 bg-white px-4 py-4 sm:px-5 sm:py-5">
+        <div className="mt-auto border-t border-black/8 bg-white p-4 md:p-5">
           <div className="mb-3 flex items-center justify-between">
             <div className="rounded-2xl border border-black/10 bg-transparent px-3.5 py-1 text-[0.8rem] font-normal text-black/60">
               {categoryLabel}
