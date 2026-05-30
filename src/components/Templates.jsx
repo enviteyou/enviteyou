@@ -99,13 +99,13 @@ export default function Templates({ templates = [], activeCategory = "All" }) {
             <h3 className="text-lg font-semibold text-black">Templates</h3>
             <p className="text-sm text-black/60">Click a template to view details and customize.</p>
           </div>
-          <div className="text-sm text-black/40">Responsive layout with stacked mobile cards</div>
+       
         </div>
 
         {filteredTemplates.length ? (
           <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filteredTemplates.map((template) => (
-              <TemplateCard key={template.templateId || template.id} template={template} />
+              <TemplateCard key={template._id || template.id} template={template} />
             ))}
           </div>
         ) : (
