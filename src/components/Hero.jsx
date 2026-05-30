@@ -107,11 +107,9 @@ export default function Hero({ templates = [] }) {
           <p className="text-xs font-semibold  tracking-widest text-black/50">Pay once. No expiry. No hidden fees.</p>
            
           <h1 className="mt-2 max-w-5xl text-xl font-bold leading-tight tracking-normal text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
-            Build Your Wedding Website,
+            Build Your Wedding Website, Online Forever.
             
-            <span className="mt-2 max-w-5xl text-xl font-bold leading-tight tracking-normal text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
-              Online Forever.
-            </span>
+      
           </h1>
 
           <p className="mt-4 max-w-3xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
