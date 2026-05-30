@@ -13,10 +13,12 @@ function normalizeCategory(value) {
 function getPriceLabel(template) {
   const raw = template?.price ?? template?.pricing ?? template?.sellPrice ?? "3999";
   const s = String(raw).trim();
-  // If already contains INR or rupee symbol, return as-is
-  if (/\bINR\b/i.test(s) || /₹/.test(s)) return s;
-  // Otherwise prefix with INR
-  return `INR ${s}`;
+  // If it already contains the rupee symbol, return as-is
+  if (/₹/.test(s)) return s;
+  // If it contains 'INR', replace with the rupee symbol
+  if (/\bINR\b/i.test(s)) return s.replace(/\bINR\b/i, "₹");
+  // Otherwise prefix with the rupee symbol
+  return `₹ ${s}`;
 }
 
 function getCategoryLabel(template) {
