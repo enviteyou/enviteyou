@@ -23,60 +23,26 @@ function getCategoryLabel(template) {
   return String(template?.category || template?.tag || "Wedding").trim();
 }
 
-function TemplatePhone({ src, alt }) {
-  return (
-    <div className="relative h-full w-24 overflow-hidden rounded-[1.5rem] border-4 border-black bg-transparent shadow-[-18px_26px_34px_rgba(0,0,0,0.28),-8px_12px_18px_rgba(0,0,0,0.18)] sm:w-28">
-      <div className="absolute left-1/2 top-1.5 z-10 h-2.5 w-9 -translate-x-1/2 rounded-full bg-black/92" />
-      <div className="absolute inset-[0.2rem] overflow-hidden rounded-[1.1rem] bg-black">
-        {src ? (
-          <img src={src} alt={alt} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-black/5 via-black/0 to-black/10 text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-black/30">
-            No preview
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function TemplatePanelImage({ src, alt }) {
-  return (
-    <div className="h-full w-24 overflow-hidden rounded border border-black bg-transparent shadow-[0_16px_42px_rgba(0,0,0,0.14)] sm:w-28">
-      {src ? (
-        <img src={src} alt={alt} className="h-full w-full object-cover" />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-black/5 via-black/0 to-black/10 text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-black/30">
-          No preview
-        </div>
-      )}
-    </div>
-  );
-}
-
 function TemplateCard({ template }) {
-  const preview = template.preview || template.featuredImage;
-  const secondaryPreview = template.secondaryImage || template.secondImage || preview;
+  const preview = template.featuredImage || template.preview;
   const priceLabel = getPriceLabel(template);
   const categoryLabel = getCategoryLabel(template);
 
   return (
     <Link href={`/templateInfo/${template.templateId || template.id}`} className="group block h-full w-full">
       <article className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-black/10 bg-[#f2ece5] shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-transform duration-300 group-hover:-translate-y-1.5">
-        <div className="relative px-3.5 pb-3.5 pt-14 sm:px-4 sm:pb-4 sm:pt-14">
-          <div className="absolute left-3.5 top-3.5 inline-flex w-fit items-center gap-1.5 rounded-full border border-emerald-700/15 bg-emerald-600 px-3 py-1.5 text-[0.74rem] font-semibold tracking-wide text-white shadow-[0_8px_18px_rgba(16,185,129,0.18)] sm:left-4 sm:top-4">
-            <span className="text-[0.9rem] leading-none">✦</span>
-            <span>New</span>
-          </div>
+        <div className="relative w-full">
+          {preview ? (
+            <img src={preview} alt={template.name} className="block h-72 w-full object-cover sm:h-80" />
+          ) : (
+            <div className="flex w-full items-center justify-center bg-linear-to-br from-black/5 via-black/0 to-black/10 py-16 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-black/30">
+              No preview
+            </div>
+          )}
 
           <div className="absolute right-3.5 top-3.5 flex size-8 items-center justify-center rounded-full border border-black/10 bg-[#6b2d34] text-white shadow-[0_8px_18px_rgba(107,45,52,0.18)] sm:right-4 sm:top-4">
             <Eye className="size-4" />
           </div>
-        </div>
-
-        <div className="flex h-48 flex-row items-center justify-center gap-3 px-3.5 pb-4 sm:h-56 sm:gap-4 sm:px-5 lg:gap-5">
-          <TemplatePhone src={preview} alt={template.name} />
-          <TemplatePanelImage src={secondaryPreview} alt={template.name} />
         </div>
 
         <div className="mt-auto border-t border-black/8 bg-[#fbf6f0] px-4 py-4 sm:px-5 sm:py-5">
