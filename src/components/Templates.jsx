@@ -59,7 +59,15 @@ function TemplateCard({ template }) {
             <h4 className="text-[1.35rem] font-medium leading-tight tracking-[-0.04em] text-[#5f4a46] sm:text-[1.7rem]">
               {template.name || "Bloom"}
             </h4>
-            <p className="max-w-136 text-[0.92rem] leading-5 text-black/55 sm:text-[1rem] sm:leading-6">
+            <p
+              className="max-w-136 text-[0.92rem] leading-5 text-black/55 sm:text-[1rem] sm:leading-6"
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
               {template.description || "An invitation inspired by a dreamlike florla.white roses"}
             </p>
           </div>
