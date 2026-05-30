@@ -11,7 +11,12 @@ function normalizeCategory(value) {
 }
 
 function getPriceLabel(template) {
-  return String(template?.price || template?.pricing || template?.sellPrice || "INR 3999").trim();
+  const raw = template?.price ?? template?.pricing ?? template?.sellPrice ?? "3999";
+  const s = String(raw).trim();
+  // If already contains INR or rupee symbol, return as-is
+  if (/\bINR\b/i.test(s) || /₹/.test(s)) return s;
+  // Otherwise prefix with INR
+  return `INR ${s}`;
 }
 
 function getCategoryLabel(template) {
@@ -75,24 +80,22 @@ function TemplateCard({ template }) {
         </div>
 
         <div className="mt-auto border-t border-black/8 bg-[#fbf6f0] px-4 py-4 sm:px-5 sm:py-5">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-2">
-              <h4 className="text-[1.35rem] font-medium leading-tight tracking-[-0.04em] text-[#5f4a46] sm:text-[1.7rem]">
-                { "Bloom" || template.name}
-              </h4>
-              <p className="max-w-136 text-[0.92rem] leading-5 text-black/55 sm:text-[1rem] sm:leading-6">
-                { "An invitation inspired by a dreamlike florla.white roses" || template.description }
-              </p>
+          <div className="mb-3 flex items-center justify-between">
+            <div className="rounded-2xl border border-black/10 bg-transparent px-3.5 py-1 text-[0.8rem] font-normal text-black/60">
+              {categoryLabel}
             </div>
+            <div className="inline-flex items-center rounded-full border border-black/10 bg-white px-3.5 py-1.5 text-[0.9rem] font-medium text-black/75 shadow-[0_8px_18px_rgba(0,0,0,0.04)]">
+              {priceLabel}
+            </div>
+          </div>
 
-            <div className="flex flex-col items-start gap-2 lg:items-end ">
-              <div className="inline-flex rounded-full border border-black/10 bg-white px-3.5 py-1.5 text-[0.82rem] font-medium text-black/65 shadow-[0_8px_18px_rgba(0,0,0,0.04)]">
-                {priceLabel}
-              </div>
-              <div className=" rounded-2xl border border-black/10 bg-transparent px-4 py-1 text-[0.8rem] font-normal text-black/40">
-                {categoryLabel}
-              </div>
-            </div>
+          <div className="space-y-2">
+            <h4 className="text-[1.35rem] font-medium leading-tight tracking-[-0.04em] text-[#5f4a46] sm:text-[1.7rem]">
+              {template.name || "Bloom"}
+            </h4>
+            <p className="max-w-136 text-[0.92rem] leading-5 text-black/55 sm:text-[1rem] sm:leading-6">
+              {template.description || "An invitation inspired by a dreamlike florla.white roses"}
+            </p>
           </div>
 
           <div className="mt-4 flex items-center justify-between gap-3">
