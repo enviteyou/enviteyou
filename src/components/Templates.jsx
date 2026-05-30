@@ -30,7 +30,7 @@ function TemplateCard({ template }) {
 
   return (
     <Link href={`/templateInfo/${template.templateId || template.id}`} className="group block h-full w-full">
-      <article className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-black/10 bg-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-transform duration-300 group-hover:-translate-y-1.5">
+      <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-transform duration-300 group-hover:-translate-y-1.5">
         <div className="relative w-full">
           {preview ? (
             <img src={preview} alt={template.name} className="block h-72 w-full object-cover sm:h-80" />
