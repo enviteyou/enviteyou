@@ -42,7 +42,7 @@ function TemplateCard({ template }) {
             </div>
           )}
 
-          <div className="absolute right-3.5 top-3.5 flex size-8 items-center justify-center rounded-full border border-black/10 bg-black text-white shadow-[0_8px_18px_rgba(107,45,52,0.18)] sm:right-4 sm:top-4">
+          <div className="absolute right-3.5 top-3.5 flex size-8 items-center justify-center rounded-full border border-black/10 bg-white text-black shadow-[0_8px_18px_rgba(107,45,52,0.18)] sm:right-4 sm:top-4">
             <Eye className="size-4" />
           </div>
         </div>
