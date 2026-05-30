@@ -196,7 +196,7 @@ export default function Header() {
 
         <div
           id="mobile-menu"
-          className={`grid overflow-hidden transition-all duration-300 lg:hidden ${menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+          className={`grid overflow-hidden transition-all duration-50 lg:hidden ${menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
         >
           <nav className="min-h-0" aria-label="Mobile navigation">
             <div className="space-y-2 px-1 pb-2 pt-3">
