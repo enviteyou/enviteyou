@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-dmsans);
   --font-mono: var(--font-mono);
-  --font-heading: var(--font-mono);
+  --font-heading: var(--font-playfair);
   --font-inter: var(--font-inter);
   --font-roboto: var(--font-roboto);
   --font-playwrite-ca: var(--font-playwrite-ca);
@@ -155,6 +155,25 @@ canvas {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Font families */
+:root {
+  --font-playfair: 'Playfair Display', serif;
+  --font-dmsans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-sans: var(--font-dmsans);
+  --font-heading: var(--font-playfair);
+}
+
+/* Headings use Playfair Display, body/description use DM Sans */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.15;
+  font-weight: 600;
+}
+
+p, span, a, li, input, button {
+  font-family: var(--font-sans);
 }
 
 @layer base {

@@ -1,7 +1,7 @@
 import "./globals.css";
 import Header from "../../components/Header";
 import Footer from "@/components/Footer";
-import { JetBrains_Mono, Inter, Roboto, Playwrite_CA } from "next/font/google";
+import { JetBrains_Mono, Inter, Roboto, Playwrite_CA, Playfair_Display, DM_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -9,6 +9,8 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mon
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const roboto = Roboto({ weight: ['300', '400', '500', '700'], subsets: ['latin'], variable: '--font-roboto' });
 const playwriteCa = Playwrite_CA({ variable: '--font-playwrite-ca' });
+const playfairDisplay = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dmsans' });
 
 export const metadata = {
   metadataBase: new URL("https://enviteyou.com"),
@@ -74,12 +76,13 @@ export default function RootLayout({ children }) {
     >
       <div
         className={cn(
-          "min-h-full overflow-x-hidden bg-white text-black antialiased",
-          "font-inter",
+          "",
           jetbrainsMono.variable,
           inter.variable,
           roboto.variable,
-          playwriteCa.variable
+          playwriteCa.variable,
+          playfairDisplay.variable,
+          dmSans.variable
         )}
       >
         <script

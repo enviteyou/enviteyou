@@ -13,6 +13,7 @@ const emptyForm = {
   vendorPrice: "",
   title: "",
   description: "",
+  secondaryImage: "",
 };
 
 const inputClass =
@@ -22,6 +23,7 @@ const labelClass = "text-xs font-semibold uppercase tracking-[0.18em] text-black
 export default function AddTemplate() {
   const [form, setForm] = useState(emptyForm);
   const [file, setFile] = useState(null);
+  const [secondaryFile, setSecondaryFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
@@ -57,6 +59,7 @@ export default function AddTemplate() {
       const fd = new FormData();
       Object.keys(form).forEach((k) => fd.append(k, form[k]));
       if (file) fd.append("featuredImage", file);
+      if (secondaryFile) fd.append("secondaryImage", secondaryFile);
 
       await api.post("/templates/create", fd, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -64,6 +67,7 @@ export default function AddTemplate() {
       setMessage("Template created successfully.");
       setForm(emptyForm);
       setFile(null);
+      setSecondaryFile(null);
       e.target.reset();
     } catch (err) {
       console.error(err);
@@ -153,6 +157,12 @@ export default function AddTemplate() {
             <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="hidden" />
             <span className="text-sm font-semibold text-black">{file ? file.name : "Upload image"}</span>
             <span className="mt-2 text-xs leading-5 text-black/45">PNG, JPG, or WEBP preview image.</span>
+          </label>
+          <h2 className="mt-6 text-xl font-semibold tracking-tight">Secondary image</h2>
+          <label className="mt-5 flex min-h-44 cursor-pointer flex-col items-center justify-center border border-dashed border-black/25 bg-black/2 p-5 text-center transition hover:border-black">
+            <input type="file" accept="image/*" onChange={(e) => setSecondaryFile(e.target.files?.[0] || null)} className="hidden" />
+            <span className="text-sm font-semibold text-black">{secondaryFile ? secondaryFile.name : "Upload second image"}</span>
+            <span className="mt-2 text-xs leading-5 text-black/45">Optional. If blank, the first image is reused.</span>
           </label>
           {message ? <p className="mt-5 border border-black/10 px-4 py-3 text-sm font-medium text-black">{message}</p> : null}
           <button disabled={loading} className="mt-5 w-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50">
