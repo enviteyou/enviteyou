@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/api/axios";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 function formatCurrency(value) {
   if (value === undefined || value === null || value === "") return "Not set";
@@ -18,6 +20,7 @@ export default function AllTemplate() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -50,6 +53,23 @@ export default function AllTemplate() {
     }
     load();
   }, []);
+
+  async function handleDelete(id) {
+    const confirmed = window.confirm("Delete this template? This action cannot be undone.");
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(id);
+      await api.delete(`/templates/${id}`);
+      setList((current) => current.filter((template) => template._id !== id));
+      toast.success("Template deleted successfully.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Unable to delete template.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -103,7 +123,7 @@ export default function AllTemplate() {
                 <img
                   src={t.featuredImage}
                   alt={t.title}
-                  className="aspect-[4/3] w-full border border-black/10 object-cover lg:w-[120px]"
+                  className="aspect-4/3 w-full border border-black/10 object-cover lg:w-30"
                 />
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
@@ -119,12 +139,24 @@ export default function AllTemplate() {
                     <span className="border border-black/10 px-3 py-2">Vendor {formatCurrency(t.vendorPrice)}</span>
                   </div>
                 </div>
-                <a
-                  href={`/admin/updateTemplate/${t._id}`}
-                  className="border border-black px-5 py-3 text-center text-sm font-semibold text-black transition hover:bg-black hover:text-white"
-                >
-                  Edit
-                </a>
+                <div className="flex items-center gap-2 lg:justify-end">
+                  <a
+                    href={`/admin/updateTemplate/${t._id}`}
+                    className="border border-black px-5 py-3 text-center text-sm font-semibold text-black transition hover:bg-black hover:text-white"
+                  >
+                    Edit
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(t._id)}
+                    disabled={deletingId === t._id}
+                    className="inline-flex items-center justify-center border border-red-200 bg-red-50 px-4 py-3 text-red-600 transition hover:bg-red-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label={`Delete ${t.title}`}
+                    title="Delete template"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
               </article>
             ))}
           </div>
