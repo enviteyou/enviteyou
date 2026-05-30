@@ -159,13 +159,13 @@ canvas {
 
 /* Font families */
 :root {
-  --font-playfair: 'Playfair Display', serif;
+  --font-playfair: 'Cormorant Garamond', serif;
   --font-dmsans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   --font-sans: var(--font-dmsans);
   --font-heading: var(--font-playfair);
 }
 
-/* Headings use Playfair Display, body/description use DM Sans */
+/* Headings use Cormorant Garamond, body/description use DM Sans */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   line-height: 1.15;

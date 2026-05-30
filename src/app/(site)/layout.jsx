@@ -1,7 +1,7 @@
 import "./globals.css";
 import Header from "../../components/Header";
 import Footer from "@/components/Footer";
-import { JetBrains_Mono, Inter, Roboto, Playwrite_CA, Playfair_Display, DM_Sans } from "next/font/google";
+import { JetBrains_Mono, Inter, Roboto, Playwrite_CA, Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -9,7 +9,7 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mon
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const roboto = Roboto({ weight: ['300', '400', '500', '700'], subsets: ['latin'], variable: '--font-roboto' });
 const playwriteCa = Playwrite_CA({ variable: '--font-playwrite-ca' });
-const playfairDisplay = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
+const cormorantGaramond = Cormorant_Garamond({ subsets: ['latin'], weight: ['400','500','600','700'], variable: '--font-playfair' });
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dmsans' });
 
 export const metadata = {
@@ -81,7 +81,7 @@ export default function RootLayout({ children }) {
           inter.variable,
           roboto.variable,
           playwriteCa.variable,
-          playfairDisplay.variable,
+          cormorantGaramond.variable,
           dmSans.variable
         )}
       >
