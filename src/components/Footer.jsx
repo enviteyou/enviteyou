@@ -27,9 +27,9 @@ export default function Footer() {
         <div className="absolute -right-32 -bottom-20 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(230,200,165,0.2),transparent_70%)] blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
+      <div className="relative mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-10 lg:py-16">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-xl">
+          <div className="max-w-md">
             <div className="flex flex-col items-start gap-3 min-[420px]:flex-row min-[420px]:items-center">
               <Link href="/" className="flex shrink-0 items-center" aria-label="EnviteYou home">
                 <Image
@@ -48,27 +48,27 @@ export default function Footer() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap">
-              <Link href="/pricing" className="rounded-full bg-black px-6 py-3 text-center text-sm font-medium text-white shadow-[0_18px_42px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90">
+              <Link href="/pricing" className="rounded bg-black px-6 py-3 text-center text-sm font-medium text-white shadow-[0_18px_42px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90">
                 Choose a template
               </Link>
-              <a href="mailto:care@enviteyou.com" className="rounded-full border border-black/10 bg-white px-6 py-3 text-center text-sm font-medium text-black/75 shadow-[0_14px_34px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:border-black/20 hover:text-black">
+              <a href="mailto:care@enviteyou.com" className="rounded border border-black/10 bg-white px-6 py-3 text-center text-sm font-medium text-black/75 shadow-[0_14px_34px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:border-black/20 hover:text-black">
                 Book a consultation
               </a>
             </div>
 
-            <div className="mt-6 grid gap-3 text-sm text-black/60 sm:grid-cols-2">
-              <a href="mailto:care@enviteyou.com" className="rounded-2xl border border-black/8 bg-white px-4 py-3 transition hover:border-black/16 hover:text-black">
+            <div className="mt-6 grid gap-1 text-sm text-black/60">
+              <a href="mailto:care@enviteyou.com" className="rounded border border-black/8 bg-white px-4 py-3 transition hover:border-black/16 hover:text-black">
                 <span className="block text-[0.7rem] uppercase tracking-[0.3em] text-black/40">Email</span>
                 <span className="mt-1 block font-medium">care@enviteyou.com</span>
               </a>
-              <a href="tel:+918828287278" className="rounded-2xl border border-black/8 bg-white px-4 py-3 transition hover:border-black/16 hover:text-black">
+              <a href="tel:+918828287278" className="rounded border border-black/8 bg-white px-4 py-3 transition hover:border-black/16 hover:text-black">
                 <span className="block text-[0.7rem] uppercase tracking-[0.3em] text-black/40">Phone</span>
                 <span className="mt-1 block font-medium">+91 8828287278</span>
               </a>
             </div>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-3 lg:gap-14">
+          <div className="grid gap-10 grid-cols-2 md:grid-cols-3 lg:gap-14">
             {Object.entries(footerLinks).map(([title, items]) => (
               <div key={title}>
                 <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-black/45">{title}</h2>

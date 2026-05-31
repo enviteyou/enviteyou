@@ -64,7 +64,7 @@ export default function TestimonialsSection() {
           </div>
 
           <div className="mt-8 flex justify-center">
-            <button className="w-full rounded-[1.2rem] bg-black px-6 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:max-w-3xl">
+            <button className="w-full rounded bg-black px-6 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:max-w-3xl">
               Write a review
             </button>
           </div>

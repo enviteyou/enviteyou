@@ -45,7 +45,7 @@ export default function FeaturesShowcase() {
             <div className="space-y-1">
               {/* Badge */}
               <div>
-                <span className="inline-flex mb-1 rounded-full border border-black/20 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-black/70">
+                <span className="inline-flex mb-1 rounded border border-black/20 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-black/70">
                   Features
                 </span>
               </div>
@@ -77,7 +77,7 @@ export default function FeaturesShowcase() {
           <div className="space-y-0">
             {features.map((feature, index) => (
               <React.Fragment key={feature.label}>
-                <div 
+                <div
                   className="sticky top-16 md:top-20  overflow-hidden transition-all duration-300  py-10 px-0 bg-white"
                   style={{ zIndex: index }}
                 >
