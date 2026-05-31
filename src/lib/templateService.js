@@ -55,8 +55,17 @@ export async function getTemplates() {
     credentials:"include",
     next: { revalidate: 3600 }, // Revalidate every 60 seconds
   });
-  const data = await response.json();
-  const rawTemplates = Array.isArray(data) ? data : Array.isArray(data?.data) ?   data.data : [];
+
+  let rawTemplates = [];
+  try {
+    const text = await response.text();
+    if (text) {
+      const data = JSON.parse(text);
+      rawTemplates = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+    }
+  } catch (error) {
+    console.error("Error parsing templates response:", error);
+  }
 
   return normalizeTemplates(rawTemplates);
 }

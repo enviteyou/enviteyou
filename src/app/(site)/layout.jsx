@@ -7,12 +7,12 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
 
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', preload: false });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const roboto = Roboto({ weight: ['300', '400', '500', '700'], subsets: ['latin'], variable: '--font-roboto' });
-const playwriteCa = Playwrite_CA({ variable: '--font-playwrite-ca' });
-const cormorantGaramond = Cormorant_Garamond({ subsets: ['latin'], weight: ['400','500','600','700'], variable: '--font-playfair' });
-const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dmsans' });
+const roboto = Roboto({ weight: ['300', '400', '500', '700'], subsets: ['latin'], variable: '--font-roboto', preload: false });
+const playwriteCa = Playwrite_CA({ variable: '--font-playwrite-ca', preload: false });
+const cormorantGaramond = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-playfair', preload: false });
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dmsans', preload: false });
 
 export const metadata = {
   metadataBase: new URL("https://enviteyou.com"),
@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   return (
-     <GoogleOAuthProvider
+    <GoogleOAuthProvider
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
     >
       <div
@@ -112,7 +112,7 @@ export default function RootLayout({ children }) {
 
           <Header />
 
-          <main className="min-h-screen">
+          <main>
             {children}
           </main>
 
@@ -121,5 +121,5 @@ export default function RootLayout({ children }) {
       </div>
     </GoogleOAuthProvider>
   );
-  
+
 }

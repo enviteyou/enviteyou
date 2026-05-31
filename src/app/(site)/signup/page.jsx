@@ -17,7 +17,7 @@ export default function SignupPage() {
 		name: "",
 		email: "",
 		password: "",
-		number:"",
+		number: "",
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
@@ -59,7 +59,7 @@ export default function SignupPage() {
 		);
 	}
 
-		const handleSubmit = async (event) => {
+	const handleSubmit = async (event) => {
 		try {
 			const captchaToken = await getRecaptchaToken("signup");
 			const payload = {
@@ -77,7 +77,7 @@ export default function SignupPage() {
 				name: "",
 				email: "",
 				password: "",
-				number:"",
+				number: "",
 			});
 			router.replace("/my-account");
 		} catch (requestError) {
@@ -92,23 +92,26 @@ export default function SignupPage() {
 	};
 
 	return (
-				<main
-					className="relative isolate min-h-screen overflow-hidden px-4 py-10 sm:px-6 lg:px-8"
-					style={{
-						backgroundImage: "url('/form_background.jpeg')",
-						backgroundSize: 'cover',
-						backgroundPosition: 'center',
-						backgroundRepeat: 'no-repeat',
-					}}
-				>
+		<main
+			className="relative isolate flex min-h-screen w-full py-20 px-4 items-center justify-center"
+		>
+			<Image
+				src="/form_background.jpeg"
+				alt="Background"
+				fill
+				priority
+				className="object-cover fixed! inset-0!"
+				style={{ zIndex: -1 }}
+			/>
 
-						<section className="relative mx-auto w-full max-w-lg rounded-3xl border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(70,35,25,0.12)] sm:p-8">
-								<div className="flex items-center gap-3 mb-2">
-									<Image  src="/icon.png" alt="EnviteYou" width={40} height={40} className="rounded-md shadow-[0_18px_60px_rgba(70,35,25,0.12)]" />
-									<span className="text-sm font-semibold uppercase tracking-[0.24em] text-black/85">ENVITEYOU</span>
-								</div>
-								<h1 className="mt-2 text-4xl font-bold tracking-tight text-black">Create an account</h1>
-								<p className="mt-1 text-sm text-black/65">Create a normal EnviteYou account.</p>
+
+			<section className="relative mx-auto w-full max-w-lg rounded-3xl border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(70,35,25,0.12)] sm:p-8">
+				<div className="flex items-center gap-3 mb-2">
+					<Image src="/icon.png" alt="EnviteYou" width={40} height={40} className="rounded-md shadow-[0_18px_60px_rgba(70,35,25,0.12)]" />
+					<span className="text-sm font-semibold uppercase tracking-[0.24em] text-black/85">ENVITEYOU</span>
+				</div>
+				<h1 className="mt-2 text-4xl font-bold tracking-tight text-black">Create an account</h1>
+				<p className="mt-1 text-sm text-black/65">Create a normal EnviteYou account.</p>
 
 				<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 					<div>
@@ -188,7 +191,7 @@ export default function SignupPage() {
 					>
 						{isSubmitting ? "Creating account..." : "Sign Up"}
 					</button>
-				
+
 				</form>
 
 				<p className="mt-5 text-center text-sm text-black/65">

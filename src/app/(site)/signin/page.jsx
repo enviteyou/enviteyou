@@ -10,7 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function SigninPage() {
 	// role selection removed — default to normal "user" role
-  const router = useRouter();
+	const router = useRouter();
 	const { isUser, loading } = useAuth();
 	const [formData, setFormData] = useState({
 		email: "",
@@ -65,9 +65,9 @@ export default function SigninPage() {
 			const message = token ? "Login successful." : response?.data?.message || "Login successful.";
 			setSuccess(message);
 			window.dispatchEvent(new Event("authChange"));
-     setTimeout(() => {
-        router.push("/");
-      }, 2000);
+			setTimeout(() => {
+				router.push("/");
+			}, 2000);
 		} catch (requestError) {
 			const message = requestError?.response?.data?.message || "Unable to login right now. Please try again.";
 			setError(message);
@@ -78,22 +78,24 @@ export default function SigninPage() {
 
 	return (
 		<main
-			className="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-4 py-10 sm:px-6 lg:px-8"
-			style={{
-				backgroundImage: "url('/form_background.jpeg')",
-				backgroundSize: 'cover',
-				backgroundPosition: 'center',
-				backgroundRepeat: 'no-repeat',
-			}}
+			className="relative isolate flex w-full py-10 md:py-20  px-4 items-center justify-center"
 		>
+			<Image
+				src="/form_background.jpeg"
+				alt="Background"
+				fill
+				priority
+				className="object-cover fixed! inset-0!"
+				style={{ zIndex: -1 }}
+			/>
 
-						<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(70,35,25,0.12)] sm:p-8">
-								<div className="flex items-center gap-2 mb-2">
-									  <Image src="/icon.png" alt="EnviteYou" width={40} height={40} priority className="rounded-md shadow-[0_18px_60px_rgba(70,35,25,0.12)]" />
-									<span className="text-sm font-semibold uppercase tracking-[0.24em] text-black/85">ENVITEYOU</span>
-								</div>
-								<h1 className="mt-2 text-4xl font-bold tracking-tight text-black">Welcome back</h1>
-								<p className="mt-1 text-sm text-black/65">Sign in to your EnviteYou account.</p>
+			<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(70,35,25,0.12)] sm:p-8">
+				<div className="flex items-center gap-2 mb-2">
+					<Image src="/icon.png" alt="EnviteYou" width={40} height={40} priority />
+					<span className="text-sm font-semibold uppercase tracking-[0.24em] text-black/85">ENVITEYOU</span>
+				</div>
+				<h1 className="mt-2 text-4xl font-bold tracking-tight text-black">Welcome back</h1>
+				<p className="mt-1 text-sm text-black/65">Sign in to your EnviteYou account.</p>
 
 				<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 					<div>
@@ -142,39 +144,39 @@ export default function SigninPage() {
 					</button>
 				</form>
 
-		<div className="mt-5 flex justify-center">
-		<GoogleLogin
-        theme="outline"
-        onSuccess={async (credentialResponse)=>{
-          try {
-            const token = credentialResponse?.credential;
-            if(!token) return;
-            const res = await api.post("/auth/google",{
-              token,
-              role
-            });
-            const data = res?.data || {};
-            setSuccess(data?.message || "Google login successful.");
-						window.dispatchEvent(new Event("authChange"));
-            setTimeout(() => {
-              router.push("/");
-            }, 2000);
-          } catch (error) {
-            console.error("Google login error:", error);
-           setError(error.response?.data?.message || "An error occurred during Google login. Please try again.");
-           setSuccess("");
-           return;
-          }
-        }}
-        onError={()=>{
-          setError("Google login failed. Please try again.");
-          setSuccess("");
-        }}
-				 width="320"
-         size="large"
-         shape="rectangular"
-         />
-        </div>
+				<div className="mt-5 flex justify-center">
+					<GoogleLogin
+						theme="outline"
+						onSuccess={async (credentialResponse) => {
+							try {
+								const token = credentialResponse?.credential;
+								if (!token) return;
+								const res = await api.post("/auth/google", {
+									token,
+									role
+								});
+								const data = res?.data || {};
+								setSuccess(data?.message || "Google login successful.");
+								window.dispatchEvent(new Event("authChange"));
+								setTimeout(() => {
+									router.push("/");
+								}, 2000);
+							} catch (error) {
+								console.error("Google login error:", error);
+								setError(error.response?.data?.message || "An error occurred during Google login. Please try again.");
+								setSuccess("");
+								return;
+							}
+						}}
+						onError={() => {
+							setError("Google login failed. Please try again.");
+							setSuccess("");
+						}}
+						width="320"
+						size="large"
+						shape="rectangular"
+					/>
+				</div>
 
 				<p className="mt-5 text-center text-sm text-black/65">
 					New here?{" "}
