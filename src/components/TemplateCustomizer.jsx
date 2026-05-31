@@ -19,7 +19,7 @@ export default function TemplateCustomizer({ template }) {
 
   return (
     <div className="grid gap-6 scroll-smooth lg:min-h-[calc(100dvh-15rem)] lg:grid-cols-[minmax(360px,0.88fr)_minmax(0,1.12fr)] lg:items-start xl:gap-8">
-      <div className="min-h-0 pb-20 lg:overflow-y-auto lg:pr-2 lg:pb-0">
+      <div className="min-w-0 min-h-0 pb-20 lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-2 lg:pb-0">
         <TemplateForm
           key={templateKey || "template-form"}
           template={template}
@@ -28,7 +28,7 @@ export default function TemplateCustomizer({ template }) {
           setActiveTab={setActiveTab}
         />
       </div>
-      <div id="template-detail" className="scroll-mt-24 lg:sticky lg:top-6 lg:self-start">
+      <div id="template-detail" className="min-w-0 scroll-mt-24">
         <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} />
       </div>
 

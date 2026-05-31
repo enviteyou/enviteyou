@@ -51,7 +51,7 @@ export default function TemplateDetail({ template, formData, fullscreen = false 
   return (
     <article className="min-h-[calc(100dvh-15rem)] overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
       <div className="bg-[#faf7f3] px-3 py-3 sm:px-5 sm:py-5">
-        <div className="mx-auto w-full max-w-97.5 overflow-visible rounded-[24px] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.14)]">
+        <div className="mx-auto w-full max-w-[390px] overflow-visible rounded-[24px] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.14)]">
           <section className="relative bg-black">
             <SelectedTemplate formData={formData} template={template} embedded />
           </section>
