@@ -6,8 +6,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Bell, CalendarPlus, CreditCard, LifeBuoy, LayoutGrid, Menu, Monitor, Plus, Users, Home, X } from "lucide-react";
+import { Bell, CalendarPlus, CreditCard, LifeBuoy, LayoutGrid, Menu, Monitor, Plus, Users, Home, X, LogOut } from "lucide-react";
 import { getVendorSession } from "@/lib/vendorAuth";
+import api from "@/api/axios";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
@@ -34,6 +35,16 @@ export default function VendorDashboardShell({ children }) {
     }
     return labels;
   }, [vendorName, workspace]);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+      toast.success("Logged out successfully");
+      router.push("/vendor/signin");
+    } catch (error) {
+      toast.error("Failed to logout");
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -136,6 +147,13 @@ export default function VendorDashboardShell({ children }) {
                 Chat on WhatsApp
               </Button>
             </div>
+            <button
+              onClick={handleLogout}
+              className="mt-4 flex w-full items-center gap-3 rounded border border-red-500/30 px-4 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
+            >
+              <LogOut className="h-4 w-4 shrink-0" />
+              <span>Logout</span>
+            </button>
           </div>
         </aside>
 
@@ -209,6 +227,13 @@ export default function VendorDashboardShell({ children }) {
                 Chat on WhatsApp
               </Button>
             </div>
+            <button
+              onClick={handleLogout}
+              className="mt-4 flex w-full items-center gap-3 rounded border border-red-500/30 px-4 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
+            >
+              <LogOut className="h-4 w-4 shrink-0" />
+              <span>Logout</span>
+            </button>
           </div>
         </aside>
 

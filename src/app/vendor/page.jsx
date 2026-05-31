@@ -18,7 +18,7 @@ export default function VendorIndexPage() {
         router.replace("/vendor/dashboard");
       } else {
         // show backend message (eg. Not authenticated)
-        if (session?.message) toast.error(session.message);
+        if (session?.message)
         router.replace("/vendor/signin");
       }
     })();

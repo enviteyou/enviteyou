@@ -123,11 +123,11 @@ export default function Header() {
             <Select value={currency} onValueChange={handleCurrencyChange}>
               <SelectTrigger
                 aria-label="Select currency"
-                className="hidden h-9 w-18.5 rounded-full border border-black/10 bg-white px-2 text-[0.68rem] font-semibold text-black/72 outline-none transition hover:border-black/20 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
+                className="hidden h-9 w-18.5 rounded border border-black/10 bg-white px-2 text-[0.68rem] font-semibold text-black/72 outline-none transition hover:border-black/20 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
               >
-                <SelectValue placeholder="Currency" />
+                <span className="flex flex-1 text-left">{CURRENCIES.find(c => c.code === currency)?.label || "Currency"}</span>
               </SelectTrigger>
-              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg z-9999" side="bottom" align="end">
+              <SelectContent className="min-w-20 rounded border border-black/10 bg-white shadow-lg z-[9999]" side="bottom" align="end">
                 {CURRENCIES.map((curr) => (
                   <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {curr.label}
@@ -139,11 +139,11 @@ export default function Header() {
             <Select value={language} onValueChange={handleLanguageChange}>
               <SelectTrigger
                 aria-label="Select language"
-                className="hidden h-9 w-17.5 rounded-full border border-black/10 bg-white px-2 text-[0.68rem] font-semibold text-black/72 outline-none transition hover:border-black/20 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
+                className="hidden h-9 w-17.5 rounded border border-black/10 bg-white px-2 text-[0.68rem] font-semibold text-black/72 outline-none transition hover:border-black/20 sm:inline-flex sm:px-3 sm:text-xs shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 [&>svg]:opacity-60"
               >
-                <SelectValue placeholder="Language" />
+                <span className="flex flex-1 text-left">{LANGUAGES.find(l => l.code === language)?.label || "Language"}</span>
               </SelectTrigger>
-              <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg z-9999" side="bottom" align="end">
+              <SelectContent className="min-w-20 rounded border border-black/10 bg-white shadow-lg z-[9999]" side="bottom" align="end">
                 {LANGUAGES.map((lang) => (
                   <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {lang.label}
