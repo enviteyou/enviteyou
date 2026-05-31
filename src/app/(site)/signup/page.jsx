@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/api/axios";
+import { getRecaptchaToken } from "@/lib/recaptcha";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 export default function SignupPage() {
 	// role selection removed — default to normal "user" role
+	const router = useRouter();
+	const { isUser, loading } = useAuth();
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -28,6 +34,22 @@ export default function SignupPage() {
 
 	// role selection removed; kept for compatibility
 
+	useEffect(() => {
+		if (isUser) {
+			router.replace("/my-account");
+		}
+	}, [isUser, router]);
+
+	if (loading) {
+		return (
+			<main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+				<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
+					<p className="text-sm font-medium text-black/60">Checking your session...</p>
+				</section>
+			</main>
+		);
+	}
+
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		setError("");
@@ -35,25 +57,31 @@ export default function SignupPage() {
 		setIsSubmitting(true);
 
 		try {
+			const captchaToken = await getRecaptchaToken("signup");
 			const payload = {
 				...formData,
 				role,
+				captchaToken,
 			};
 
 			const response = await api.post("/auth/register", payload);
 			const message = response?.data?.message || "Registration successful.";
 			setSuccess(message);
+			toast.success(message);
+			window.dispatchEvent(new Event("authChange"));
 			setFormData({
 				name: "",
 				email: "",
 				password: "",
 				number:"",
 			});
+			router.replace("/my-account");
 		} catch (requestError) {
 			const message =
 				requestError?.response?.data?.message || "Unable to register right now. Please try again.";
 			setError(message);
-      console.error("Registration error:", requestError.message);
+			toast.error(message);
+			console.error("Registration error:", requestError.message);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -136,7 +164,7 @@ export default function SignupPage() {
 					{/* role is fixed to `user` — no selection UI */}
 
 					{error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
-					{success ? <p className="text-sm font-medium text-emerald-700">{success}</p> : null}
+					{success ? <p className="text-sm font-medium text-emerald-700"></p> : null}
 
 					<button
 						type="submit"
@@ -145,6 +173,7 @@ export default function SignupPage() {
 					>
 						{isSubmitting ? "Creating account..." : "Sign Up"}
 					</button>
+				
 				</form>
 
 				<p className="mt-5 text-center text-sm text-black/65">

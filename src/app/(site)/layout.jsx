@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import { JetBrains_Mono, Inter, Roboto, Playwrite_CA, Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Script from "next/script";
+import { AuthProvider } from "@/context/AuthContext";
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -70,6 +72,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
   return (
      <GoogleOAuthProvider
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
@@ -85,24 +89,34 @@ export default function RootLayout({ children }) {
           dmSans.variable
         )}
       >
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "EnviteYou",
-            }),
-          }}
-        />
+        <AuthProvider>
+          {recaptchaSiteKey ? (
+            <Script
+              id="recaptcha-v3"
+              src={`https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`}
+              strategy="afterInteractive"
+            />
+          ) : null}
 
-        <Header />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "EnviteYou",
+              }),
+            }}
+          />
 
-        <main className="min-h-screen">
-          {children}
-        </main>
+          <Header />
 
-        <Footer />
+          <main className="min-h-screen">
+            {children}
+          </main>
+
+          <Footer />
+        </AuthProvider>
       </div>
     </GoogleOAuthProvider>
   );

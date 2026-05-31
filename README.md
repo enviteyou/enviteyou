@@ -20,6 +20,13 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Environment Variables
+
+For signup reCAPTCHA v3, set these variables in your frontend environment file:
+
+- `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
+- `NEXT_PUBLIC_API_BASE_URL` or `NEXT_PUBLIC_BACKEND_URL`
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

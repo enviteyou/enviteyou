@@ -6,6 +6,7 @@ import api from "@/api/axios";
 import Profile from "@/components/my-account/Profile";
 import Invitation from "@/components/my-account/Invitation";
 import Invoice from "@/components/my-account/Invoice";
+import { useAuth } from "@/context/AuthContext";
 
 const SECTIONS = [
   { key: "profile", label: "Profile" },
@@ -15,27 +16,14 @@ const SECTIONS = [
 
 export default function MyAccountPage() {
   const [activeSection, setActiveSection] = useState("profile");
-  const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
+  const { user, isUser, loading } = useAuth();
 
   useEffect(() => {
-    const verifyUser = async () => {
-      try {
-        const response = await api.get("/auth/me");
-        if (!(response?.data?.success && response?.data?.user)) {
-          router.push("/signin");
-          return;
-        }
-      } catch {
-        router.push("/signin");
-        return;
-      } finally {
-        setCheckingAuth(false);
-      }
-    };
-
-    verifyUser();
-  }, [router]);
+    if (!loading && !isUser) {
+      router.replace("/signin");
+    }
+  }, [isUser, loading, router]);
 
   const handleLogout = async () => {
     try {
@@ -47,7 +35,7 @@ export default function MyAccountPage() {
     router.push("/signin");
   };
 
-  if (checkingAuth) {
+  if (loading) {
     return (
       <main className="mx-auto min-h-[65vh] max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-black/10 bg-white p-6">
@@ -63,7 +51,7 @@ export default function MyAccountPage() {
         <aside className="flex h-full flex-col rounded-2xl border border-black/10 bg-white p-4 sm:p-5">
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/45">My Account</p>
-            <h1 className="text-xl font-semibold tracking-tight text-black">Dashboard</h1>
+            <h1 className="text-xl font-semibold tracking-tight text-black">{user?.name || "Dashboard"}</h1>
           </div>
 
           <div className="mt-5 space-y-2">

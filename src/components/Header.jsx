@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import api from "@/api/axios";
+import { useAuth } from "@/context/AuthContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const TRANSLATIONS = {
@@ -54,7 +54,7 @@ export default function Header() {
   const [language, setLanguage] = useState("EN");
   const [currency, setCurrency] = useState("INR");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isUser, loading } = useAuth();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -65,25 +65,7 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await api.get("/auth/me");
-        setIsAuthenticated(Boolean(response?.data?.success && response?.data?.user));
-      } catch {
-        setIsAuthenticated(false);
-      }
-    };
-
-    checkAuthStatus();
-
-    const onAuthChange = () => {
-      checkAuthStatus();
-    };
-
-    window.addEventListener("authChange", onAuthChange);
-    return () => {
-      window.removeEventListener("authChange", onAuthChange);
-    };
+    setMenuOpen(false);
   }, [pathname]);
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
@@ -171,10 +153,10 @@ export default function Header() {
             </Select>
 
             <Link
-              href={isAuthenticated ? "/my-account" : "/signin"}
+              href={isUser ? "/my-account" : "/signin"}
               className="hidden h-9 items-center justify-center rounded-lg border border-black bg-black px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(0,0,0,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:px-5 sm:text-xs lg:inline-flex"
             >
-              {isAuthenticated ? "My Account" : "Login"}
+              {loading ? "Loading" : isUser ? "My Account" : "Login"}
             </Link>
 
             <button
@@ -212,11 +194,11 @@ export default function Header() {
               ))}
 
               <Link
-                href={isAuthenticated ? "/my-account" : "/signin"}
+                href={isUser ? "/my-account" : "/signin"}
                 onClick={() => setMenuOpen(false)}
                 className="block rounded-lg border border-black bg-black px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-black/90"
               >
-                {isAuthenticated ? "My Account" : "Login"}
+                {loading ? "Loading" : isUser ? "My Account" : "Login"}
               </Link>
 
               <div className="mt-2 grid grid-cols-2 gap-2 sm:hidden border-t border-[#74313d]/10 pt-2">

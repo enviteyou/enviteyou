@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import VendorAuthShell from "@/components/vendor/VendorAuthShell";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getRecaptchaToken } from "@/lib/recaptcha";
 export default function VendorSignupPage() {
 	const [formData, setFormData] = useState({
 		name: "",
@@ -36,9 +37,11 @@ export default function VendorSignupPage() {
 		setIsSubmitting(true);
 
 		try {
+			const captchaToken = await getRecaptchaToken("vendor_signup");
 			const response = await api.post("/auth/vendor/register", {
 				...formData,
 				role: "vendor",
+				captchaToken,
 			});
 			if(response?.data?.success) {
 				setSuccess(response.data.message || "Vendor registration successful.");
@@ -209,6 +212,7 @@ export default function VendorSignupPage() {
 				>
 					{isSubmitting ? "Creating vendor account..." : "Sign Up"}
 				</button>
+				<p className="text-xs text-black/45">Protected by score-based reCAPTCHA.</p>
 			</form>
 
 				<Link href="/vendor/signin" className="mt-5 text-center text-sm text-black/65">

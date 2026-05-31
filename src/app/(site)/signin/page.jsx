@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SigninPage() {
 	// role selection removed — default to normal "user" role
   const router = useRouter();
+	const { isUser, loading } = useAuth();
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -28,6 +30,22 @@ export default function SigninPage() {
 	};
 
 	// role selection removed; kept for compatibility
+
+	useEffect(() => {
+		if (isUser) {
+			router.replace("/my-account");
+		}
+	}, [isUser, router]);
+
+	if (loading) {
+		return (
+			<main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+				<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
+					<p className="text-sm font-medium text-black/60">Checking your session...</p>
+				</section>
+			</main>
+		);
+	}
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -58,7 +76,7 @@ export default function SigninPage() {
 	};
 
 	return (
-		<main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+		<main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
 
 			<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
 				<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black">EnviteYou Account</p>
@@ -112,8 +130,8 @@ export default function SigninPage() {
 					</button>
 				</form>
 
-        <div className="p-4">
-        <GoogleLogin
+		<div className="mt-5 flex justify-center">
+		<GoogleLogin
         theme="outline"
         onSuccess={async (credentialResponse)=>{
           try {
@@ -140,7 +158,7 @@ export default function SigninPage() {
           setError("Google login failed. Please try again.");
           setSuccess("");
         }}
-         width="100%"
+				 width="320"
          size="large"
          shape="rectangular"
          />

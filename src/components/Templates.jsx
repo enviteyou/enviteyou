@@ -58,11 +58,11 @@ function TemplateCard({ template }) {
           </div>
 
           <div className="space-y-2">
-            <h4 className="text-[1.35rem] font-medium leading-tight tracking-[-0.04em] text-[#5f4a46] sm:text-[1.7rem]">
+            <h4 className="text-[1.35rem] font-medium leading-tight tracking-[-0.04em] text-black sm:text-[1.7rem]">
               {template.name || "Bloom"}
             </h4>
             <p
-              className="max-w-136 text-[0.92rem] leading-5 text-black/55 sm:text-[1rem] sm:leading-6"
+              className="max-w-136 text-[0.92rem] leading-5 text-black sm:text-[1rem] sm:leading-6"
               style={{
                 display: '-webkit-box',
                 WebkitLineClamp: 2,

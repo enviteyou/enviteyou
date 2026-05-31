@@ -91,12 +91,12 @@ export default function FeaturesShowcase() {
 
                     {/* Content */}
                     <div className="flex flex-col justify-start">
-                      <p className="text-xs font-bold  tracking-[0.15em] text-black mb-2">
+                      <h3 className="text-xs font-bold  tracking-[0.15em] text-black mb-2">
                         {feature.label}
-                      </p>
-                      <h3 className="text-sm font-light leading-tight tracking-tighter sm:text-2xl text-black">
-                        {feature.title}
                       </h3>
+                      <p className="text-sm font-light leading-tight tracking-tighter sm:text-2xl text-black">
+                        {feature.title}
+                      </p>
                     </div>
                   </div>
                 </div>
