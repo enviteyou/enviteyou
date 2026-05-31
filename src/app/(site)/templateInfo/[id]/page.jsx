@@ -24,7 +24,7 @@ export default async function TemplatePage({ params }) {
 
           <div className="grid gap-4 sm:grid-cols-3">
             {templates.map((t) => (
-              <Link key={t.templateId || t.id} href={`/templateInfo/${t.templateId || t.id}`} className="rounded-lg border p-4 text-sm hover:shadow">
+              <Link key={t.templateId || t.id} href={`/templateInfo/${t.templateId || t.id}`} className="rounded border p-4 text-sm hover:shadow">
                 <p className="font-semibold">{t.name}</p>
                 <p className="text-xs text-black/60">{t.tag}</p>
               </Link>

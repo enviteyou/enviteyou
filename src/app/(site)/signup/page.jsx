@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import { getRecaptchaToken } from "@/lib/recaptcha";
@@ -42,7 +43,15 @@ export default function SignupPage() {
 
 	if (loading) {
 		return (
-			<main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+			<main
+				className="relative isolate min-h-screen overflow-hidden px-4 py-10 sm:px-6 lg:px-8"
+				style={{
+					backgroundImage: "url('/form_background.jpeg')",
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+					backgroundRepeat: 'no-repeat',
+				}}
+			>
 				<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
 					<p className="text-sm font-medium text-black/60">Checking your session...</p>
 				</section>
@@ -50,12 +59,7 @@ export default function SignupPage() {
 		);
 	}
 
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		setError("");
-		setSuccess("");
-		setIsSubmitting(true);
-
+		const handleSubmit = async (event) => {
 		try {
 			const captchaToken = await getRecaptchaToken("signup");
 			const payload = {
@@ -88,12 +92,23 @@ export default function SignupPage() {
 	};
 
 	return (
-		<main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+				<main
+					className="relative isolate min-h-screen overflow-hidden px-4 py-10 sm:px-6 lg:px-8"
+					style={{
+						backgroundImage: "url('/form_background.jpeg')",
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+						backgroundRepeat: 'no-repeat',
+					}}
+				>
 
-			<section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
-				<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black">EnviteYou Account</p>
-				<h1 className="mt-2 text-3xl font-bold tracking-tight text-black">Create an account</h1>
-				<p className="mt-1 text-sm text-black/65">Create a normal EnviteYou account.</p>
+						<section className="relative mx-auto w-full max-w-lg rounded-3xl border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(70,35,25,0.12)] sm:p-8">
+								<div className="flex items-center gap-3 mb-2">
+									<Image  src="/icon.png" alt="EnviteYou" width={40} height={40} className="rounded-md shadow-[0_18px_60px_rgba(70,35,25,0.12)]" />
+									<span className="text-sm font-semibold uppercase tracking-[0.24em] text-black/85">ENVITEYOU</span>
+								</div>
+								<h1 className="mt-2 text-4xl font-bold tracking-tight text-black">Create an account</h1>
+								<p className="mt-1 text-sm text-black/65">Create a normal EnviteYou account.</p>
 
 				<form onSubmit={handleSubmit} className="mt-6 space-y-4">
 					<div>

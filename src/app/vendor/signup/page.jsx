@@ -79,7 +79,7 @@ export default function VendorSignupPage() {
 			footerLinkText="Sign in"
 		>
 			<main className="w-full max-w-xl rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_24px_70px_rgba(0,0,0,0.08)] sm:p-8 lg:ml-auto">
-				<div>
+											<div>
 					<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">EnviteYou Vendor</p>
 					<h1 className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">Create vendor account</h1>
 					<p className="mt-1 text-sm text-black/65">

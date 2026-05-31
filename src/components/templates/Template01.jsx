@@ -833,9 +833,9 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
 
                     {/* Classic panel lines (Wainscoting partition) */}
                     <div className="absolute inset-0 flex justify-around px-6 py-20 pointer-events-none z-0 opacity-10">
-                        <div className="w-[30%] h-full border border-[#d1ab75]/35 shadow-inner rounded-lg"></div>
-                        <div className="w-[30%] h-full border border-[#d1ab75]/35 shadow-inner rounded-lg"></div>
-                        <div className="w-[30%] h-full border border-[#d1ab75]/35 shadow-inner rounded-lg"></div>
+                        <div className="w-[30%] h-full border border-[#d1ab75]/35 shadow-inner rounded"></div>
+                        <div className="w-[30%] h-full border border-[#d1ab75]/35 shadow-inner rounded"></div>
+                        <div className="w-[30%] h-full border border-[#d1ab75]/35 shadow-inner rounded"></div>
                     </div>
 
                     <div className="relative z-10 text-center mb-4 md:mb-8 px-4 shrink-0 mt-8">

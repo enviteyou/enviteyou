@@ -129,7 +129,7 @@ export default function Header() {
               </SelectTrigger>
               <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg z-9999" side="bottom" align="end">
                 {CURRENCIES.map((curr) => (
-                  <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
+                  <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {curr.label}
                   </SelectItem>
                 ))}
@@ -145,7 +145,7 @@ export default function Header() {
               </SelectTrigger>
               <SelectContent className="min-w-20 rounded-xl border border-black/10 bg-white shadow-lg z-9999" side="bottom" align="end">
                 {LANGUAGES.map((lang) => (
-                  <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
+                  <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded text-[0.68rem] font-semibold text-black/72 focus:bg-black/5 focus:text-black sm:text-xs">
                     {lang.label}
                   </SelectItem>
                 ))}
@@ -154,7 +154,7 @@ export default function Header() {
 
             <Link
               href={isUser ? "/my-account" : "/signin"}
-              className="hidden h-9 items-center justify-center rounded-lg border border-black bg-black px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(0,0,0,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:px-5 sm:text-xs lg:inline-flex"
+              className="hidden h-9 items-center justify-center rounded border border-black bg-black px-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(0,0,0,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90 sm:px-5 sm:text-xs lg:inline-flex"
             >
               {loading ? "Loading" : isUser ? "My Account" : "Login"}
             </Link>
@@ -162,7 +162,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setMenuOpen((current) => !current)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-black/10 bg-white text-black/72 transition hover:border-black/20 lg:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded border border-black/10 bg-white text-black/72 transition hover:border-black/20 lg:hidden"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
@@ -187,7 +187,7 @@ export default function Header() {
                   key={item.label}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block rounded-lg border border-black/10 bg-white px-4 py-3 text-sm font-semibold uppercase tracking-wide text-black/72 transition hover:border-black/20 hover:bg-black/3 hover:text-black"
+                  className="block rounded border border-black/10 bg-white px-4 py-3 text-sm font-semibold uppercase tracking-wide text-black/72 transition hover:border-black/20 hover:bg-black/3 hover:text-black"
                 >
                   {item.label}
                 </Link>
@@ -196,7 +196,7 @@ export default function Header() {
               <Link
                 href={isUser ? "/my-account" : "/signin"}
                 onClick={() => setMenuOpen(false)}
-                className="block rounded-lg border border-black bg-black px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-black/90"
+                className="block rounded border border-black bg-black px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-black/90"
               >
                 {loading ? "Loading" : isUser ? "My Account" : "Login"}
               </Link>
@@ -205,13 +205,13 @@ export default function Header() {
                 <Select value={currency} onValueChange={handleCurrencyChange}>
                   <SelectTrigger
                     aria-label="Select currency mobile"
-                    className="h-10 w-full rounded-lg border border-black/10 bg-white px-3 text-sm font-semibold text-black/72 outline-none transition hover:border-black/20 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+                    className="h-10 w-full rounded border border-black/10 bg-white px-3 text-sm font-semibold text-black/72 outline-none transition hover:border-black/20 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
                   >
                     <SelectValue placeholder="Currency" />
                   </SelectTrigger>
                   <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg z-9999">
                     {CURRENCIES.map((curr) => (
-                      <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded-lg text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
+                      <SelectItem key={curr.code} value={curr.code} className="cursor-pointer rounded text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
                         {curr.label}
                       </SelectItem>
                     ))}
@@ -221,13 +221,13 @@ export default function Header() {
                 <Select value={language} onValueChange={handleLanguageChange}>
                   <SelectTrigger
                     aria-label="Select language mobile"
-                    className="h-10 w-full rounded-lg border border-black/10 bg-white px-3 text-sm font-semibold text-black/72 outline-none transition hover:border-black/20 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+                    className="h-10 w-full rounded border border-black/10 bg-white px-3 text-sm font-semibold text-black/72 outline-none transition hover:border-black/20 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
                   >
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
                   <SelectContent className="min-w-30 rounded-xl border border-black/10 bg-white shadow-lg z-9999">
                     {LANGUAGES.map((lang) => (
-                      <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded-lg text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
+                      <SelectItem key={lang.code} value={lang.code} className="cursor-pointer rounded text-sm font-semibold text-black/72 focus:bg-black/5 focus:text-black">
                         {lang.label}
                       </SelectItem>
                     ))}

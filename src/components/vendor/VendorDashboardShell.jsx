@@ -102,7 +102,7 @@ export default function VendorDashboardShell({ children }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm font-medium transition ${
+                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${
                     active
                       ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
                       : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
@@ -175,7 +175,7 @@ export default function VendorDashboardShell({ children }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm font-medium transition ${
+                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${
                     active
                       ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
                       : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
@@ -219,7 +219,7 @@ export default function VendorDashboardShell({ children }) {
                 <button
                   type="button"
                   onClick={() => setIsMobileMenuOpen(true)}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-black/10 bg-white text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] lg:hidden"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded border border-black/10 bg-white text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] lg:hidden"
                   aria-label="Open navigation menu"
                 >
                   <Menu className="h-5 w-5" />
@@ -228,10 +228,10 @@ export default function VendorDashboardShell({ children }) {
                   setWorkspace(value);
                   toast.success(`Workspace switched to ${value}`);
                 }}>
-                  <SelectTrigger className="h-11 flex-1 min-w-0 rounded-lg border border-black/10 bg-white px-4 text-left text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] sm:h-12 sm:flex-none sm:w-auto sm:min-w-60">
+                  <SelectTrigger className="h-11 flex-1 min-w-0 rounded border border-black/10 bg-white px-4 text-left text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] sm:h-12 sm:flex-none sm:w-auto sm:min-w-60">
                     <SelectValue placeholder="Select workspace" />
                   </SelectTrigger>
-                  <SelectContent align="start" className="rounded-lg border border-black/10 bg-white shadow-xl">
+                  <SelectContent align="start" className="rounded border border-black/10 bg-white shadow-xl">
                     {workspaceOptions.map((option) => (
                       <SelectItem key={option} value={option} className="text-sm font-medium text-black">
                         {option}
@@ -246,19 +246,19 @@ export default function VendorDashboardShell({ children }) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="hidden h-11 rounded-lg border-black/10 bg-white px-4 text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] hover:bg-black hover:text-white sm:inline-flex"
+                  className="hidden h-11 rounded border-black/10 bg-white px-4 text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] hover:bg-black hover:text-white sm:inline-flex"
                   onClick={() => toast.success("Draft saved")}
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Save Draft
                 </Button>
 
-                <button type="button" className="relative flex h-11 w-11 items-center justify-center rounded-lg border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
+                <button type="button" className="relative flex h-11 w-11 items-center justify-center rounded border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
                   <Bell className="h-5 w-5 text-black/70" />
                   <span className="absolute right-0 top-0 inline-flex h-5 min-w-5 items-center justify-center rounded-md bg-[#c8a24c] px-1 text-[10px] font-semibold text-white">3</span>
                 </button>
 
-                <button type="button" className="flex h-11 w-11 items-center justify-center rounded-lg bg-black text-sm font-semibold text-[#c8a24c] shadow-[0_10px_24px_rgba(0,0,0,0.1)]">
+                <button type="button" className="flex h-11 w-11 items-center justify-center rounded bg-black text-sm font-semibold text-[#c8a24c] shadow-[0_10px_24px_rgba(0,0,0,0.1)]">
                   {(vendorName || workspace)
                     .split(" ")
                     .filter(Boolean)
