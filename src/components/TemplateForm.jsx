@@ -76,6 +76,25 @@ const personalityGroups = [
   },
 ];
 
+const LOADING_STAGES = {
+  initializing: {
+    title: "Initializing Order",
+    description: "Preparing checkout details and establishing a secure connection...",
+  },
+  loading_gateway: {
+    title: "Connecting to Secure Gateway",
+    description: "Loading the checkout interface. Please complete payment in the secure popup...",
+  },
+  waiting_payment: {
+    title: "Awaiting Payment",
+    description: "Please complete your transaction in the secure gateway popup. Do not close this window...",
+  },
+  verifying: {
+    title: "Verifying Transaction",
+    description: "Payment received! Securing validation and creating your wedding invitation site. Almost done...",
+  },
+};
+
 const initialForm = {
   bride: "",
   groom: "",
@@ -223,6 +242,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
   const [customEventName, setCustomEventName] = useState("");
   const [storySubTab, setStorySubTab] = useState("Personality Tags");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingStage, setLoadingStage] = useState("initializing");
   const templateStorageKey = getTemplateStorageKey(template);
   const [form, setForm] = useState(() => {
     if (!templateStorageKey || typeof window === "undefined") {
@@ -505,6 +525,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
 
     try {
       setIsSubmitting(true);
+      setLoadingStage("initializing");
 
       const orderResponse = await api.post("/payments/create-order");
       const order = orderResponse?.data?.order;
@@ -514,6 +535,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         throw new Error("Unable to start payment checkout.");
       }
 
+      setLoadingStage("loading_gateway");
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
         throw new Error("Unable to load payment gateway.");
@@ -524,6 +546,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         templateId: template?.templateId || template?.id,
       };
 
+      setLoadingStage("waiting_payment");
       const verificationResponse = await new Promise((resolve, reject) => {
         const razorpay = new window.Razorpay({
           key: razorpayKeyId,
@@ -541,6 +564,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           },
           handler: async (response) => {
             try {
+              setLoadingStage("verifying");
               const verifyResponse = await api.post("/payments/verify-and-create-invitation", {
                 ...response,
                 invitationData,
@@ -596,10 +620,56 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-black/10 bg-black text-white">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-            <p className="mt-5 text-base font-semibold text-black">Please do not refresh or close</p>
-            <p className="mt-2 text-sm leading-6 text-black/60">
-              Payment is being processed. Keep this page open until the confirmation page appears.
+            <p className="mt-5 text-base font-semibold text-black">
+              {LOADING_STAGES[loadingStage]?.title || "Please wait"}
             </p>
+            <p className="mt-2 text-xs leading-5 text-black/60">
+              {LOADING_STAGES[loadingStage]?.description || "Processing your request..."}
+            </p>
+
+            <div className="mt-6 border-t border-black/5 pt-5 text-left">
+              <div className="space-y-3">
+                {[
+                  { key: "initializing", label: "Securing connection & details" },
+                  { key: "loading_gateway", label: "Initializing secure gateway" },
+                  { key: "waiting_payment", label: "Awaiting payment transaction" },
+                  { key: "verifying", label: "Verifying and creating invitation" },
+                ].map((step, idx) => {
+                  const isCurrent = loadingStage === step.key;
+                  const isPast =
+                    idx <
+                    ["initializing", "loading_gateway", "waiting_payment", "verifying"].indexOf(
+                      loadingStage,
+                    );
+                  return (
+                    <div key={step.key} className="flex items-center gap-3">
+                      <div
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] transition duration-300 ${
+                          isPast
+                            ? "border-emerald-500 bg-emerald-50 text-emerald-500 font-bold"
+                            : isCurrent
+                              ? "border-black bg-black text-white animate-pulse"
+                              : "border-black/15 text-transparent bg-transparent"
+                        }`}
+                      >
+                        {isPast ? "✓" : idx + 1}
+                      </div>
+                      <span
+                        className={`text-xs transition duration-300 ${
+                          isCurrent
+                            ? "font-semibold text-black"
+                            : isPast
+                              ? "text-black/50"
+                              : "text-black/30"
+                        }`}
+                      >
+                        {step.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       ) : null}

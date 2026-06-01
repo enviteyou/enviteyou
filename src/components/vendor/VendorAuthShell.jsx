@@ -27,13 +27,13 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
                 Back to site
               </Link>
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1 uppercase tracking-[0.24em] text-white/70 backdrop-blur">
-                Partner Portal
+                VENDOR PORTAL
               </span>
             </div>
 
             <div className="mt-3 flex items-center gap-2 sm:mt-4 sm:gap-3">
               <Image
-                src="/icon2.png"
+                src="/icon3.png"
                 alt="EnviteYou icon"
                 width={32}
                 height={32}
@@ -41,7 +41,7 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
                 priority
               />
               <Image
-                src="/logo.png"
+                src="/white_logo.png"
                 alt="EnviteYou"
                 width={160}
                 height={48}
@@ -50,15 +50,15 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
               />
             </div>
 
-            <div className="max-w-md pt-4 sm:pt-6 lg:pt-7">
-              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl lg:text-[2.6rem] lg:leading-[1.02]">
+            <div className="max-w-md pt-4 sm:pt-5 lg:pt-6">
+              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl lg:text-[2.1rem] lg:leading-[1.1]">
                 {title}
               </h1>
-              <p className="mt-2 max-w-md text-sm leading-6 text-white/72 sm:text-[0.95rem]">
+              <p className="mt-2 max-w-md text-xs leading-normal text-white/72 sm:text-[0.88rem]">
                 {subtitle}
               </p>
 
-              <div className="mt-7 space-y-3.5 text-sm text-white/74">
+              <div className="mt-5 space-y-2.5 text-xs text-white/74">
                 {[
                   {
                     icon: Shield,
@@ -81,13 +81,13 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
                     text: "Build your brand, showcase your work, and grow your business.",
                   },
                 ].map((item) => (
-                  <div key={item.title} className="flex gap-3 rounded-2xl bg-white/6 p-3 backdrop-blur-sm">
-                    <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/6 text-[#f7b07b]">
-                      <item.icon className="h-4.5 w-4.5" />
+                  <div key={item.title} className="flex gap-2.5 rounded-2xl bg-white/6 p-2.5 backdrop-blur-sm">
+                    <div className="mt-0.5 flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/6 text-[#f7b07b]">
+                      <item.icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-[0.95rem] font-semibold text-white">{item.title}</p>
-                      <p className="mt-1 text-[0.92rem] leading-6 text-white/66">{item.text}</p>
+                      <p className="text-[0.85rem] font-semibold text-white">{item.title}</p>
+                      <p className="mt-0.5 text-[0.78rem] leading-normal text-white/66">{item.text}</p>
                     </div>
                   </div>
                 ))}

@@ -91,13 +91,13 @@ export default function RootLayout({ children }) {
         )}
       >
         <AuthProvider>
-          {recaptchaSiteKey ? (
+          {/* {recaptchaSiteKey ? (
             <Script
               id="recaptcha-v3"
               src={`https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`}
               strategy="afterInteractive"
             />
-          ) : null}
+          ) : null} */}
 
           <script
             type="application/ld+json"

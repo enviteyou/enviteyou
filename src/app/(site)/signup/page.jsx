@@ -61,7 +61,11 @@ export default function SignupPage() {
 		);
 	}
 
-	const handleSubmit = async (event) => {
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setIsSubmitting(true);
+		setError("");
+		setSuccess("");
 		try {
 			const captchaToken = await getRecaptchaToken("signup");
 			const payload = {
