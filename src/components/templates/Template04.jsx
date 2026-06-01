@@ -1,58 +1,12 @@
 "use client";
 
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { Music2, Pause } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
 import Image from 'next/image';
-
-const defaultScene4Events = [
-    { name: 'SAGAN', date: '12 DEC 2027 | 6:00 PM', icon: 'ring-icon.png' },
-    { name: 'MEHENDI', date: '13 DEC 2027 | 11:00 AM', icon: 'hand-icon.png' },
-    { name: 'SANGEET', date: '13 DEC 2027 | 7:00 PM', icon: 'music.png' },
-    { name: 'SHAADI', date: '14 DEC 2027 | 7:15 PM', icon: 'mandir-icon.png' },
-    { name: 'RECEPTION', date: '15 DEC 2027 | 8:00 PM', icon: 'wine-icon.png' },
-];
-
-function formatLongDate(value) {
-    if (!value) return '';
-
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return String(value);
-
-    return new Intl.DateTimeFormat('en-IN', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    }).format(date);
-}
-
-function formatScene4Date(value) {
-    if (!value) return '';
-
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return String(value).toUpperCase();
-
-    return new Intl.DateTimeFormat('en-IN', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-    }).format(date).toUpperCase();
-}
-
-function getEventIcon(name, index) {
-    const normalized = String(name || '').toLowerCase();
-
-    if (normalized.includes('mehendi')) return 'hand-icon.png';
-    if (normalized.includes('sangeet')) return 'music.png';
-    if (normalized.includes('shaadi') || normalized.includes('wedding')) return 'mandir-icon.png';
-    if (normalized.includes('reception')) return 'wine-icon.png';
-    if (normalized.includes('sagan') || normalized.includes('ring')) return 'ring-icon.png';
-
-    return defaultScene4Events[index]?.icon || 'ring-icon.png';
-}
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -63,7 +17,8 @@ if (typeof window !== 'undefined') {
 export default function Template04({ formData = {}, template = {}, embedded = false, fullscreen = false }) {
     const containerRef = useRef(null);
     const audioStartedRef = useRef(false);
-    const { isPlaying, toggleAudio, playAudio, audioNode } = useAudio('/assets/template/04/kesariya-rang.mp3');
+    const audioUrl = formData?.musicLink || '/assets/template/04/kesariya-rang.mp3';
+    const { isPlaying, toggleAudio, playAudio, audioNode } = useAudio(audioUrl);
 
     const startAudio = useCallback(() => {
         if (audioStartedRef.current || isPlaying) return;
@@ -98,6 +53,101 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         };
     }, [startAudio, isPlaying]);
 
+    // Force ScrollTrigger refresh on layout changes (e.g. lazy loaded images)
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver(() => {
+            ScrollTrigger.refresh();
+        });
+        resizeObserver.observe(document.body);
+        
+        // Also refresh after a small delay to catch initial render shifts
+        const timeout = setTimeout(() => ScrollTrigger.refresh(), 500);
+
+        return () => {
+            resizeObserver.disconnect();
+            clearTimeout(timeout);
+        };
+    }, []);
+
+    // Derived values from formData (fall back to defaults)
+    const brideName = (formData?.bride || "Priya").trim();
+    const groomName = (formData?.groom || "Arjun").trim();
+    const reverseOrder = formData?.nameOrder === "groomFirst";
+    const firstName = reverseOrder ? groomName : brideName;
+    const secondName = reverseOrder ? brideName : groomName;
+
+    const displayDate = formData?.date
+        ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric" }).format(new Date(formData.date))
+        : "14 December 2027";
+
+    const venue = formData?.venue || "The Royal Crescent Palace, Udaipur";
+    const whatsappNumber = formData?.whatsapp || "1234567890";
+
+    const brideParents = [formData?.brideFather, formData?.brideMother].filter(Boolean).join(" & ") || "Mr. Rajeev Kapoor & Mrs. Kavita Kapoor";
+    const groomParents = [formData?.groomFather, formData?.groomMother].filter(Boolean).join(" & ") || "Mr. Sanjay Kapoor & Mrs. Neeta Kapoor";
+    const firstParents = reverseOrder ? groomParents : brideParents;
+    const secondParents = reverseOrder ? brideParents : groomParents;
+
+    const blessingText = formData?.blessing || "As the divine remover of obstacles blesses our path, Priya and Arjun begin their forever with love, gratitude and endless blessings.";
+
+    // Events summary (Scene 4) and Scene 5
+    const defaultEvts = [
+        { name: 'SAGAN', date: '12 DEC 2027 | 6:00 PM', time: '6:00 PM', venue: 'PALACE COURTYARD', dress: 'FORMAL INDIAN', desc: 'Join us for the ring ceremony.', icon: 'ring-icon.png', scene5Icon: 'rings.png' },
+        { name: 'MEHENDI', date: '13 DEC 2027 | 11:00 AM', time: '11:00 AM', venue: 'ROYAL GARDENS', dress: 'VIBRANT TRADITIONAL', desc: 'Colors, laughter, and mehendi.', icon: 'hand-icon.png', scene5Icon: 'handicon.png' },
+        { name: 'SANGEET', date: '13 DEC 2027 | 7:00 PM', time: '7:00 PM', venue: 'GRAND BALLROOM', dress: 'GLAMOROUS', desc: 'A night of music and dance.', icon: 'music.png', scene5Icon: 'musics.png' },
+        { name: 'SHAADI', date: '14 DEC 2027 | 7:15 PM', time: '7:15 PM', venue: 'PALACE COURTYARD MANDAP', dress: 'TRADITIONAL INDIAN', desc: 'Witness the sacred vows beneath a moonlit mandap.', icon: 'mandir-icon.png', scene5Icon: 'mandap.png' },
+        { name: 'RECEPTION', date: '15 DEC 2027 | 8:00 PM', time: '8:00 PM', venue: 'THE LAKESIDE TERRACE', dress: 'BLACK TIE / ELEGANT', desc: 'An evening of celebration and toast.', icon: 'wine-icon.png', scene5Icon: 'wine.png' },
+    ];
+
+    const getEventIconsFor04 = (name) => {
+        const lower = name.toLowerCase();
+        if (lower.includes('sagan')) return { icon: 'ring-icon.png', scene5Icon: 'rings.png' };
+        if (lower.includes('mehendi')) return { icon: 'hand-icon.png', scene5Icon: 'handicon.png' };
+        if (lower.includes('sangeet')) return { icon: 'music.png', scene5Icon: 'musics.png' };
+        if (lower.includes('wedding') || lower.includes('shaadi') || lower.includes('pheras')) return { icon: 'mandir-icon.png', scene5Icon: 'mandap.png' };
+        return { icon: 'wine-icon.png', scene5Icon: 'wine.png' };
+    };
+
+    const eventsList = Array.isArray(formData?.selectedEvents) && formData.selectedEvents.length > 0
+        ? formData.selectedEvents.map((ev) => {
+            const detail = formData.eventDetails?.[ev] || {};
+            const evDate = detail.date ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(detail.date)) : displayDate;
+            const evTime = detail.time ? detail.time : "11:00 AM";
+            const icons = getEventIconsFor04(ev);
+            return {
+                name: ev.toUpperCase(),
+                date: `${evDate.toUpperCase()} | ${evTime}`,
+                time: evTime,
+                venue: (detail.venue || venue).toUpperCase(),
+                dress: (formData.dressCode || "VIBRANT & FESTIVE").toUpperCase(),
+                desc: detail.oneLiner || "Join us in celebrating this beautiful moment.",
+                icon: icons.icon,
+                scene5Icon: icons.scene5Icon
+            };
+        })
+        : defaultEvts;
+
+    // Gallery (Scene 6)
+    const galleryPhotos = Array.isArray(formData?.galleryImages) && formData.galleryImages.filter(Boolean).length > 0
+        ? formData.galleryImages.filter(Boolean)
+        : [
+            '/assets/template/04/scene6/window.png',
+            '/assets/template/04/scene6/window2.png',
+            '/assets/template/04/scene6/window.png',
+            '/assets/template/04/scene6/window2.png'
+        ];
+
+    const storyText = formData?.story || "Two souls, two journeys, one beautiful beginning. From laughter to dreams, from friendship to forever, our hearts chose each other.";
+
+    // RSVP families line
+    const rsvpFamilies = (formData?.brideFather || formData?.groomFather)
+        ? `The ${formData.brideFather ? formData.brideFather.split(" ").slice(-1)[0] : ""} & ${formData.groomFather ? formData.groomFather.split(" ").slice(-1)[0] : ""} Families`
+        : "The Malhotra & Mehra Families";
+
+    const rsvpDeadline = formData?.rsvpDeadline
+        ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric" }).format(new Date(formData.rsvpDeadline))
+        : "15 NOVEMBER 2027";
+
     // Refs for animating elements
     const skyRef = useRef(null);
     const moonRef = useRef(null);
@@ -126,39 +176,17 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
     const scene4ContainerRef = useRef(null);
     const scene4ContentRef = useRef(null);
 
-    const isEdgeToEdge = embedded || fullscreen;
+    // Scene 5 Refs
+    const scene5ContainerRef = useRef(null);
+    const scene5EventsRef = useRef(null);
 
-    const brideName = String(formData?.bride || 'Priya').trim();
-    const groomName = String(formData?.groom || 'Arjun').trim();
-    const reverseOrder = formData?.nameOrder === 'groomFirst';
-    const firstName = reverseOrder ? groomName : brideName;
-    const secondName = reverseOrder ? brideName : groomName;
-    const coupleNames = formData?.bride || formData?.groom ? `${firstName} & ${secondName}` : 'Priya & Arjun';
-    const displayDate = formData?.date ? formatLongDate(formData.date) : '14 December 2027';
-    const scene1Venue = formData?.venue || 'The Royal Crescent Palace, Udaipur';
-    const scene2Story = String(
-        formData?.story || `As the divine remover of obstacles blesses our path, ${firstName} and ${secondName} begin their forever with love, gratitude and endless blessings.`
-    ).trim();
+    // Scene 6 Refs
+    const scene6ContainerRef = useRef(null);
+    const scene6ImagesRef = useRef(null);
+    const scene6DotsRef = useRef(null);
 
-    const scene3BrideParents = [formData?.brideFather, formData?.brideMother].filter(Boolean).join(' & ');
-    const scene3GroomParents = [formData?.groomFather, formData?.groomMother].filter(Boolean).join(' & ');
-    const scene3BrideLine = scene3BrideParents ? `D/o ${scene3BrideParents}` : 'D/o Mr. Rajeev Kapoor & Mrs. Kavita Kapoor';
-    const scene3GroomLine = scene3GroomParents ? `S/o ${scene3GroomParents}` : 'S/o Mr. Sanjay Kapoor & Mrs. Neeta Kapoor';
-
-    const scene4Events = Array.isArray(formData?.selectedEvents) && formData.selectedEvents.length > 0
-        ? formData.selectedEvents.map((event, index) => {
-            const eventName = typeof event === 'string' ? event : event?.name || event?.title || `Event ${index + 1}`;
-            const eventDetails = formData?.eventDetails?.[eventName] || formData?.eventDetails?.[String(eventName).trim()] || {};
-            const eventDateValue = (typeof event === 'object' && event?.date) || eventDetails?.date || formData?.date || displayDate;
-            const eventTimeValue = (typeof event === 'object' && (event?.time || event?.timeLabel)) || eventDetails?.time || eventDetails?.timeLabel || '';
-
-            return {
-                name: String(eventName).toUpperCase(),
-                date: `${formatScene4Date(eventDateValue)}${eventTimeValue ? ` | ${eventTimeValue}` : ''}`,
-                icon: getEventIcon(eventName, index),
-            };
-        })
-        : defaultScene4Events;
+    // Scene 7 Refs
+    const scene7ContainerRef = useRef(null);
 
     useGSAP(() => {
         // --- Initial Entrance Animation ---
@@ -348,14 +376,14 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                 }
             });
 
-            tl.fromTo(card, 
-                { y: 80, opacity: 0, scale: 0.8, rotationX: -15 }, 
+            tl.fromTo(card,
+                { y: 80, opacity: 0, scale: 0.8, rotationX: -15 },
                 { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.3, ease: 'power2.out' }
-              )
-              .to(card, { y: 0, duration: 0.4 }) // Hold statically in the middle of scroll
-              .to(card, 
-                { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in' }
-              );
+            )
+                .to(card, { y: 0, duration: 0.4 }) // Hold statically in the middle of scroll
+                .to(card,
+                    { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in' }
+                );
         });
 
         // Bottom Decorative Border
@@ -368,10 +396,59 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             y: 20, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
+        // --- Scene 5 Animations ---
+        if (scene5EventsRef.current) {
+            const scene5Events = Array.from(scene5EventsRef.current.children);
+            const tl5 = gsap.timeline({
+                scrollTrigger: {
+                    trigger: scene5ContainerRef.current,
+                    start: 'top top',
+                    end: '+=400%',
+                    scrub: 1,
+                    pin: true,
+                }
+            });
+
+            scene5Events.forEach((event, i) => {
+                if (i !== 0) {
+                    tl5.fromTo(event, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1 }, `+=${0.5}`);
+                }
+                if (i !== scene5Events.length - 1) {
+                    tl5.to(event, { opacity: 0, scale: 1.2, duration: 1 }, `+=${1}`);
+                }
+            });
+        }
+
+        // --- Scene 6 Animations ---
+        if (scene6ImagesRef.current && scene6DotsRef.current) {
+            const scene6Images = Array.from(scene6ImagesRef.current.children);
+            const scene6Dots = Array.from(scene6DotsRef.current.children);
+            const tl6 = gsap.timeline({
+                scrollTrigger: {
+                    trigger: scene6ContainerRef.current,
+                    start: 'top top',
+                    end: '+=300%',
+                    scrub: 1,
+                    pin: true,
+                }
+            });
+
+            scene6Images.forEach((img, i) => {
+                if (i !== 0) {
+                    tl6.fromTo(img, { opacity: 0, x: 100 }, { opacity: 1, x: 0, duration: 1 }, `+=${0.5}`);
+                    tl6.to(scene6Dots[i - 1], { opacity: 0.5, scale: 1, borderColor: 'rgba(212,175,55,0.5)', duration: 0.1 }, `<`);
+                    tl6.to(scene6Dots[i], { opacity: 1, scale: 1.1, borderColor: 'rgba(212,175,55,1)', duration: 0.1 }, `<`);
+                }
+                if (i !== scene6Images.length - 1) {
+                    tl6.to(img, { opacity: 0, x: -100, duration: 1 }, `+=${1}`);
+                }
+            });
+        }
+
     }, { scope: containerRef });
 
     return (
-        <div className={`w-full ${isEdgeToEdge ? '' : 'min-h-screen'} bg-[#050B14]`}>
+        <div className="w-full min-h-screen bg-[#050B14]">
             {audioNode}
             <button
                 onClick={toggleAudio}
@@ -381,13 +458,13 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                 {isPlaying ? <Pause size={18} /> : <Music2 size={18} />}
             </button>
             {/* 
-        Container for Scene 1. 
-        Using pin: true in scrollTrigger so this container will stick while the user scrolls,
-        and then it will scroll away. 
-      */}
+                Container for Scene 1. 
+                Using pin: true in scrollTrigger so this container will stick while the user scrolls,
+                and then it will scroll away. 
+            */}
             <div
                 ref={containerRef}
-                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37]`}
+                className="max-w-md mx-auto w-full h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37]"
             >
                 {/* === Background Layers === */}
                 <div ref={skyRef} className="absolute inset-0 z-0">
@@ -501,12 +578,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                                 {displayDate}
                             </p>
                             <p className="text-xs sm:text-sm font-serif text-[#E5C98F] opacity-90 leading-relaxed">
-                                {scene1Venue.split(',').map((line, index) => (
-                                    <span key={`${line}-${index}`}>
-                                        {line.trim()}
-                                        {index < scene1Venue.split(',').length - 1 ? <br /> : null}
-                                    </span>
-                                ))}
+                                {venue}
                             </p>
                         </div>
                     </div>
@@ -526,7 +598,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             {/* === SCENE 2: Ganesha === */}
             <div
                 ref={scene2ContainerRef}
-                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-10`}
+                className="max-w-md mx-auto w-full min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-10"
             >
                 {/* Background Pattern */}
                 <div className="absolute inset-0 z-0">
@@ -565,8 +637,8 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                     </div>
 
                     {/* Paragraph */}
-                    <p className="text-xs font-serif text-[#E5C98F] opacity-90 leading-[1.8] max-w-70">
-                        {scene2Story}
+                    <p className="text-xs font-serif text-[#E5C98F] opacity-90 leading-[1.8] max-w-[280px]">
+                        {blessingText}
                     </p>
 
                     {/* Decorative Border */}
@@ -585,7 +657,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             {/* === SCENE 3: Invitation Details === */}
             <div
                 ref={scene3ContainerRef}
-                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} min-h-dvh relative overflow-hidden bg-[#F4EBD9] text-[#3d2c1d] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-20`}
+                className="max-w-md mx-auto w-full min-h-dvh relative overflow-hidden bg-[#F4EBD9] text-[#3d2c1d] flex flex-col items-center justify-center pt-16 pb-16 px-8 z-20"
             >
                 {/* Background Texture */}
                 <div className="absolute inset-0 z-0">
@@ -652,23 +724,19 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                             <h1 className="text-4xl sm:text-5xl font-serif text-[#8C6D46]">
                                 {firstName}
                             </h1>
-                            <p>{scene3BrideLine}</p>
-
+                            <p>{reverseOrder ? `S/o ${groomParents}` : `D/o ${brideParents}`}</p>
                         </div>
                         <p className="italic text-5xl text-[#8C6D46]">&amp;</p>
                         <div className="py-3 space-y-3">
                             <h1 className="text-4xl sm:text-5xl font-serif text-[#8C6D46]">
                                 {secondName}
                             </h1>
-                            <p>{scene3GroomLine}</p>
-
+                            <p>{reverseOrder ? `D/o ${brideParents}` : `S/o ${groomParents}`}</p>
                         </div>
                         <p className="mt-4 opacity-80 px-4 leading-[1.8]">
                             cordially invite you to the<br />wedding celebration of their children
                         </p>
                     </div>
-
-
 
                     {/* Date & Venue */}
                     <div className="space-y-2 mt-2">
@@ -676,12 +744,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                             {displayDate}
                         </p>
                         <p className="text-[10px] sm:text-xs font-serif text-[#5a432b] opacity-90 leading-relaxed pt-2">
-                            {scene1Venue.split(',').map((line, index) => (
-                                <span key={`${line}-${index}`}>
-                                    {line.trim()}
-                                    {index < scene1Venue.split(',').length - 1 ? <br /> : null}
-                                </span>
-                            ))}
+                            {venue}
                         </p>
                     </div>
                 </div>
@@ -690,7 +753,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             {/* === SCENE 4: Wedding Celebrations === */}
             <div
                 ref={scene4ContainerRef}
-                className={`${isEdgeToEdge ? 'w-full' : 'max-w-md mx-auto'} min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-20 pb-16 px-6 z-30`}
+                className="max-w-md mx-auto w-full min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-20 pb-16 px-6 z-30"
             >
                 {/* Background Pattern */}
                 <div className="absolute inset-0 z-0">
@@ -710,13 +773,13 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                     {/* Header */}
                     <div className="text-center mb-10">
                         <h1 className="text-5xl font-serif text-[#D4AF37]">
-                            {template?.title || 'Wedding'}<br />Celebrations
+                            Wedding<br />Celebrations
                         </h1>
                     </div>
 
                     {/* Events List */}
-                    <div className="w-full space-y-4 perspective-[1000px]">
-                        {scene4Events.map((event, index) => (
+                    <div className="w-full space-y-4 [perspective:1000px]">
+                        {eventsList.map((event, index) => (
                             <div key={index} className="event-card flex items-center justify-between p-4 border border-[#D4AF37]/20 rounded-xl bg-[#050B14]/60 backdrop-blur-sm shadow-[0_4px_15px_rgba(0,0,0,0.3)] hover:scale-[1.02] hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/40 transition-all duration-300 cursor-pointer group">
                                 <div className="flex items-center space-x-4">
                                     {/* Icon */}
@@ -753,6 +816,162 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                             height={100}
                         />
                     </div>
+                </div>
+            </div>
+
+            {/* === SCENE 5: Detailed Events (Pinned Scroll) === */}
+            <div
+                ref={scene5ContainerRef}
+                className="max-w-md mx-auto w-full h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37]"
+            >
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="/assets/template/04/scene5/background.png"
+                        alt="Pattern Background"
+                        className="w-full h-full object-cover opacity-40 mix-blend-screen"
+                        width={400}
+                        height={800}
+                    />
+                </div>
+
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pt-10">
+                    <div className="relative w-[100%] h-[80%] flex items-center justify-center">
+                        <Image
+                            src="/assets/template/04/scene5/entrancegate.png"
+                            alt="Entrance Gate Frame"
+                            className="absolute inset-0 w-full h-full object-contain z-20 pointer-events-none"
+                            width={350}
+                            height={600}
+                        />
+
+                        <div ref={scene5EventsRef} className="relative z-10 w-[80%] h-[60%] flex items-center justify-center mt-12">
+                            {eventsList.map((evt, idx) => (
+                                <div key={idx} className={`absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-8 ${idx !== 0 ? 'opacity-0 scale-90' : ''}`}>
+                                    <div className="w-100 h-20 mb-4 shrink-0">
+                                        <Image
+                                            src={`/assets/template/04/scene5/${evt.scene5Icon}`}
+                                            alt={evt.name}
+                                            className="w-full h-full object-contain"
+                                            width={200}
+                                            height={200}
+                                        />
+                                    </div>
+                                    <h2 className="text-3xl font-serif text-[#D4AF37] mb-4">{evt.name}</h2>
+                                    <div className="space-y-2 mb-4 w-full">
+                                        <div className="flex items-center justify-center space-x-2 text-[8px] tracking-[0.2em] font-sans text-[#E5C98F] opacity-90">
+                                            <span>📅</span> <span>{evt.date.split(' | ')[0]}</span>
+                                        </div>
+                                        <div className="flex items-center justify-center space-x-2 text-[8px] tracking-[0.2em] font-sans text-[#E5C98F] opacity-90">
+                                            <span>🕒</span> <span>{evt.time}</span>
+                                        </div>
+                                        <div className="flex items-center justify-center space-x-2 text-[8px] tracking-[0.2em] font-sans text-[#E5C98F] opacity-90">
+                                            <span>📍</span> <span>{evt.venue}</span>
+                                        </div>
+                                        <div className="flex items-center justify-center space-x-2 text-[8px] tracking-[0.2em] font-sans text-[#E5C98F] opacity-90">
+                                            <span>✨</span> <span>{evt.dress}</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] font-serif text-[#E5C98F] opacity-80 leading-relaxed max-w-[200px]">
+                                        {evt.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* === SCENE 6: Meet the Couple (Gallery) === */}
+            <div
+                ref={scene6ContainerRef}
+                className="max-w-md mx-auto w-full h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37]"
+            >
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="/assets/template/04/scene6/background.png"
+                        alt="Pattern Background"
+                        className="w-full h-full object-cover opacity-40 mix-blend-screen"
+                        width={400}
+                        height={800}
+                    />
+                </div>
+
+                <div className="relative z-10 w-full h-full flex flex-col items-center pt-20 pb-10">
+                    <h1 className="text-3xl font-serif text-[#D4AF37] mb-8">Meet the Couple</h1>
+
+                    <div className="relative w-[75%] aspect-3/4 mb-8">
+                        <div className="w-full h-full relative rounded-t-full overflow-hidden border-2 border-[#D4AF37]/50 p-2">
+                            <div ref={scene6ImagesRef} className="w-full h-full relative rounded-t-full overflow-hidden">
+                                {galleryPhotos.map((src, idx) => (
+                                    <div key={idx} className={`absolute inset-0 w-full h-full ${idx !== 0 ? 'opacity-0' : ''}`}>
+                                        <Image
+                                            src={src}
+                                            alt="Couple"
+                                            className="w-full h-full object-cover"
+                                            width={300}
+                                            height={400}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 className="text-xl font-serif text-[#D4AF37] mb-3">{firstName} &amp; {secondName}</h2>
+                    <p className="text-[10px] font-sans text-[#E5C98F] opacity-80 text-center px-10 leading-relaxed mb-6">
+                        {storyText}
+                    </p>
+
+                    <div ref={scene6DotsRef} className="flex space-x-2 mt-auto pb-4 z-20">
+                        {galleryPhotos.map((src, idx) => (
+                            <div key={idx} className={`w-10 h-10 rounded border overflow-hidden transition-all duration-300 ${idx === 0 ? 'opacity-100 scale-110 border-[#D4AF37]' : 'opacity-50 border-[#D4AF37]/50'}`}>
+                                <Image src={src} alt="thumbnail" width={40} height={40} className="w-full h-full object-cover" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* === SCENE 7: RSVP === */}
+            <div
+                ref={scene7ContainerRef}
+                className="max-w-md mx-auto w-full min-h-dvh relative overflow-hidden bg-[#050B14] text-[#D4AF37] flex flex-col items-center justify-center pt-20 pb-20 px-8"
+            >
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="/assets/template/04/scene7/background.png"
+                        alt="Night Palace Background"
+                        className="w-full h-full object-cover"
+                        width={400}
+                        height={800}
+                    />
+                </div>
+                <div className="absolute inset-0 z-10 bg-[#050B14]/40" />
+
+                <div className="relative z-20 w-full h-full flex flex-col items-center justify-center text-center mt-20">
+                    <p className="text-xl font-serif text-[#E5C98F] leading-relaxed mb-10 px-4">
+                        We would be honoured<br />
+                        to celebrate this<br />
+                        beautiful night with you.
+                    </p>
+
+                    <div className="space-y-2 mb-20">
+                        <p className="text-xs font-serif text-[#E5C98F] opacity-90">With love and gratitude,</p>
+                        <p className="text-sm font-serif text-[#D4AF37]">{rsvpFamilies}</p>
+                    </div>
+
+                    <a
+                        href={`https://wa.me/${whatsappNumber}?text=Hello!%20I%20would%20love%20to%20attend%20the%20wedding%20of%20${firstName}%20%26%20${secondName}!`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center px-8 py-3 bg-[#E5C98F] text-[#050B14] rounded-full font-sans tracking-widest text-xs font-bold hover:bg-[#D4AF37] transition-colors mb-6 shadow-[0_0_20px_rgba(212,175,55,0.3)]"
+                    >
+                        RSVP ON WHATSAPP
+                    </a>
+
+                    <p className="text-[10px] font-sans tracking-widest text-[#E5C98F] opacity-70 uppercase">
+                        Kindly respond by<br />
+                        {rsvpDeadline}
+                    </p>
                 </div>
             </div>
         </div>
