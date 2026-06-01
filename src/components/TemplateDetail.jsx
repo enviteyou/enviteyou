@@ -4,16 +4,24 @@ import dynamic from "next/dynamic";
 
 const Template01 = dynamic(() => import("./templates/Template01"), { ssr: false });
 const Template04 = dynamic(() => import("./templates/Template04"), { ssr: false });
+const Template05 = dynamic(() => import("./templates/Template05"), { ssr: false });
+const Template03 = dynamic(() => import("./templates/Template03"), { ssr: false });
 const templateComponentMap = {
   "1": Template01,
   "01": Template01,
   "2": Template01,
-  "3": Template01,
+  "3": Template03,
+  "03": Template03,
+  template03: Template03,
+  template3: Template03,
   "4": Template04,
   "04": Template04,
   template04: Template04,
   template4: Template04,
   template01: Template01,
+  "5": Template05,
+  "05": Template05,
+  template05: Template05,
   default: Template01,
 };
 
