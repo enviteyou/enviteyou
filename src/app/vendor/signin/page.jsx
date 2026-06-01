@@ -105,7 +105,9 @@ export default function VendorSigninPage() {
 				</form>
 
 				<p className="mt-5 text-center text-sm text-black/65">
-					New here? Create vendor account
+					New here? <button onClick={() => router.push("/vendor/signup")} className="font-semibold text-black/75 underline decoration-black/35 underline-offset-4 transition hover:text-black/90">
+						Create vendor account
+					</button>
 				</p>
 			</main>
 		</VendorAuthShell>

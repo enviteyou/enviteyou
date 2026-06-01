@@ -7,7 +7,7 @@ import api from "@/api/axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-
+import { Eye, EyeOff, Lock, Mail, Phone, User } from "lucide-react";
 export default function SigninPage() {
   // role selection removed — default to normal "user" role
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function SigninPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const role = "user";
 
@@ -116,42 +117,54 @@ export default function SigninPage() {
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label
-              htmlFor="email"
-              className="mb-1 block text-sm font-medium text-black/75"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-              placeholder="you@example.com"
-            />
-          </div>
+                      <label htmlFor="email" className="mb-1 block text-sm font-medium text-black/75">
+                        Email
+                      </label>
+                      <div className="relative">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-black/40">
+                          <Mail className="h-5 w-5" />
+                        </div>
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="h-11 w-full rounded-md border border-black/12 bg-[#f8f9fc] pl-10 pr-3 text-sm outline-none transition focus:border-black/30"
+                          placeholder="you@example.com"
+                        />
+                      </div>
+                    </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-1 block text-sm font-medium text-black/75"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-              placeholder="Enter your password"
-            />
-          </div>
+         <div>
+                    <label htmlFor="password" className="mb-1 block text-sm font-medium text-black/75">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-black/40">
+                        <Lock className="h-5 w-5" />
+                      </div>
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        minLength={6}
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="h-11 w-full rounded-md border border-black/12 bg-[#f8f9fc] pl-10 pr-10 text-sm outline-none transition focus:border-black/30"
+                        placeholder="Minimum 6 characters"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-black/40 hover:text-black/70 focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                  </div>
 
           {/* role is fixed to `user` — no selection UI */}
 
@@ -171,12 +184,12 @@ export default function SigninPage() {
           </button>
         </form>
 
-        <div class="flex items-center gap-4 my-3">
-          <div class="flex-1 h-px bg-gray-300"></div>
+        <div className="my-3 flex items-center gap-4">
+          <div className="h-px flex-1 bg-gray-300"></div>
 
-          <span class="text-gray-500 text-sm">or</span>
+          <span className="text-sm text-gray-500">or</span>
 
-          <div class="flex-1 h-px bg-gray-300"></div>
+          <div className="h-px flex-1 bg-gray-300"></div>
         </div>
 
         <div className="mt-4 flex justify-center">

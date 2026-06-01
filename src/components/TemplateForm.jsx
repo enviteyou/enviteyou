@@ -562,22 +562,13 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
       });
 
       const created = verificationResponse?.data?.data;
-      const slug = created?.slug;
-      const invitePath = slug ? `/invite/${encodeURIComponent(slug)}` : null;
-      const fullUrl = invitePath ? `${window.location.origin}${invitePath}` : null;
+      const invitationId = created?._id || created?.id || null;
+      const confirmationPath = invitationId ? `/confirmation/${encodeURIComponent(invitationId)}` : null;
       clearTemplateDraft();
 
-      if (fullUrl) {
-        try {
-          window.open(fullUrl, "_blank");
-        } catch {
-          // ignore popup blocking
-        }
-      }
-
       toast.success("Payment successful and invitation created.");
-      if (invitePath) {
-        router.replace(invitePath);
+      if (confirmationPath) {
+        router.replace(confirmationPath);
       }
     } catch (error) {
       const status = error?.response?.status;

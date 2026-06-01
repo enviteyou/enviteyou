@@ -1,13 +1,39 @@
 "use client";
 
-import { useState } from "react";
-import api from "@/api/axios";
-import { toast } from "sonner";
-import VendorAuthShell from "@/components/vendor/VendorAuthShell";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ArrowRight, Building2, Check, Eye, EyeOff, Hash, Link2, Lock, Mail, Phone, Shield, User } from "lucide-react";
+import api from "@/api/axios";
+import VendorAuthShell from "@/components/vendor/VendorAuthShell";
 import { getRecaptchaToken } from "@/lib/recaptcha";
+
+function Field({ id, label, icon: Icon, optional, ...inputProps }) {
+	return (
+		<div>
+			<label htmlFor={id} className="mb-2 block text-sm font-semibold text-[#3c3840]">
+				{label}
+				{optional ? <span className="ml-2 text-xs font-medium text-[#cb8d63]">Optional</span> : null}
+			</label>
+			<div className="relative">
+				{Icon ? (
+					<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#8a8590]">
+						<Icon className="h-4 w-4" />
+					</div>
+				) : null}
+				<input
+					id={id}
+					className="h-11 w-full rounded-xl border border-black/8 bg-white/80 pl-10 pr-3 text-sm text-[#17151a] outline-none transition placeholder:text-[#a7a0a9] focus:border-[#d7a57d] focus:bg-white"
+					{...inputProps}
+				/>
+			</div>
+		</div>
+	);
+}
+
 export default function VendorSignupPage() {
+	const router = useRouter();
 	const [formData, setFormData] = useState({
 		name: "",
 		businessName: "",
@@ -17,10 +43,10 @@ export default function VendorSignupPage() {
 		googleMyBusinessLink: "",
 		gstNumber: "",
 	});
+	const [showPassword, setShowPassword] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
-	const router = useRouter();
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
@@ -43,27 +69,31 @@ export default function VendorSignupPage() {
 				role: "vendor",
 				captchaToken,
 			});
-			if(response?.data?.success) {
-				setSuccess(response.data.message || "Vendor registration successful.");
+
+			if (response?.data?.success) {
+				const message = response?.data?.message || "Vendor registration successful.";
+				setSuccess(message);
+				toast.success(message);
+				setFormData({
+					name: "",
+					businessName: "",
+					email: "",
+					password: "",
+					number: "",
+					googleMyBusinessLink: "",
+					gstNumber: "",
+				});
 				router.push("/vendor/signin");
-			} else {
-				setError(response?.data?.message || "Unable to register vendor right now. Please try again.");
 				return;
 			}
-			const message = response?.data?.message || "Vendor registration successful.";
-			toast.success(message);
-			setFormData({
-				name: "",
-				businessName: "",
-				email: "",
-				password: "",
-				number: "",
-				googleMyBusinessLink: "",
-				gstNumber: "",
-			});
+
+			const message = response?.data?.message || "Unable to register vendor right now. Please try again.";
+			setError(message);
+			toast.error(message);
 		} catch (requestError) {
 			const message = requestError?.response?.data?.message || "Unable to register vendor right now. Please try again.";
 			setError(message);
+			toast.error(message);
 			console.error("Vendor registration error:", requestError.message);
 		} finally {
 			setIsSubmitting(false);
@@ -75,150 +105,85 @@ export default function VendorSignupPage() {
 			title="Vendor Portal"
 			subtitle="Manage your business profile, track approval status, and access the vendor dashboard from one place."
 			footerText="Built for vendor sign up, sign in, and portal access."
-			footerLinkHref="/vendor/signin"
-			footerLinkText="Sign in"
 		>
-			<main className="w-full max-w-xl rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_24px_70px_rgba(0,0,0,0.08)] sm:p-8 lg:ml-auto">
-											<div>
-					<p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">EnviteYou Vendor</p>
-					<h1 className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">Create vendor account</h1>
-					<p className="mt-1 text-sm text-black/65">
+			<div className="space-y-5">
+				<div>
+					<h1 className="text-[1.8rem] font-semibold tracking-tight text-[#111111] sm:text-[2.1rem]">
+						Create vendor account
+					</h1>
+					<p className="mt-2 max-w-md text-sm leading-6 text-[#6f6861] sm:text-[0.94rem]">
 						Register your business to start managing vendor access.
 					</p>
 				</div>
 
-			<form onSubmit={handleSubmit} className="mt-6 space-y-4">
-				<div>
-					<label htmlFor="name" className="mb-1 block text-sm font-medium text-black/75">
-						Name
-					</label>
-					<input
-						id="name"
-						name="name"
-						type="text"
-						required
-						value={formData.name}
-						onChange={handleChange}
-						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-						placeholder="Your name"
-					/>
-				</div>
+				<form onSubmit={handleSubmit} className="space-y-4">
+					<Field id="name" label="Name" icon={User} name="name" type="text" required value={formData.name} onChange={handleChange} placeholder="Your name" />
 
-				<div>
-					<label htmlFor="businessName" className="mb-1 block text-sm font-medium text-black/75">
-						Business name
-					</label>
-					<input
-						id="businessName"
-						name="businessName"
-						type="text"
-						required
-						value={formData.businessName}
-						onChange={handleChange}
-						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-						placeholder="Your business name"
-					/>
-				</div>
+					<Field id="businessName" label="Business name" icon={Building2} name="businessName" type="text" required value={formData.businessName} onChange={handleChange} placeholder="Your business name" />
 
-				<div>
-					<label htmlFor="email" className="mb-1 block text-sm font-medium text-black/75">
-						Email
-					</label>
-					<input
-						id="email"
-						name="email"
-						type="email"
-						required
-						value={formData.email}
-						onChange={handleChange}
-						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-						placeholder="you@example.com"
-					/>
-				</div>
+					<Field id="email" label="Email" icon={Mail} name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="you@example.com" />
 
-				<div>
-					<label htmlFor="password" className="mb-1 block text-sm font-medium text-black/75">
-						Password
-					</label>
-					<input
-						id="password"
-						name="password"
-						type="password"
-						required
-						minLength={6}
-						value={formData.password}
-						onChange={handleChange}
-						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-						placeholder="Minimum 6 characters"
-					/>
-				</div>
+					<div>
+						<label htmlFor="password" className="mb-2 block text-sm font-semibold text-[#3c3840]">Password</label>
+						<div className="relative">
+							<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#8a8590]">
+								<Lock className="h-4 w-4" />
+							</div>
+							<input
+								id="password"
+								name="password"
+								type={showPassword ? "text" : "password"}
+								required
+								minLength={6}
+								value={formData.password}
+								onChange={handleChange}
+								className="h-11 w-full rounded-xl border border-black/8 bg-white/80 pl-10 pr-11 text-sm text-[#17151a] outline-none transition placeholder:text-[#a7a0a9] focus:border-[#d7a57d] focus:bg-white"
+								placeholder="Minimum 6 characters"
+							/>
+							<button
+								type="button"
+								onClick={() => setShowPassword((current) => !current)}
+								className="absolute inset-y-0 right-0 flex items-center px-3 text-[#8a8590] transition hover:text-[#2c2730]"
+							>
+								{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+							</button>
+						</div>
+					</div>
 
-				<div>
-					<label htmlFor="number" className="mb-1 block text-sm font-medium text-black/75">
-						Phone number
-					</label>
-					<input
-						id="number"
-						name="number"
-						type="tel"
-						required
-						value={formData.number}
-						onChange={handleChange}
-						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-						placeholder="Your phone number"
-					/>
-				</div>
+					<Field id="number" label="Phone number" icon={Phone} name="number" type="tel" required value={formData.number} onChange={handleChange} placeholder="Your phone number" />
 
-				<div>
-					<label htmlFor="googleMyBusinessLink" className="mb-1 block text-sm font-medium text-black/75">
-						Google My Business Link
-					</label>
-					<input
-						id="googleMyBusinessLink"
-						name="googleMyBusinessLink"
-						type="url"
-						required
-						value={formData.googleMyBusinessLink}
-						onChange={handleChange}
-						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-						placeholder="https://g.page/..."
-					/>
-				</div>
+					<Field id="googleMyBusinessLink" label="Google My Business Link" icon={Link2} name="googleMyBusinessLink" type="url" required value={formData.googleMyBusinessLink} onChange={handleChange} placeholder="https://g.page/your-business" />
 
-				<div>
-					<label htmlFor="gstNumber" className="mb-1 block text-sm font-medium text-black/75">
-						GST number
-						<span className="ml-2 text-xs font-normal text-black/45">Optional</span>
-					</label>
-					<input
-						id="gstNumber"
-						name="gstNumber"
-						type="text"
-						value={formData.gstNumber}
-						onChange={handleChange}
-						className="h-11 w-full rounded-xl border border-black/12 bg-white px-3 text-sm outline-none transition focus:border-black/30"
-						placeholder="GST number"
-					/>
-					<p className="mt-1 text-xs font-semibold text-black/55">Get faster chance of approval</p>
-				</div>
+					<Field id="gstNumber" label="GST number" icon={Hash} optional name="gstNumber" type="text" value={formData.gstNumber} onChange={handleChange} placeholder="GST number" />
 
-				{error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
-				{success ? <p className="text-sm font-medium text-emerald-700">{success}</p> : null}
+					<div className="flex items-start gap-2 rounded-xl bg-white/70 px-1 py-1 text-xs text-[#7b756f]">
+						<Check className="mt-0.5 h-4 w-4 shrink-0 text-[#c67e53]" />
+						<span>Get faster chance of approval</span>
+					</div>
 
-				<button
-					type="submit"
-					disabled={isSubmitting}
-					className="h-11 w-full rounded-xl bg-black text-sm font-semibold text-white transition hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-60"
-				>
-					{isSubmitting ? "Creating vendor account..." : "Sign Up"}
-				</button>
-				<p className="text-xs text-black/45">Protected by score-based reCAPTCHA.</p>
-			</form>
+					{error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
+					{success ? <p className="text-sm font-medium text-emerald-700">{success}</p> : null}
 
-				<Link href="/vendor/signin" className="mt-5 text-center text-sm text-black/65">
-					Already have a vendor account? Sign in
-				</Link>
-			</main>
+					<button
+						type="submit"
+						disabled={isSubmitting}
+						className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#0b1b33] text-sm font-semibold text-white shadow-[0_12px_30px_rgba(11,27,51,0.25)] transition hover:bg-[#08162b] disabled:cursor-not-allowed disabled:opacity-60"
+					>
+						{isSubmitting ? "Creating vendor account..." : <>Sign Up <ArrowRight className="h-4 w-4" /></>}
+					</button>
+					<p className="flex items-center gap-2 text-xs text-[#8b857f]">
+						<Shield className="h-4 w-4 text-[#c89c74]" />
+						Protected by score-based reCAPTCHA.
+					</p>
+				</form>
+
+				<p className="text-sm text-[#6f6861]">
+					Already have a vendor account?{" "}
+					<Link href="/vendor/signin" className="font-semibold text-[#c07b55] underline decoration-[#c07b55]/35 underline-offset-4 transition hover:text-[#a95f3c]">
+						Sign in
+					</Link>
+				</p>
+			</div>
 		</VendorAuthShell>
 	);
 }
