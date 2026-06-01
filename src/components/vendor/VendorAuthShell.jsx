@@ -45,7 +45,7 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
                 alt="EnviteYou"
                 width={160}
                 height={48}
-                className="h-7 w-auto object-contain sm:h-8"
+                className="h-20 w-auto object-contain sm:h-20"
                 priority
               />
             </div>
