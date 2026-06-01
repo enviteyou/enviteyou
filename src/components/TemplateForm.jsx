@@ -4,6 +4,7 @@ import api from "@/api/axios";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -587,8 +588,22 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     <form
       ref={formRef}
       onSubmit={(event) => event.preventDefault()}
-      className="overflow-hidden rounded border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]"
+      className="relative overflow-hidden rounded border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]"
     >
+      {isSubmitting ? (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/92 px-4 py-10 backdrop-blur-[2px]">
+          <div className="w-full max-w-sm rounded-3xl border border-black/10 bg-white px-6 py-7 text-center shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-black/10 bg-black text-white">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+            <p className="mt-5 text-base font-semibold text-black">Please do not refresh or close</p>
+            <p className="mt-2 text-sm leading-6 text-black/60">
+              Payment is being processed. Keep this page open until the confirmation page appears.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
       <div className="flex items-center justify-between gap-4 border-b border-black/10 px-5 py-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/40">Template</p>
