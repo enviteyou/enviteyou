@@ -11,7 +11,10 @@ function normalizeCategory(value) {
 }
 
 function getPriceLabel(template) {
-  const raw = template?.price ?? template?.pricing ?? template?.sellPrice ?? "3999";
+  // 'pricing' is the admin-set display label (e.g. "₹ 3,999")
+  // 'sellPrice' is the numeric amount used for Razorpay charging
+  // Always prefer the display label; fall back to sellPrice if label is empty
+  const raw = template?.pricing || template?.sellPrice || "3999";
   const s = String(raw).trim();
   // If it already contains the rupee symbol, return as-is
   if (/₹/.test(s)) return s;
@@ -99,7 +102,7 @@ export default function Templates({ templates = [], activeCategory = "All" }) {
             <h3 className="text-lg font-semibold text-black">Templates</h3>
             <p className="text-sm text-black/60">Click a template to view details and customize.</p>
           </div>
-       
+
         </div>
 
         {filteredTemplates.length ? (

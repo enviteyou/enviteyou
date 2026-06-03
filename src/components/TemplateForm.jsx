@@ -527,9 +527,12 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
       setIsSubmitting(true);
       setLoadingStage("initializing");
 
-      const orderResponse = await api.post("/payments/create-order");
+      const orderResponse = await api.post("/payments/create-order", {
+        templateId: template?.templateId || template?.id || template?._id,
+      });
       const order = orderResponse?.data?.order;
       const razorpayKeyId = orderResponse?.data?.keyId;
+      const orderAmountPaise = orderResponse?.data?.amount;
 
       if (!order?.id || !razorpayKeyId) {
         throw new Error("Unable to start payment checkout.");
@@ -553,11 +556,15 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           amount: order.amount,
           currency: order.currency || "INR",
           name: "EnviteYou",
-          description: `Invitation payment for ${form.bride} & ${form.groom}`,
+          description: `Invitation for ${form.bride || "Bride"} & ${form.groom || "Groom"}`,
+          image: `${window.location.origin}/icon2.png`,
           order_id: order.id,
           prefill: {
             name: form.bride || "Customer",
             contact: form.whatsapp || "",
+          },
+          notes: {
+            invitation_couple: `${form.bride || ""} & ${form.groom || ""}`,
           },
           theme: {
             color: "#111111",
@@ -568,6 +575,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
               const verifyResponse = await api.post("/payments/verify-and-create-invitation", {
                 ...response,
                 invitationData,
+                orderAmount: orderAmountPaise,
               });
               resolve(verifyResponse);
             } catch (error) {

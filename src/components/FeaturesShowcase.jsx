@@ -86,7 +86,7 @@ export default function FeaturesShowcase() {
                   <div className="flex gap-8 sm:gap-10">
                     {/* Icon */}
                     <div className="flex shrink-0 items-start justify-center pt-1">
-                      <div className="h-10 w-10 sm:h-12 sm:w-12 lg:h-32 lg:w-32 relative transition duration-300">
+                      <div className="h-30 w-30 sm:h-30 sm:w-30 lg:h-40 lg:w-40 relative transition duration-300">
                         <Image
                           src={feature.icon}
                           alt={feature.label}
