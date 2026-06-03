@@ -87,7 +87,7 @@ export default function Hero({ templates = [] }) {
     };
 
     gsap.ticker.add(update);
-    
+
     return () => {
       gsap.ticker.remove(update);
       window.removeEventListener("resize", handleResize);
@@ -104,12 +104,12 @@ export default function Hero({ templates = [] }) {
 
       <div className="mx-auto flex  w-full flex-col px-5 pb-0 md:px-10">
         <div className="order-2 flex flex-col items-center justify-start pt-8 text-center md:order-1 md:pt-12">
-          <p className="text-xs font-semibold  tracking-widest text-black/50">Pay once. No expiry. No hidden fees.</p>
-           
+          <p className="text-xs font-semibold  tracking-widest text-black/50">Pay Once. No Expiry. No Hidden Fees.</p>
+
           <h1 className="mt-2 max-w-5xl text-xl font-bold leading-tight tracking-normal text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
             Build Your Wedding Website, Online Forever.
-            
-      
+
+
           </h1>
 
           <p className="mt-4 max-w-3xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
@@ -121,11 +121,11 @@ export default function Hero({ templates = [] }) {
             <button className="rounded-full bg-black px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1">
               Explore Templates
             </button>
-           
+
           </div>
         </div>
 
-        
+
 
         <div className="order-1 relative left-1/2 mt-4 flex w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:order-2 md:mt-6">
           <div className="pointer-events-none absolute inset-x-0 top-1/2  -translate-y-1/2 rounded-full blur-3xl" />

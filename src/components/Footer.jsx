@@ -99,15 +99,15 @@ export default function Footer() {
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <div className="flex flex-wrap items-center gap-4">
-              <a href="#" aria-label="Instagram" className="flex items-center gap-2 transition hover:text-black">
+              <Link href="https://www.instagram.com/envite.you/" aria-label="Instagram" className="flex items-center gap-2 transition hover:text-black">
                 <InstagramLogoIcon size={18} color="black" />
                 <span className="text-sm">Instagram</span>
-              </a>
+              </Link>
 
-              <a href="#" aria-label="Pinterest" className="flex items-center gap-2 transition hover:text-black">
+              <Link href="https://www.pinterest.com/theenviteyou/" aria-label="Pinterest" className="flex items-center gap-2 transition hover:text-black">
                 <PinterestLogoIcon size={18} color="black" />
                 <span className="text-sm">Pinterest</span>
-              </a>
+              </Link>
 
               <a href="#" aria-label="YouTube" className="flex items-center gap-2 transition hover:text-black">
                 <YoutubeLogoIcon size={18} color="black" />

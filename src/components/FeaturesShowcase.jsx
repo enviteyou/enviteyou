@@ -1,37 +1,38 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 const features = [
   {
     label: "Live Guest Analytics",
     title:
-      "Access a private tracking dashboard. See your total views, visitor cities, and watch the excitement build in real-time as guests open your link.",
-    icon: "📊",
+      "Track views, visitor cities, devices and clicks from your private dashboard.",
+    icon: "/feature_icon/14.png",
   },
   {
-    label: "The Forever Link",
+    label: "Forever Wedding Link",
     title:
-      "Pay once. Keep it for a lifetime. Your digital wedding website stays online forever as a beautiful memory of your celebrations.",
-    icon: "🔗",
+      "Pay once and keep your wedding website online forever as a digital memory.",
+    icon: "/feature_icon/13.png",
   },
   {
     label: "Elder-Friendly Design",
     title:
-      "No apps to download. No zooming required. One simple tap opens your invite perfectly on any mobile browser, making it easy for guests of all ages.",
-    icon: "👴",
+      "No app. No download. No zooming. Your invite opens clearly on any phone.",
+    icon: "/feature_icon/12.png",
   },
   {
     label: "One-Tap Directions",
     title:
-      "Ensure the Baraat arrives exactly on time. Integrated Google Maps allows your guests to get driving directions to your venue with a single click.",
-    icon: "📍",
+      "Guests can open your venue directly in Google Maps with a single tap.",
+    icon: "/feature_icon/11.png",
   },
   {
-    label: "Save the Date, Instantly",
+    label: "Save the Date",
     title:
-      'Never worry about guests forgetting the Muhurat. A seamless "Add to Calendar" button syncs your event timings directly to their phones.',
-    icon: "📅",
+      'Let guests add wedding events to their phone calendar instantly.',
+    icon: "/feature_icon/10.png",
   },
 ];
 
@@ -61,7 +62,8 @@ export default function FeaturesShowcase() {
 
               {/* Description */}
               <p className="max-w-sm text-base leading-tight text-black/62">
-                Smarter than a printed card. More elegant than a WhatsApp video. Built to handle the beautiful chaos of your big day.
+
+                Smarter than a printed card. More elegant than a WhatsApp message. Built for the beautiful chaos of your big day.
               </p>
 
               {/* CTA Button */}
@@ -84,8 +86,14 @@ export default function FeaturesShowcase() {
                   <div className="flex gap-8 sm:gap-10">
                     {/* Icon */}
                     <div className="flex shrink-0 items-start justify-center pt-1">
-                      <div className="text-4xl sm:text-4xl transition duration-300 ">
-                        {feature.icon}
+                      <div className="h-10 w-10 sm:h-12 sm:w-12 lg:h-32 lg:w-32 relative transition duration-300">
+                        <Image
+                          src={feature.icon}
+                          alt={feature.label}
+                          width={48}
+                          height={48}
+                          className="h-full w-full object-contain"
+                        />
                       </div>
                     </div>
 

@@ -70,9 +70,9 @@ export default function SigninPage() {
         : response?.data?.message || "Login successful.";
       setSuccess(message);
       window.dispatchEvent(new Event("authChange"));
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
+      // setTimeout(() => {
+      //   router.push("/");
+      // }, 2000);
     } catch (requestError) {
       const message =
         requestError?.response?.data?.message ||
@@ -117,54 +117,54 @@ export default function SigninPage() {
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-                      <label htmlFor="email" className="mb-1 block text-sm font-medium text-black/75">
-                        Email
-                      </label>
-                      <div className="relative">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-black/40">
-                          <Mail className="h-5 w-5" />
-                        </div>
-                        <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                          className="h-11 w-full rounded-md border border-black/12 bg-[#f8f9fc] pl-10 pr-3 text-sm outline-none transition focus:border-black/30"
-                          placeholder="you@example.com"
-                        />
-                      </div>
-                    </div>
+            <label htmlFor="email" className="mb-1 block text-sm font-medium text-black/75">
+              Email
+            </label>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-black/40">
+                <Mail className="h-5 w-5" />
+              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="h-11 w-full rounded-md border border-black/12 bg-[#f8f9fc] pl-10 pr-3 text-sm outline-none transition focus:border-black/30"
+                placeholder="you@example.com"
+              />
+            </div>
+          </div>
 
-         <div>
-                    <label htmlFor="password" className="mb-1 block text-sm font-medium text-black/75">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-black/40">
-                        <Lock className="h-5 w-5" />
-                      </div>
-                      <input
-                        id="password"
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        required
-                        minLength={6}
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="h-11 w-full rounded-md border border-black/12 bg-[#f8f9fc] pl-10 pr-10 text-sm outline-none transition focus:border-black/30"
-                        placeholder="Minimum 6 characters"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-black/40 hover:text-black/70 focus:outline-none"
-                      >
-                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                      </button>
-                    </div>
-                  </div>
+          <div>
+            <label htmlFor="password" className="mb-1 block text-sm font-medium text-black/75">
+              Password
+            </label>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-black/40">
+                <Lock className="h-5 w-5" />
+              </div>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                minLength={6}
+                value={formData.password}
+                onChange={handleChange}
+                className="h-11 w-full rounded-md border border-black/12 bg-[#f8f9fc] pl-10 pr-10 text-sm outline-none transition focus:border-black/30"
+                placeholder="Minimum 6 characters"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-black/40 hover:text-black/70 focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
 
           {/* role is fixed to `user` — no selection UI */}
 
@@ -213,7 +213,7 @@ export default function SigninPage() {
                 console.error("Google login error:", error);
                 setError(
                   error.response?.data?.message ||
-                    "An error occurred during Google login. Please try again.",
+                  "An error occurred during Google login. Please try again.",
                 );
                 setSuccess("");
                 return;

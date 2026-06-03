@@ -1,13 +1,17 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Clock, Shield, TrendingUp, Users } from "lucide-react";
-
+import { usePathname } from "next/navigation"
 export default function VendorAuthShell({ children, title, subtitle, footerText }) {
+  const pathname = usePathname();
+  const isSignin = pathname == "/vendor/signin"
   return (
     <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f8f2ea_0%,#f5efe7_100%)] px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.85),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(217,181,145,0.12),transparent_28%)]" />
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-7xl flex-col rounded-[2rem] border border-white/70  shadow-[0_28px_90px_rgba(37,24,16,0.12)] backdrop-blur-sm lg:flex-row">
+      <div className={`relative mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-7xl flex-col rounded-[2rem] border border-white/70 shadow-[0_28px_90px_rgba(37,24,16,0.12)] backdrop-blur-sm lg:flex-row ${isSignin ? "lg:min-h-[70rem]" : "lg:min-h-[60rem]"
+        }`}>
         <aside className="relative flex overflow-hidden rounded-t-[2rem] bg-[#081326] text-white lg:w-[47%] lg:rounded-l-[2rem] lg:rounded-tr-none">
           <Image
             src="/vendor_signup.png"
@@ -15,7 +19,7 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
             fill
             priority
             sizes="(min-width: 1024px) 47vw, 100vw"
-            className="object-cover object-center"
+            className="object-cover object-right-bottom"
           />
           {/* <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,12,24,0.22)_0%,rgba(5,12,24,0.5)_45%,rgba(5,12,24,0.72)_100%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(255,170,105,0.18),transparent_24%)]" /> */}
@@ -100,7 +104,8 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
           </div>
         </aside>
 
-        <section className="flex flex-1 items-center justify-center px-4 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+        <section className={`flex flex-1 justify-center px-4 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12 ${isSignin ? "items-start lg:pt-36" : "items-center"
+          }`}>
           <div className="w-full max-w-xl rounded-[1.75rem] border border-black/5 bg-[#fffaf4] px-5 py-6 shadow-[0_16px_50px_rgba(30,18,10,0.06)] sm:px-7 sm:py-8">
             <div className="mb-6 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#b77c56]">
               <span className="h-px w-8 bg-[#d9a17a]" />
