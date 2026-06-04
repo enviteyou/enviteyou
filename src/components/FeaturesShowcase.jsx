@@ -92,7 +92,7 @@ export default function FeaturesShowcase() {
                           alt={feature.label}
                           width={200}
                           height={200}
-                          className="h-full w-full object-contain scale-[2] sm:scale-100"
+                          className="h-full w-full object-contain scale-[2] scale-100"
                         />
                       </div>
                     </div>
