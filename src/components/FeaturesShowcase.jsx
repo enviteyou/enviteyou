@@ -80,19 +80,19 @@ export default function FeaturesShowcase() {
             {features.map((feature, index) => (
               <React.Fragment key={feature.label}>
                 <div
-                  className="sticky top-16 md:top-20  overflow-hidden transition-all duration-300  py-10 px-0 bg-white"
+                  className="md:sticky md:top-20  overflow-hidden transition-all duration-300  pt-4 pb-6 md:py-10 px-0 bg-white"
                   style={{ zIndex: index }}
                 >
-                  <div className="flex gap-8 sm:gap-10">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:gap-10">
                     {/* Icon */}
-                    <div className="flex shrink-0 items-start justify-center pt-1">
-                      <div className="h-30 w-30 sm:h-30 sm:w-30 lg:h-40 lg:w-40 relative transition duration-300">
+                    <div className="flex shrink-0 items-start justify-start sm:pt-1">
+                      <div className="h-32 w-32 sm:h-30 sm:w-30 lg:h-40 lg:w-40 relative transition duration-300">
                         <Image
                           src={feature.icon}
                           alt={feature.label}
-                          width={48}
-                          height={48}
-                          className="h-full w-full object-contain"
+                          width={200}
+                          height={200}
+                          className="h-full w-full object-contain scale-[2] sm:scale-100"
                         />
                       </div>
                     </div>
@@ -102,7 +102,7 @@ export default function FeaturesShowcase() {
                       <h3 className="text-xs font-bold  tracking-[0.15em] text-black mb-2">
                         {feature.label}
                       </h3>
-                      <p className="text-sm font-light leading-tight tracking-tighter sm:text-2xl text-black">
+                      <p className="text-2xl font-light leading-tight tracking-tight sm:text-2xl lg:text-3xl text-black">
                         {feature.title}
                       </p>
                     </div>
