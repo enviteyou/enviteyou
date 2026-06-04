@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Smartphone } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import TemplateDetail from "./TemplateDetail";
 import TemplateForm, { initialForm } from "./TemplateForm";
 
@@ -34,6 +36,20 @@ export default function TemplateCustomizer({ template }) {
   const [saveStatus, setSaveStatus] = useState("saved"); // "saving" | "saved"
   const isFirstRender = useRef(true);
   const saveTimeoutRef = useRef(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+      ScrollTrigger.defaults({ scroller: "#preview-scroller-container" });
+      setIsMounted(true);
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        ScrollTrigger.defaults({ scroller: window });
+      }
+    };
+  }, []);
 
   useEffect(() => {
     setPreviewData(initialForm);
@@ -78,7 +94,7 @@ export default function TemplateCustomizer({ template }) {
   const previewImage = template?.featuredImage || template?.preview || "";
 
   return (
-    <div className="min-h-screen w-full bg-[#fcfaf8] text-black font-sans relative flex flex-col select-none">
+    <div className="h-screen w-full bg-[#fcfaf8] text-black font-sans relative flex flex-col select-none overflow-hidden">
       {/* Top Bar Header (Fixed, White with backdrop blur) */}
       <header className="fixed top-0 left-0 w-full h-14 bg-white/86 backdrop-blur-xl border-b border-black/8 flex items-center justify-between px-4 sm:px-6 z-[1000] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
         <div className="flex items-center gap-3">
@@ -95,26 +111,30 @@ export default function TemplateCustomizer({ template }) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Autosave Status Indicator */}
-          <div className="flex items-center gap-1.5 text-xs text-black/50 pr-2 select-none min-w-[75px] justify-end">
-            {saveStatus === "saving" ? (
-              <>
-                <div className="size-2 rounded-full bg-amber-500 animate-ping shrink-0" />
-                <span className="text-[10px] uppercase font-bold tracking-wider text-[#a26815] animate-pulse">Saving...</span>
-              </>
-            ) : (
-              <>
-                <div className="size-1.5 rounded-full bg-emerald-500 shrink-0" />
-                <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-600">Saved</span>
-              </>
-            )}
-          </div>
+          {/* Dynamic Auto-Saving Status Button */}
           <button
             type="button"
             onClick={handleSaveDraft}
-            className="rounded bg-black/5 hover:bg-black/10 text-black/80 border border-black/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition duration-200 cursor-pointer"
+            disabled={saveStatus === "saving"}
+            className={`rounded border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition duration-200 flex items-center gap-2 select-none cursor-pointer ${saveStatus === "saving"
+                ? "bg-amber-50 text-amber-700 border-amber-200"
+                : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/70"
+              }`}
           >
-            Save Draft
+            {saveStatus === "saving" ? (
+              <>
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                </span>
+                <span>Saving...</span>
+              </>
+            ) : (
+              <>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                <span>Saved</span>
+              </>
+            )}
           </button>
           <button
             type="button"
@@ -127,9 +147,9 @@ export default function TemplateCustomizer({ template }) {
       </header>
 
       {/* Main Split Pane Workspace */}
-      <main className="w-full flex-1 flex flex-col lg:flex-row relative">
+      <main className="absolute top-14 bottom-18 left-0 right-0 flex flex-col lg:flex-row overflow-hidden bg-[#fcfaf8]">
         {/* Left Column: Fixed/Scrollable Form Panel */}
-        <section className="w-full lg:w-[480px] xl:w-[540px] lg:fixed lg:top-14 lg:left-0 lg:bottom-18 lg:h-[calc(100vh-3.5rem-4.5rem)] bg-white lg:border-r border-black/10 z-30 overflow-y-auto hide-scrollbar px-5 py-6 sm:px-6">
+        <section className="w-full lg:w-[480px] xl:w-[540px] h-full bg-white lg:border-r border-black/10 z-30 overflow-y-auto hide-scrollbar px-5 py-6 sm:px-6">
           <TemplateForm
             ref={formRef}
             key={templateKey || "template-form"}
@@ -141,8 +161,11 @@ export default function TemplateCustomizer({ template }) {
           />
         </section>
 
-        {/* Right Column: Live Preview Page Flow (Scrolls with main window for GSAP animations) */}
-        <section className="w-full lg:ml-[480px] xl:ml-[540px] flex-1 bg-[#f6f3ef] flex flex-col items-center p-6 pt-24 pb-32 relative">
+        {/* Right Column: Live Preview Page Flow (Scrolls independently within its viewport boundary, hidden on mobile) */}
+        <section
+          id="preview-scroller-container"
+          className="hidden lg:flex flex-1 h-full bg-[#f6f3ef] overflow-y-auto px-6 py-8 flex-col items-center relative select-none"
+        >
           <div className="w-full max-w-[375px] mb-4 flex justify-between items-center text-black/45 px-2 shrink-0">
             <span className="text-[10px] font-bold uppercase tracking-[0.25em]">Live Preview</span>
             <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider">
@@ -152,7 +175,9 @@ export default function TemplateCustomizer({ template }) {
 
           {/* Clean Mobile-Sized Invitation Card (No thick device frame/border) */}
           <div className="w-full max-w-[375px] shadow-[0_22px_60px_rgba(0,0,0,0.12)] rounded-[24px] bg-white border border-black/10 overflow-hidden shrink-0">
-            <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} fullscreen={true} />
+            {isMounted && (
+              <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} fullscreen={true} />
+            )}
           </div>
         </section>
       </main>
@@ -199,13 +224,13 @@ export default function TemplateCustomizer({ template }) {
       </footer>
 
       {/* Floating Preview Button on Mobile Viewports */}
-      <button
+      {/* <button
         type="button"
         onClick={() => setShowPreviewModal(true)}
         className="fixed bottom-22 left-1/2 z-1000 -translate-x-1/2 rounded-full bg-black px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white shadow-[0_12px_36px_rgba(0,0,0,0.3)] lg:hidden transition hover:scale-105 active:scale-95 cursor-pointer"
       >
         Preview Invite
-      </button>
+      </button> */}
 
       {/* Fullscreen Mobile Preview Modal */}
       {showPreviewModal && (

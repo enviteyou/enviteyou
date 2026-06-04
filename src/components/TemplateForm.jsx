@@ -320,7 +320,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
   const activeTabIndex = allowedTabs.indexOf(activeTab);
   const isFirstTab = activeTabIndex === 0;
   const isLastTab = activeTab === allowedTabs[allowedTabs.length - 1];
-  
+
 
   function update(event) {
     const { name, value, type, checked } = event.target;
@@ -431,7 +431,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
       }
 
       const selected = Object.values(answers || []);
-      const generatedTags = (selected || []).slice(0, 5).map((t) => t.split(' ').slice(0,3).join('_')).join(', ');
+      const generatedTags = (selected || []).slice(0, 5).map((t) => t.split(' ').slice(0, 3).join('_')).join(', ');
 
       return { ...current, personalityAnswers: answers, generatedTags };
     });
@@ -505,8 +505,8 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
     }
   }
 
- async function handleSubmit () {
-   if (isSubmitting) return;
+  async function handleSubmit() {
+    if (isSubmitting) return;
 
     if (!form.bride || !form.groom || !form.date) {
       toast.error("Please add both names and the wedding date.");
@@ -561,7 +561,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
           currency: order.currency || "INR",
           name: "EnviteYou",
           description: `Invitation for ${form.bride || "Bride"} & ${form.groom || "Groom"}`,
-          image: `${window.location.origin}/icon2.png`,
+          image: `${window.location.origin}/icon3.png`,
           order_id: order.id,
           prefill: {
             name: form.bride || "Customer",
@@ -624,7 +624,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
     <form
       ref={formRef}
       onSubmit={(event) => event.preventDefault()}
-      className="relative bg-white"
+      className="relative bg-white pb-32"
     >
       {isSubmitting ? (
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/92 px-4 py-10 backdrop-blur-[2px]">
@@ -656,24 +656,22 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                   return (
                     <div key={step.key} className="flex items-center gap-3">
                       <div
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] transition duration-300 ${
-                          isPast
-                            ? "border-emerald-500 bg-emerald-50 text-emerald-500 font-bold"
-                            : isCurrent
-                              ? "border-black bg-black text-white animate-pulse"
-                              : "border-black/15 text-transparent bg-transparent"
-                        }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] transition duration-300 ${isPast
+                          ? "border-emerald-500 bg-emerald-50 text-emerald-500 font-bold"
+                          : isCurrent
+                            ? "border-black bg-black text-white animate-pulse"
+                            : "border-black/15 text-transparent bg-transparent"
+                          }`}
                       >
                         {isPast ? "✓" : idx + 1}
                       </div>
                       <span
-                        className={`text-xs transition duration-300 ${
-                          isCurrent
-                            ? "font-semibold text-black"
-                            : isPast
-                              ? "text-black/50"
-                              : "text-black/30"
-                        }`}
+                        className={`text-xs transition duration-300 ${isCurrent
+                          ? "font-semibold text-black"
+                          : isPast
+                            ? "text-black/50"
+                            : "text-black/30"
+                          }`}
                       >
                         {step.label}
                       </span>
@@ -693,7 +691,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
         </div>
         <button
           type="button"
-          onClick={() => router.push("/pricing")}
+          onClick={() => router.push("/")}
           className="border border-black/15 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white rounded"
         >
           Change
@@ -707,11 +705,10 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
               key={tab}
               type="button"
               onClick={() => navigateToTab(tab)}
-              className={`border-b-2 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] transition ${
-                activeTab === tab
-                  ? "border-[#74313d] text-[#74313d]"
-                  : "border-transparent text-black/35 hover:text-black"
-              }`}
+              className={`border-b-2 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] transition ${activeTab === tab
+                ? "border-[#74313d] text-[#74313d]"
+                : "border-transparent text-black/35 hover:text-black"
+                }`}
             >
               {tab}
             </button>
@@ -746,7 +743,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                     nameOrder: current.nameOrder === "brideFirst" ? "groomFirst" : "brideFirst",
                   }))
                 }
-                className="border border-[#74313d]/20 rounded bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white"
+                className="border border-[#74313d]/20 rounded bg-white px-1 py-1  md:px-6 md:py-3 text-[10px] md:text-xs font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white"
               >
                 Switch
               </button>
@@ -851,18 +848,16 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                     key={eventName}
                     type="button"
                     onClick={() => toggleEvent(eventName)}
-                    className={`flex items-center justify-between border px-4 py-3 text-left text-sm transition ${
-                      selected ? "border-black bg-black/5 text-black" : "border-black/10 bg-white text-black hover:border-black"
-                    }`}
+                    className={`flex items-center justify-between border px-4 py-3 text-left text-sm transition ${selected ? "border-black bg-black/5 text-black" : "border-black/10 bg-white text-black hover:border-black"
+                      }`}
                   >
                     <span className="flex items-center gap-2">
                       <span>{eventIcons[eventName] || "✨"}</span>
                       <span>{eventName}</span>
                     </span>
                     <span
-                      className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs ${
-                        selected ? "border-black bg-black text-white" : "border-black/20 text-transparent"
-                      }`}
+                      className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs ${selected ? "border-black bg-black text-white" : "border-black/20 text-transparent"
+                        }`}
                     >
                       ✓
                     </span>
@@ -1008,18 +1003,16 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                 <button
                   type="button"
                   onClick={() => setStorySubTab("Personality Tags")}
-                  className={`px-3 py-1 text-xs font-semibold border-b-2 transition ${
-                    storySubTab === "Personality Tags" ? "border-black text-black" : "border-transparent text-black/45 hover:text-black"
-                  }`}
+                  className={`px-3 py-1 text-xs font-semibold border-b-2 transition ${storySubTab === "Personality Tags" ? "border-black text-black" : "border-transparent text-black/45 hover:text-black"
+                    }`}
                 >
                   Personality Tags
                 </button>
                 <button
                   type="button"
                   onClick={() => setStorySubTab("Our Story")}
-                  className={`px-3 py-1 text-xs font-semibold border-b-2 transition ${
-                    storySubTab === "Our Story" ? "border-black text-black" : "border-transparent text-black/45 hover:text-black"
-                  }`}
+                  className={`px-3 py-1 text-xs font-semibold border-b-2 transition ${storySubTab === "Our Story" ? "border-black text-black" : "border-transparent text-black/45 hover:text-black"
+                    }`}
                 >
                   Our Story
                 </button>
@@ -1042,9 +1035,8 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                                 key={opt}
                                 type="button"
                                 onClick={() => selectPersonalityOption(group.title, opt)}
-                                className={`flex items-center text-sm text-left border px-4 py-3 transition ${
-                                  selected ? "border-black bg-black/5 text-black" : "border-black/10 bg-white text-black hover:border-black"
-                                }`}
+                                className={`flex items-center text-sm text-left border px-4 py-3 transition ${selected ? "border-black bg-black/5 text-black" : "border-black/10 bg-white text-black hover:border-black"
+                                  }`}
                               >
                                 <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-black/20 bg-white mr-3">
                                   {selected ? <span className="h-2 w-2 rounded-full bg-black" /> : null}
@@ -1105,30 +1097,30 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
             <ToggleRow title="Show gallery section" note="Add a cover image and notes for your photo gallery." name="galleryEnabled" checked={form.galleryEnabled} onChange={update} />
             <p className="mt-3 text-sm text-black/60">Photo layout</p>
             <div className="mt-2 flex gap-3">
-              {[0,1,2,4].map((n) => (
+              {[0, 1, 2, 4].map((n) => (
                 <button
                   key={n}
                   type="button"
-                  onClick={() => setForm((c)=>({...c, galleryLayout: n}))}
-                  className={`border p-3 text-xs ${form.galleryLayout===n? 'border-black bg-black/5 text-black':'border-black/10 bg-white text-black'}`} 
+                  onClick={() => setForm((c) => ({ ...c, galleryLayout: n }))}
+                  className={`border p-3 text-xs ${form.galleryLayout === n ? 'border-black bg-black/5 text-black' : 'border-black/10 bg-white text-black'}`}
                 >
-                  {n===0? 'Skip' : `${n} Photo${n>1?'s':''}`}
+                  {n === 0 ? 'Skip' : `${n} Photo${n > 1 ? 's' : ''}`}
                 </button>
               ))}
             </div>
 
             <div className="mt-4 grid gap-3">
               <Field label="Gallery images">
-                <div className={`grid gap-3 ${form.galleryLayout===1? 'grid-cols-1': form.galleryLayout===2? 'grid-cols-2': form.galleryLayout===4? 'grid-cols-2 sm:grid-cols-2': 'hidden'}`}>
-                  {Array.from({length: form.galleryLayout===0?0: form.galleryLayout===1?1: form.galleryLayout===2?2:4}).map((_, idx) => (
+                <div className={`grid gap-3 ${form.galleryLayout === 1 ? 'grid-cols-1' : form.galleryLayout === 2 ? 'grid-cols-2' : form.galleryLayout === 4 ? 'grid-cols-2 sm:grid-cols-2' : 'hidden'}`}>
+                  {Array.from({ length: form.galleryLayout === 0 ? 0 : form.galleryLayout === 1 ? 1 : form.galleryLayout === 2 ? 2 : 4 }).map((_, idx) => (
                     <div key={idx} className="border border-dashed border-black/20 p-6 text-center">
                       {form.galleryImages?.[idx] ? (
-                        <img src={form.galleryImages[idx]} className="mx-auto h-40 object-cover" alt={`photo-${idx+1}`} />
+                        <img src={form.galleryImages[idx]} className="mx-auto h-40 object-cover" alt={`photo-${idx + 1}`} />
                       ) : (
                         <>
                           <label className="cursor-pointer text-sm text-black/60">
-                            <input type="file" accept="image/*" className="hidden" onChange={(e)=>handleGalleryUpload(e, idx)} />
-                            Click to upload photo {idx+1}
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleGalleryUpload(e, idx)} />
+                            Click to upload photo {idx + 1}
                           </label>
                         </>
                       )}
@@ -1159,9 +1151,8 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                       <button
                         type="button"
                         onClick={() => setSelectedInfoCard(card)}
-                        className={`flex w-full items-center justify-between border px-4 py-3 text-sm transition ${
-                          selected ? "border-black bg-black/5 text-black" : active ? "border-black/10 bg-white text-black" : "border-black/10 bg-white text-black"
-                        }`}
+                        className={`flex w-full items-center justify-between border px-4 py-3 text-sm transition ${selected ? "border-black bg-black/5 text-black" : active ? "border-black/10 bg-white text-black" : "border-black/10 bg-white text-black"
+                          }`}
                       >
                         <span>{card}</span>
                         <span className={`h-4 w-4 rounded-full border ${active ? "bg-black text-white border-black" : "border-black/20 bg-white text-transparent"}`}>

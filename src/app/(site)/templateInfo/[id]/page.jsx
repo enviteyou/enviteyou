@@ -36,7 +36,7 @@ export default async function TemplatePage({ params }) {
   }
 
   return (
-    <main className="min-h-screen w-full bg-[#fcfaf8] text-black">
+    <main className="h-screen w-full bg-[#fcfaf8] text-black overflow-hidden">
       <TemplateCustomizer template={template} />
     </main>
   );

@@ -15,7 +15,7 @@ function getPriceLabel(template) {
   // 'pricing' is the admin-set display label (e.g. "₹ 3,999")
   // 'sellPrice' is the numeric amount used for Razorpay charging
   // Always prefer the display label; fall back to sellPrice if label is empty
-  const raw = template?.pricing || template?.sellPrice || "3999";
+  const raw = template?.sellPrice;
   const s = String(raw).trim();
   // If it already contains the rupee symbol, return as-is
   if (/₹/.test(s)) return s;

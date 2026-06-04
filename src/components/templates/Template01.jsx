@@ -11,8 +11,6 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
     // Crucial for mobile: Prevents ScrollTrigger from recalculating wildly when the URL bar collapses/expands
     ScrollTrigger.config({ ignoreMobileResize: true });
-    // Normalizes touch scroll on mobile devices to prevent iOS Safari jitter when pinning
-    ScrollTrigger.normalizeScroll(true);
 }
 
 // Set this to true to display GSAP ScrollTrigger active regions on screen for debugging
@@ -202,6 +200,17 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
     const [hasStarted, setHasStarted] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null); // 3D Lightbox selected image state
     const [copiedHashtag, setCopiedHashtag] = useState(false);
+
+    useEffect(() => {
+        if (typeof window !== "undefined" && !embedded) {
+            ScrollTrigger.normalizeScroll(true);
+        }
+        return () => {
+            if (typeof window !== "undefined" && !embedded) {
+                ScrollTrigger.normalizeScroll(false);
+            }
+        };
+    }, [embedded]);
 
     // Derived values from formData (fall back to defaults)
     const brideName = (formData?.bride || "Janvi").trim();

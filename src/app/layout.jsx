@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
           ) : null}
           {children}
         </AuthProvider>
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
