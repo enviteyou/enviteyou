@@ -66,7 +66,7 @@ function TemplateGridCard({ template, selected, onSelect }) {
           <span className="rounded-full border border-black/10 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-black/50">{template.category}</span>
         </div>
         <div className="mt-4 flex items-center justify-between gap-3 text-sm">
-          <span className="rounded-full border border-black/10 px-3 py-1.5 font-medium text-black/70">Vendor Price {formatCurrency(template.vendorPrice || template.sellPrice || template.regularPrice)}</span>
+          <span className="rounded-full border border-black/10 px-3 py-1.5 font-medium text-black/70">Vendor Price {formatCurrency(template.vendorPrice || template.sellPrice)}</span>
           <span className="rounded-full bg-black px-3 py-1.5 font-medium text-white">Use Template</span>
         </div>
       </div>

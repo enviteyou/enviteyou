@@ -21,8 +21,7 @@ export function normalizeTemplate(template, index = 0) {
   const description = template.description?.trim() || "A premium digital invitation template.";
   const category = template.category?.trim() || "Wedding";
   const image = template.featuredImage || template.preview || "";
-  const secondaryImage = template.secondaryImage?.trim() || template.secondImage?.trim() || image;
-  const price = template.pricing?.trim() || formatCurrency(template.sellPrice ?? template.vendorPrice ?? template.regularPrice);
+  const price = template.pricing?.trim() || formatCurrency(template.sellPrice ?? template.vendorPrice);
 
   return {
     ...template,
@@ -33,7 +32,6 @@ export function normalizeTemplate(template, index = 0) {
     description,
     preview: image,
     featuredImage: image,
-    secondaryImage,
     price,
     tag: template.tag?.trim() || category,
     palette: template.palette?.trim() || category,

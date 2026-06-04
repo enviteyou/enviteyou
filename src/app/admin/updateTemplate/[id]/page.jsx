@@ -12,7 +12,6 @@ export default function UpdateTemplate() {
   const { id } = useParams();
   const [form, setForm] = useState(null);
   const [file, setFile] = useState(null);
-  const [secondaryFile, setSecondaryFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
@@ -62,7 +61,6 @@ export default function UpdateTemplate() {
       const fd = new FormData();
       Object.keys(form).forEach((k) => fd.append(k, form[k] || ""));
       if (file) fd.append("featuredImage", file);
-      if (secondaryFile) fd.append("secondaryImage", secondaryFile);
       await api.put(`/templates/${id}`, fd, { headers: { "Content-Type": "multipart/form-data" } });
       router.push("/admin/allTemplate");
     } catch (err) {
@@ -127,11 +125,7 @@ export default function UpdateTemplate() {
                 <input placeholder="INR 3,999" value={form.pricing || ""} onChange={(e) => update("pricing", e.target.value)} className={inputClass} />
               </label>
             </div>
-            <div className="grid gap-5 sm:grid-cols-3">
-              <label className={labelClass}>
-                Regular price
-                <input required type="number" min="0" value={form.regularPrice || ""} onChange={(e) => update("regularPrice", e.target.value)} className={inputClass} />
-              </label>
+            <div className="grid gap-5 sm:grid-cols-2">
               <label className={labelClass}>
                 Sell price
                 <input required type="number" min="0" value={form.sellPrice || ""} onChange={(e) => update("sellPrice", e.target.value)} className={inputClass} />
@@ -164,16 +158,6 @@ export default function UpdateTemplate() {
             <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="hidden" />
             <span className="text-sm font-semibold text-black">{file ? file.name : "Replace image"}</span>
             <span className="mt-2 text-xs leading-5 text-black/45">Leave empty to keep current image.</span>
-          </label>
-          <h2 className="mt-6 text-xl font-semibold tracking-tight">Secondary image</h2>
-          {form.secondaryImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={form.secondaryImage} alt={form.title || "Template"} className="mt-5 aspect-4/3 w-full border border-black/10 object-cover" />
-          ) : null}
-          <label className="mt-4 flex cursor-pointer flex-col items-center justify-center border border-dashed border-black/25 bg-black/2 p-5 text-center transition hover:border-black">
-            <input type="file" accept="image/*" onChange={(e) => setSecondaryFile(e.target.files?.[0] || null)} className="hidden" />
-            <span className="text-sm font-semibold text-black">{secondaryFile ? secondaryFile.name : "Replace secondary image"}</span>
-            <span className="mt-2 text-xs leading-5 text-black/45">Leave empty to keep current secondary image.</span>
           </label>
           {message ? <p className="mt-5 border border-black/10 px-4 py-3 text-sm font-medium text-black">{message}</p> : null}
           <button disabled={loading} className="mt-5 w-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50">

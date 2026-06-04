@@ -134,7 +134,6 @@ export default function AllTemplate() {
                   </div>
                   <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-6 text-black/60">{t.description}</p>
                   <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-black">
-                    <span className="border border-black/10 px-3 py-2">Regular {formatCurrency(t.regularPrice)}</span>
                     <span className="border border-black bg-black px-3 py-2 text-white">Sell {formatCurrency(t.sellPrice)}</span>
                     <span className="border border-black/10 px-3 py-2">Vendor {formatCurrency(t.vendorPrice)}</span>
                   </div>
