@@ -232,11 +232,10 @@ export default function AddTemplate() {
                   return (
                     <label
                       key={tab}
-                      className={`group flex items-center justify-between gap-2.5 cursor-pointer border rounded-xl p-3.5 text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
-                        isChecked
+                      className={`group flex items-center justify-between gap-2.5 cursor-pointer border rounded-xl p-3.5 text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${isChecked
                           ? "border-[#74313d] bg-[#74313d]/2 text-[#74313d]"
                           : "border-black/5 bg-[#fbf9f7] text-black/60 hover:bg-black/5 hover:text-black"
-                      }`}
+                        }`}
                     >
                       <span className="font-sans font-bold tracking-wide">{tab}</span>
                       <div className="relative flex items-center justify-center shrink-0">
@@ -253,9 +252,8 @@ export default function AddTemplate() {
                           className="peer absolute inset-0 size-5 opacity-0 cursor-pointer"
                         />
                         <div
-                          className={`flex size-5 items-center justify-center rounded-lg border transition-colors ${
-                            isChecked ? "bg-[#74313d] border-[#74313d] text-white" : "border-black/20 bg-white"
-                          }`}
+                          className={`flex size-5 items-center justify-center rounded-lg border transition-colors ${isChecked ? "bg-[#74313d] border-[#74313d] text-white" : "border-black/20 bg-white"
+                            }`}
                         >
                           {isChecked && <Check className="size-3" strokeWidth={3} />}
                         </div>
@@ -305,7 +303,7 @@ export default function AddTemplate() {
               disabled={loading}
               className="mt-5 w-full bg-[#74313d] hover:bg-[#5a202a] text-white py-3.5 px-6 rounded-xl font-bold uppercase tracking-wider transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-[#74313d]/15 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
             >
-              {loading ? "Creating..." : "Create Theme"}
+              {loading ? "Creating..." : "Create Template"}
             </button>
           </div>
         </aside>

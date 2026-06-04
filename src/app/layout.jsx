@@ -10,6 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
       </head>
       <body className="min-h-full overflow-x-hidden bg-white text-black ">
         <AuthProvider>
