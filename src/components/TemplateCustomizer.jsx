@@ -38,6 +38,22 @@ export default function TemplateCustomizer({ template }) {
   const saveTimeoutRef = useRef(null);
   const [isMounted, setIsMounted] = useState(false);
 
+  const activeTabIndex = allowedTabs.indexOf(activeTab);
+  const isFirstTab = activeTabIndex === 0;
+  const isLastTab = activeTabIndex === allowedTabs.length - 1;
+
+  const goToPreviousTab = () => {
+    if (activeTabIndex > 0) {
+      setActiveTab(allowedTabs[activeTabIndex - 1]);
+    }
+  };
+
+  const goToNextTab = () => {
+    if (activeTabIndex < allowedTabs.length - 1) {
+      setActiveTab(allowedTabs[activeTabIndex + 1]);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       gsap.registerPlugin(ScrollTrigger);
@@ -149,7 +165,7 @@ export default function TemplateCustomizer({ template }) {
       {/* Main Split Pane Workspace */}
       <main className="absolute top-14 bottom-18 left-0 right-0 flex flex-col lg:flex-row overflow-hidden bg-[#fcfaf8]">
         {/* Left Column: Fixed/Scrollable Form Panel */}
-        <section className="w-full lg:w-[480px] xl:w-[540px] h-full bg-white lg:border-r border-black/10 z-30 overflow-y-auto hide-scrollbar px-5 py-6 sm:px-6">
+        <section className="w-full lg:w-[480px] xl:w-[540px] h-full bg-white lg:border-r border-black/10 z-30 overflow-y-auto hide-scrollbar ">
           <TemplateForm
             ref={formRef}
             key={templateKey || "template-form"}
@@ -184,42 +200,70 @@ export default function TemplateCustomizer({ template }) {
 
       {/* Bottom Bar Controls (Fixed, White with backdrop blur) */}
       <footer className="fixed bottom-0 left-0 w-full h-18 bg-white/86 backdrop-blur-xl border-t border-black/8 flex items-center justify-between px-4 sm:px-6 z-[1000] shadow-[0_-2px_12px_rgba(0,0,0,0.03)]">
-        <div className="flex items-center gap-3">
-          {previewImage ? (
-            <img
-              src={previewImage}
-              alt={template?.name}
-              className="h-10 w-10 object-cover rounded border border-black/10 bg-black/5"
-            />
-          ) : (
-            <div className="h-10 w-10 bg-black/5 rounded flex items-center justify-center text-[10px] font-semibold text-black/40 border border-black/10">
-              Theme
-            </div>
-          )}
+        {/* Desktop View Bottom Bar (Original Theme Info & Direct Publish Button) */}
+        <div className="hidden lg:flex w-full items-center justify-between">
           <div>
-            <p className="text-[9px] uppercase tracking-wider text-black/40">Selected Theme</p>
-            <p className="text-xs font-semibold tracking-tight text-black">{template?.name || "Wedding Website"}</p>
+            <Link
+              href="/"
+              className="border border-black/15 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white rounded"
+            >
+              Change
+            </Link>
+          </div>
+
+          <div className="flex flex-col items-center text-center">
+            <div className="flex items-center gap-1.5 text-xs text-black/80 font-medium">
+              <span className="text-sm font-bold text-black">{priceLabel}</span>
+              <span className="text-[10px] text-black/45">one-time</span>
+            </div>
+            <p className="text-[9px] text-black/40 tracking-wide mt-0.5">
+              Personal Dashboard • Mobile Optimized • WhatsApp Sharing
+            </p>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              onClick={() => formRef.current?.submit()}
+              className="rounded bg-black hover:bg-black/90 text-white px-6 sm:px-8 py-2.5 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
+            >
+              Publish
+            </button>
           </div>
         </div>
 
-        <div className="hidden sm:flex flex-col items-center text-center">
-          <div className="flex items-center gap-1.5 text-xs text-black/80 font-medium">
-            <span className="text-sm font-bold text-black">{priceLabel}</span>
-            <span className="text-[10px] text-black/45">one-time</span>
+        {/* Mobile View Bottom Bar (Wizard Navigation Flow) */}
+        <div className="flex lg:hidden w-full items-center justify-between">
+          <div>
+            <button
+              type="button"
+              onClick={goToPreviousTab}
+              disabled={isFirstTab}
+              className="rounded border border-black/15 bg-white hover:bg-black/5 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black transition disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+            >
+              Previous
+            </button>
           </div>
-          <p className="text-[9px] text-black/40 tracking-wide mt-0.5">
-            Personal Dashboard • Mobile Optimized • WhatsApp Sharing
-          </p>
-        </div>
 
-        <div>
-          <button
-            type="button"
-            onClick={() => formRef.current?.submit()}
-            className="rounded bg-black hover:bg-black/90 text-white px-6 sm:px-8 py-2.5 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
-          >
-            Publish
-          </button>
+          <div>
+            {isLastTab ? (
+              <button
+                type="button"
+                onClick={() => formRef.current?.submit()}
+                className="rounded bg-[#74313d] hover:bg-[#74313d]/90 text-white px-6 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
+              >
+                Publish
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={goToNextTab}
+                className="rounded bg-black hover:bg-black/90 text-white px-6 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
+              >
+                Next
+              </button>
+            )}
+          </div>
         </div>
       </footer>
 

@@ -14,7 +14,7 @@ function SigninContent() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const { isUser, loading } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -71,6 +71,9 @@ function SigninContent() {
         : response?.data?.message || "Login successful.";
       setSuccess(message);
       window.dispatchEvent(new Event("authChange"));
+      setTimeout(() => {
+        router.push(redirect || "/my-account");
+      }, 500);
     } catch (requestError) {
       const message =
         requestError?.response?.data?.message ||
