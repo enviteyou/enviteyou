@@ -71,9 +71,7 @@ function SigninContent() {
         : response?.data?.message || "Login successful.";
       setSuccess(message);
       window.dispatchEvent(new Event("authChange"));
-      setTimeout(() => {
-        router.push(redirect || "/my-account");
-      }, 500);
+
     } catch (requestError) {
       const message =
         requestError?.response?.data?.message ||
