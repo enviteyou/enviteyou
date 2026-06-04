@@ -3,6 +3,7 @@
 import { InstagramLogoIcon, PinterestLogoIcon, YoutubeLogoIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const footerLinks = {
   Templates: ["Classic", "Modern", "Luxury", "Editorial"],
@@ -20,6 +21,11 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/templateInfo")) {
+    return null;
+  }
+
   return (
     <footer className="relative overflow-hidden border-t border-black/8 bg-white text-black">
       <div className="pointer-events-none absolute inset-0">

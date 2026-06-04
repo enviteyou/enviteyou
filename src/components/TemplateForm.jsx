@@ -1,7 +1,7 @@
 "use client";
 
 import api from "@/api/axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -185,7 +185,7 @@ function ToggleRow({ title, note, checked, name, onChange }) {
           checked={Boolean(checked)}
           onChange={onChange}
         />
-        <span className="pointer-events-none absolute inset-0 rounded-full border border-black/15 bg-black/10 transition peer-checked:border-black/35 peer-checked:bg-black/55" />
+        <span className="pointer-events-none absolute inset-0 rounded-full border border-black/15 bg-black/10 transition peer-checked:border-[#74313d]/40 peer-checked:bg-[#74313d]" />
         <span className="pointer-events-none absolute left-1 h-6 w-6 rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.18)] transition-transform duration-200 peer-checked:translate-x-6" />
       </span>
     </label>
@@ -233,9 +233,14 @@ function normalizeStoredForm(data) {
   };
 }
 
-export default function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab }) {
+const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab, allowedTabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"] }, ref) {
   const router = useRouter();
   const formRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    submit() {
+      handleSubmit();
+    }
+  }));
   const [selectedInfoCard, setSelectedInfoCard] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState("Mehendi");
   const [showCustomModal, setShowCustomModal] = useState(false);
@@ -312,10 +317,9 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     onPreviewChange?.(form);
   }, [form, onPreviewChange]);
 
-  const activeTabIndex = tabs.indexOf(activeTab);
+  const activeTabIndex = allowedTabs.indexOf(activeTab);
   const isFirstTab = activeTabIndex === 0;
-  // Treat MUSIC as the final step for saving details (show Save on MUSIC tab), even though Gallery and Info come after it for users to edit those sections if they want
-  const isLastTab = activeTab === tabs[tabs.length - 1] || activeTab === "Music";
+  const isLastTab = activeTab === allowedTabs[allowedTabs.length - 1];
   
 
   function update(event) {
@@ -474,13 +478,13 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
 
   function goToPreviousTab() {
     if (!isFirstTab) {
-      navigateToTab(tabs[activeTabIndex - 1]);
+      navigateToTab(allowedTabs[activeTabIndex - 1]);
     }
   }
 
   function goToNextTab() {
     if (!isLastTab) {
-      navigateToTab(tabs[activeTabIndex + 1]);
+      navigateToTab(allowedTabs[activeTabIndex + 1]);
     }
   }
 
@@ -514,12 +518,12 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
       const meResponse = await api.get("/auth/me");
       if (!(meResponse?.data?.success && meResponse?.data?.user)) {
         toast.info("You need to sign in before creating an invitation.");
-        router.push("/signin");
+        router.push(`/signin?redirect=${encodeURIComponent(window.location.pathname)}`);
         return;
       }
     } catch {
       toast.info("You need to sign in before creating an invitation.");
-      router.push("/signin");
+      router.push(`/signin?redirect=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
 
@@ -607,7 +611,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
       const status = error?.response?.status;
       if (status === 401 || status === 409) {
         toast.info("You need to sign in before creating an invitation.");
-        router.push("/signin");
+        router.push(`/signin?redirect=${encodeURIComponent(window.location.pathname)}`);
         return;
       }
       toast.error(error?.response?.data?.message || error?.message || "Payment or invitation creation failed. Please try again.");
@@ -620,7 +624,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
     <form
       ref={formRef}
       onSubmit={(event) => event.preventDefault()}
-      className="relative overflow-hidden rounded border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]"
+      className="relative bg-white"
     >
       {isSubmitting ? (
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/92 px-4 py-10 backdrop-blur-[2px]">
@@ -689,7 +693,8 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
         </div>
         <button
           type="button"
-          className="border border-black px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-black hover:text-white"
+          onClick={() => router.push("/pricing")}
+          className="border border-black/15 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white rounded"
         >
           Change
         </button>
@@ -697,14 +702,14 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
 
       <div className="border-b border-black/10 px-5">
         <div className="flex flex-wrap gap-x-7 gap-y-0.5">
-          {tabs.map((tab) => (
+          {allowedTabs.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => navigateToTab(tab)}
               className={`border-b-2 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] transition ${
                 activeTab === tab
-                  ? "border-black text-black"
+                  ? "border-[#74313d] text-[#74313d]"
                   : "border-transparent text-black/35 hover:text-black"
               }`}
             >
@@ -741,7 +746,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
                     nameOrder: current.nameOrder === "brideFirst" ? "groomFirst" : "brideFirst",
                   }))
                 }
-                className="border border-black bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-black hover:text-white"
+                className="border border-[#74313d]/20 rounded bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white"
               >
                 Switch
               </button>
@@ -1224,9 +1229,7 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
           </button>
 
           {isLastTab ? (
-            <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60">
-              {isSubmitting ? "Processing Payment..." : "Pay & Create Invitation"}
-            </button>
+            <div className="text-xs text-black/40 italic">Ready! Click "Publish" below to proceed.</div>
           ) : (
             <button
               type="button"
@@ -1240,4 +1243,5 @@ export default function TemplateForm({ template, onPreviewChange, activeTab, set
       </div>
     </form>
   );
-}
+});
+export default TemplateForm;

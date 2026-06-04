@@ -1,6 +1,8 @@
-import React from 'react'
-const CATEGORIES = [
-  "All",
+"use client";
+
+import React, { useEffect, useState } from 'react';
+
+const CATEGORIES_LIST = [
   "Hindu Weddings",
   "Christian Weddings",
   "Sikh Weddings",
@@ -8,12 +10,31 @@ const CATEGORIES = [
   "South-Indian Weddings",
   "Save the date",
 ];
+
 function Category({ activeCategory = "All", onCategoryChange }) {
+  const [hasDrafts, setHasDrafts] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const keys = Object.keys(window.localStorage);
+        const draftKeys = keys.filter(key => key.startsWith("envite-template-draft:"));
+        setHasDrafts(draftKeys.length > 0);
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+  }, []);
+
+  const categories = hasDrafts 
+    ? ["All", "Drafts", ...CATEGORIES_LIST] 
+    : ["All", ...CATEGORIES_LIST];
+
   return (
     <div className="mx-auto w-full max-w-6xl border-t border-black/10 px-5 py-6 md:px-10">
       <p className="text-left text-sm font-medium text-black/60 md:text-center">Select Category</p>
       <div className="mt-4 flex flex-wrap justify-start gap-2 md:justify-center md:gap-3">
-        {CATEGORIES.map((category) => {
+        {categories.map((category) => {
           const isActive = activeCategory === category;
 
           return (
@@ -27,7 +48,6 @@ function Category({ activeCategory = "All", onCategoryChange }) {
                 }`}
             >
               {category}
-
             </button>
           )
         })}

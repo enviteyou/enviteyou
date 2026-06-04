@@ -68,6 +68,10 @@ export default function Header() {
     setMenuOpen(false);
   }, [pathname]);
 
+  if (pathname?.startsWith("/templateInfo")) {
+    return null;
+  }
+
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const navItems = [

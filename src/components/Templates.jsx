@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Eye } from "lucide-react";
 
@@ -88,7 +89,28 @@ function TemplateCard({ template }) {
 }
 
 export default function Templates({ templates = [], activeCategory = "All" }) {
+  const [draftIds, setDraftIds] = useState([]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const keys = Object.keys(window.localStorage);
+        const ids = keys
+          .filter(key => key.startsWith("envite-template-draft:"))
+          .map(key => key.replace("envite-template-draft:", "").trim().toLowerCase());
+        setDraftIds(ids);
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+  }, [activeCategory]);
+
   const filteredTemplates = templates.filter((template) => {
+    if (activeCategory === "Drafts") {
+      const id = String(template.templateId || template.id || template._id || "").toLowerCase().trim();
+      return draftIds.includes(id);
+    }
+
     if (activeCategory === "All") return true;
 
     return normalizeCategory(template.category) === normalizeCategory(activeCategory);
@@ -112,8 +134,15 @@ export default function Templates({ templates = [], activeCategory = "All" }) {
             ))}
           </div>
         ) : (
-          <div className="mt-4 rounded border border-black/10 bg-white px-4 py-3 text-sm text-black/50">
-            No templates available for {activeCategory}.
+          <div className="mt-4 rounded-xl border border-black/10 bg-white px-6 py-10 text-center text-sm text-black/50 shadow-[0_8px_20px_rgba(0,0,0,0.03)]">
+            {activeCategory === "Drafts" ? (
+              <>
+                <p className="font-semibold text-black/70 mb-1 text-base">No drafts found yet</p>
+                <p className="text-xs text-black/45">Start editing any template to automatically save it as a draft here!</p>
+              </>
+            ) : (
+              `No templates available for ${activeCategory}.`
+            )}
           </div>
         )}
       </div>

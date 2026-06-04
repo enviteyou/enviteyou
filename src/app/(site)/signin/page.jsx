@@ -2,16 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import api from "@/api/axios";
 import { GoogleLogin } from "@react-oauth/google";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Lock, Mail, Phone, User } from "lucide-react";
-export default function SigninPage() {
-  // role selection removed — default to normal "user" role
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+
+function SigninContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const { isUser, loading } = useAuth();
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -31,13 +34,11 @@ export default function SigninPage() {
     }));
   };
 
-  // role selection removed; kept for compatibility
-
   useEffect(() => {
     if (isUser) {
-      router.replace("/my-account");
+      router.replace(redirect || "/my-account");
     }
-  }, [isUser, router]);
+  }, [isUser, router, redirect]);
 
   if (loading) {
     return (
@@ -70,9 +71,6 @@ export default function SigninPage() {
         : response?.data?.message || "Login successful.";
       setSuccess(message);
       window.dispatchEvent(new Event("authChange"));
-      // setTimeout(() => {
-      //   router.push("/");
-      // }, 2000);
     } catch (requestError) {
       const message =
         requestError?.response?.data?.message ||
@@ -166,8 +164,6 @@ export default function SigninPage() {
             </div>
           </div>
 
-          {/* role is fixed to `user` — no selection UI */}
-
           {error ? (
             <p className="text-sm font-medium text-red-600">{error}</p>
           ) : null}
@@ -186,9 +182,7 @@ export default function SigninPage() {
 
         <div className="my-3 flex items-center gap-4">
           <div className="h-px flex-1 bg-gray-300"></div>
-
           <span className="text-sm text-gray-500">or</span>
-
           <div className="h-px flex-1 bg-gray-300"></div>
         </div>
 
@@ -207,7 +201,7 @@ export default function SigninPage() {
                 setSuccess(data?.message || "Google login successful.");
                 window.dispatchEvent(new Event("authChange"));
                 setTimeout(() => {
-                  router.push("/");
+                  router.push(redirect || "/");
                 }, 2000);
               } catch (error) {
                 console.error("Google login error:", error);
@@ -240,5 +234,21 @@ export default function SigninPage() {
         </p>
       </section>
     </main>
+  );
+}
+
+export default function SigninPage() {
+  return (
+    <Suspense fallback={
+      <main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+        <section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
+          <p className="text-sm font-medium text-black/60">
+            Loading...
+          </p>
+        </section>
+      </main>
+    }>
+      <SigninContent />
+    </Suspense>
   );
 }
