@@ -11,7 +11,7 @@ import TemplateDetail from "./TemplateDetail";
 import TemplateForm, { initialForm } from "./TemplateForm";
 
 function getPriceLabel(template) {
-  const raw = template?.pricing || template?.sellPrice || "1499";
+  const raw = template?.sellPrice;
   const s = String(raw).trim();
   if (/₹/.test(s)) return s;
   if (/\bINR\b/i.test(s)) return s.replace(/\bINR\b/i, "₹");
@@ -117,8 +117,8 @@ export default function TemplateCustomizer({ template }) {
             onClick={handleSaveDraft}
             disabled={saveStatus === "saving"}
             className={`rounded border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition duration-200 flex items-center gap-2 select-none cursor-pointer ${saveStatus === "saving"
-                ? "bg-amber-50 text-amber-700 border-amber-200"
-                : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/70"
+              ? "bg-amber-50 text-amber-700 border-amber-200"
+              : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/70"
               }`}
           >
             {saveStatus === "saving" ? (
