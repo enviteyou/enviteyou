@@ -6,18 +6,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const footerLinks = {
-  Templates: ["Classic", "Modern", "Luxury", "Editorial"],
-  Services: ["Custom invites", "Branding", "RSVP pages", "Guest support"],
-  Information: [
-    { label: "Privacy Policy", href: "/policy" },
+  'Quick Links': [
+    { label: "Become a Partner", href: "/vendor/signup" },
+    { label: "About Us", href: "/about" },
+    { label: "Blog", href: "/blogs" },
+
+  ],
+  'Important Links': [
     { label: "Refund Policy", href: "/refund_policy" },
     { label: "Shipping Policy", href: "/shipping_policy" },
-    { label: "Cookie Policy", href: "/cookie_policy" },
-    { label: "Terms of Service", href: "/tems" },
-    { label: "About Us", href: "/about" },
     { label: "Contact us", href: "mailto:care@enviteyou.com" },
 
   ],
+  'Our Policy': [
+    { label: "Privacy Policy", href: "/privacy_policy" },
+    { label: "Cookie Policy", href: "/cookie_policy" },
+    { label: "Terms of Service", href: "/tems" },
+  ],
+
+
 };
 
 export default function Footer() {
@@ -54,12 +61,12 @@ export default function Footer() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap">
-              <Link href="/pricing" className="rounded bg-black px-6 py-3 text-center text-sm font-medium text-white shadow-[0_18px_42px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90">
+              <Link href="/templates" className="rounded bg-black px-6 py-3 text-center text-sm font-medium text-white shadow-[0_18px_42px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90">
                 Choose a template
               </Link>
-              <a href="mailto:care@enviteyou.com" className="rounded border border-black/10 bg-white px-6 py-3 text-center text-sm font-medium text-black/75 shadow-[0_14px_34px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:border-black/20 hover:text-black">
+              <Link href="/contact_us" className="rounded border border-black/10 bg-white px-6 py-3 text-center text-sm font-medium text-black/75 shadow-[0_14px_34px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:border-black/20 hover:text-black">
                 Book a consultation
-              </a>
+              </Link>
             </div>
 
             <div className="mt-6 grid gap-1 text-sm text-black/60">
@@ -101,21 +108,21 @@ export default function Footer() {
         <div className="mt-12 h-px w-full bg-linear-to-r from-transparent via-black/12 to-transparent" />
 
         <div className="mt-6 flex flex-col gap-4 text-sm text-black/48 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} EnviteYou. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Elevate Ecommerce Synergies. All rights reserved.</p>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <div className="flex flex-wrap items-center gap-4">
-              <Link href="https://www.instagram.com/envite.you/" aria-label="Instagram" className="flex items-center gap-2 transition hover:text-black">
+              <a href="https://www.instagram.com/envite.you/" aria-label="Instagram" className="flex items-center gap-2 transition hover:text-black">
                 <InstagramLogoIcon size={18} color="black" />
                 <span className="text-sm">Instagram</span>
-              </Link>
+              </a>
 
-              <Link href="https://www.pinterest.com/theenviteyou/" aria-label="Pinterest" className="flex items-center gap-2 transition hover:text-black">
+              <a href="https://www.pinterest.com/theenviteyou/" aria-label="Pinterest" className="flex items-center gap-2 transition hover:text-black">
                 <PinterestLogoIcon size={18} color="black" />
                 <span className="text-sm">Pinterest</span>
-              </Link>
+              </a>
 
-              <a href="#" aria-label="YouTube" className="flex items-center gap-2 transition hover:text-black">
+              <a href="https://www.youtube.com/@EnviteYou" aria-label="YouTube" className="flex items-center gap-2 transition hover:text-black">
                 <YoutubeLogoIcon size={18} color="black" />
                 <span className="text-sm">YouTube</span>
               </a>
