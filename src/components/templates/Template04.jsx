@@ -59,7 +59,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             ScrollTrigger.refresh();
         });
         resizeObserver.observe(document.body);
-        
+
         // Also refresh after a small delay to catch initial render shifts
         const timeout = setTimeout(() => ScrollTrigger.refresh(), 500);
 

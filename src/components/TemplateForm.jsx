@@ -696,11 +696,10 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                 key={tab}
                 type="button"
                 onClick={() => navigateToTab(tab)}
-                className={`flex items-center gap-1 border-b-2 py-1 text-[8.5px] xs:text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wide transition justify-center text-center w-full sm:w-auto ${
-                  isActive
+                className={`flex items-center gap-1 border-b-2 py-1 text-[8.5px] xs:text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wide transition justify-center text-center w-full sm:w-auto ${isActive
                     ? "border-[#74313d] text-[#74313d]"
                     : "border-transparent text-black/45 hover:text-black"
-                }`}
+                  }`}
               >
                 {tabIcons[tab] || <ListTodo className="h-3 w-3 shrink-0" />}
                 <span>{tab}</span>
