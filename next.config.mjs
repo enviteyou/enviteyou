@@ -7,9 +7,17 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
       },
     ],
-  domains: ["images.unsplash.com"],
+    domains: ["images.unsplash.com"],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/:path*",
+        destination:
+          "https://enviteyoubackend.onrender.com/:path*",
+      },
+    ];
   },
 };
 
 export default nextConfig;
-  
