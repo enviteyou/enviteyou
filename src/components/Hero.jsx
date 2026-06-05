@@ -153,23 +153,7 @@ export default function Hero({ templates = [] }) {
           </div>
         </div>
 
-        <div className="order-3 border-t border-black/10">
-          <div className="mx-auto w-full max-w-6xl px-5 py-8 md:px-10 md:py-10">
-            <div className="mb-5 flex justify-center">
-              <div className="rounded-sm border  border-black/25 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-black/70">
-                New Releases
-              </div>
-            </div>
-            <h2 className="mx-auto max-w-3xl text-center text-xl font-bold leading-tight tracking-tight text-black sm:text-3xl">
-              Built for your big day. Simple to edit. Just type, save, and share.
-            </h2>
-            <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-black/60">
-              Select your theme. Tell your story. Send it in minutes.
-            </p>
-          </div>
-          <Category activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
-          <Templates templates={templates} activeCategory={activeCategory} />
-        </div>
+
       </div>
     </section>
   );

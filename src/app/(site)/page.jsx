@@ -1,5 +1,6 @@
 import { getTemplates } from "@/lib/templateService";
 import Hero from "../../components/Hero";
+import HeroTemplate from "../../components/HeroTemplate";
 import FeaturesShowcase from "../../components/FeaturesShowcase";
 import TestimonialsSection from "../../components/TestimonialsSection";
 import ComparisonTable from "../../components/ComparisonTable";
@@ -11,11 +12,12 @@ export default async function Home() {
   return (
     <>
       <Hero templates={templates} />
+      <HeroTemplate templates={templates} />
       <FeaturesShowcase />
       <TestimonialsSection />
       <ComparisonTable />
       <FaqAccordion />
-     
+
     </>
   );
 }

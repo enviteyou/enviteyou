@@ -43,7 +43,7 @@ function StarsInput({ rating, onChange }) {
 
 export default function TestimonialsSection() {
   const { isUser, loading: authLoading } = useAuth();
-  
+
   const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState({
     averageRating: 5.0,
@@ -139,7 +139,7 @@ export default function TestimonialsSection() {
     <section id="testimonials" className="border-y border-black/8 bg-white text-black overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-black/42">Customer reviews</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-black/42">WHAT OUR CUSTOMERS SAY</p>
           <h2 className="mt-4 text-3xl font-semibold tracking-tight text-black sm:text-5xl">Customer Reviews</h2>
           <div className="mt-5 flex items-center justify-center gap-3">
             <Stars rating={Math.round(stats.averageRating)} className="text-3xl leading-none sm:text-4xl" />
@@ -181,13 +181,12 @@ export default function TestimonialsSection() {
 
                     {/* Expandable Review Form */}
                     <div
-                      className={`w-full sm:max-w-3xl transition-all duration-300 ease-in-out overflow-hidden ${
-                        isFormOpen ? "mt-6 max-h-[600px] opacity-100" : "max-h-0 opacity-0"
-                      }`}
+                      className={`w-full sm:max-w-3xl transition-all duration-300 ease-in-out overflow-hidden ${isFormOpen ? "mt-6 max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                        }`}
                     >
                       <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-black/5 bg-neutral-50 p-5 sm:p-6 shadow-inner">
                         <h3 className="text-xl font-semibold text-black tracking-tight border-b border-black/5 pb-2">Share Your Experience</h3>
-                        
+
                         <div className="space-y-2">
                           <label className="block text-sm font-medium text-black/70">Rating</label>
                           <StarsInput rating={formRating} onChange={setFormRating} />
@@ -263,11 +262,11 @@ export default function TestimonialsSection() {
             <div className="text-center mb-6 px-5">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6a3137]">Featured Testimonials</p>
             </div>
-            
+
             {/* Infinite Marquee Container */}
             <div className="marquee-mask w-full overflow-hidden py-4 flex select-none">
-              <div 
-                className="animate-marquee flex gap-6 pr-6" 
+              <div
+                className="animate-marquee flex gap-6 pr-6"
                 style={{ "--marquee-speed": `${Math.max(30, positiveReviews.length * 8)}s` }}
               >
                 {/* First loop of cards */}
@@ -304,12 +303,12 @@ export default function TestimonialsSection() {
                       </time>
                     </div>
                     <h5 className="mt-4 text-base font-semibold tracking-tight text-black">{rev.title}</h5>
-                    <p className="mt-2 text-sm text-black/60 line-clamp-3 leading-relaxed whitespace-normal break-words">
+                    <p className="mt-2 text-sm text-black/60 line-clamp-3 leading-relaxed whitespace-normal wrap-break-word">
                       {rev.body}
                     </p>
                   </div>
                 ))}
-                
+
                 {/* Second loop of cards (exact clone for seamless loop) */}
                 {positiveReviews.map((rev, idx) => (
                   <div
@@ -344,7 +343,7 @@ export default function TestimonialsSection() {
                       </time>
                     </div>
                     <h5 className="mt-4 text-base font-semibold tracking-tight text-black">{rev.title}</h5>
-                    <p className="mt-2 text-sm text-black/60 line-clamp-3 leading-relaxed whitespace-normal break-words">
+                    <p className="mt-2 text-sm text-black/60 line-clamp-3 leading-relaxed whitespace-normal wrap-break-word">
                       {rev.body}
                     </p>
                   </div>
@@ -359,7 +358,7 @@ export default function TestimonialsSection() {
           <h3 className="text-xl font-semibold tracking-tight text-black sm:text-2xl mb-6 border-b border-black/5 pb-3">
             All Reviews ({reviews.length})
           </h3>
-          
+
           {loading ? (
             <div className="flex flex-col items-center justify-center py-10 gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-black/10 border-t-black" />
@@ -406,7 +405,7 @@ export default function TestimonialsSection() {
                     </div>
 
                     <h4 className="mt-4 text-xl font-semibold tracking-tight text-black">{rev.title}</h4>
-                    <p className="mt-3 max-w-4xl text-base leading-7 text-black/68 whitespace-pre-line break-words">
+                    <p className="mt-3 max-w-4xl text-base leading-7 text-black/68 whitespace-pre-line wrap-break-word">
                       {rev.body}
                     </p>
                   </article>
