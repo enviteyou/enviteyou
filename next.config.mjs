@@ -9,15 +9,15 @@ const nextConfig = {
     ],
     domains: ["images.unsplash.com"],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/:path*",
-        destination:
-          "https://enviteyoubackend.onrender.com/:path*",
-      },
-    ];
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: "/:path*",
+  //       destination:
+  //         "https://enviteyoubackend.onrender.com/:path*",
+  //     },
+  //   ];
+  // },
 };
 
 export default nextConfig;
