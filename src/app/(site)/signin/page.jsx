@@ -201,9 +201,7 @@ function SigninContent() {
                 const data = res?.data || {};
                 setSuccess(data?.message || "Google login successful.");
                 window.dispatchEvent(new Event("authChange"));
-                setTimeout(() => {
-                  router.push(redirect || "/");
-                }, 2000);
+
               } catch (error) {
                 console.error("Google login error:", error);
                 setError(
