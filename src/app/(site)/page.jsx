@@ -6,6 +6,8 @@ import TestimonialsSection from "../../components/TestimonialsSection";
 import ComparisonTable from "../../components/ComparisonTable";
 import FaqAccordion from "../../components/FaqAccordion";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const templates = await getTemplates();
 

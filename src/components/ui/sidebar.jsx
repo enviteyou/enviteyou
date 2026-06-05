@@ -4,13 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/api/axios";
-import { LayoutDashboard, PlusCircle, FolderTree, Users, LogOut, Shield } from "lucide-react";
+import { LayoutDashboard, PlusCircle, FolderTree, Users, LogOut, Shield, BookOpen, Inbox } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Add Template", href: "/admin/addTemplate", icon: PlusCircle },
   { label: "All Templates", href: "/admin/allTemplate", icon: FolderTree },
   { label: "Vendors", href: "/admin/manageVendor", icon: Users },
+  { label: "Blogs", href: "/admin/blogs", icon: BookOpen },
+  { label: "Enquiries", href: "/admin/enquiries", icon: Inbox },
 ];
 
 export default function Sidebar() {

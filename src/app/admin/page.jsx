@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/api/axios";
-import { Users, Layout, Plus, Eye, UserCheck, ArrowRight } from "lucide-react";
+import { Users, Layout, Plus, Eye, UserCheck, ArrowRight, BookOpen, Inbox } from "lucide-react";
 
 export default function AdminDashboard() {
-  const [counts, setCounts] = useState({ users: 0, templates: 0 });
+  const [counts, setCounts] = useState({ users: 0, templates: 0, blogs: 0, enquiries: 0 });
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
   const router = useRouter();
@@ -32,16 +32,28 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const [u, t] = await Promise.all([api.get("/users/count"), api.get("/templates")]);
-        setCounts({ users: u.data.count || 0, templates: t.data.length || 0 });
+        const [u, t, b, e] = await Promise.all([
+          api.get("/users/count"),
+          api.get("/templates"),
+          api.get("/blogs"),
+          api.get("/enquiries")
+        ]);
+        setCounts({
+          users: u.data.count || 0,
+          templates: t.data.length || 0,
+          blogs: b.data.length || 0,
+          enquiries: e.data.length || 0
+        });
       } catch (err) {
-        console.error(err);
+        console.error("Dashboard counts load error:", err);
       } finally {
         setLoading(false);
       }
     }
-    load();
-  }, []);
+    if (authenticated) {
+      load();
+    }
+  }, [authenticated]);
 
   return authenticated ? (
     <div className="mx-auto max-w-7xl space-y-10">
@@ -57,7 +69,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           label="Registered Users"
           value={loading ? "..." : counts.users}
@@ -69,8 +81,22 @@ export default function AdminDashboard() {
           label="Invitation Themes"
           value={loading ? "..." : counts.templates}
           icon={Layout}
-          description="Active templates in frontend catalog"
-          trend="Catalog live"
+          description="Active templates in catalogue"
+          trend="Themes live"
+        />
+        <MetricCard
+          label="Blog Articles"
+          value={loading ? "..." : counts.blogs}
+          icon={BookOpen}
+          description="Total published articles"
+          trend="Editorial live"
+        />
+        <MetricCard
+          label="User Enquiries"
+          value={loading ? "..." : counts.enquiries}
+          icon={Inbox}
+          description="Customer contact enquiries"
+          trend="Support feed"
         />
       </div>
 
@@ -81,7 +107,7 @@ export default function AdminDashboard() {
           <h2 className="mt-1.5 text-2xl font-semibold tracking-tight text-black font-heading">Quick Actions</h2>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <ActionCard
             title="Add Template"
             description="Create and configure a new template layout, allowed customizer tabs, and upload mockups."
@@ -102,6 +128,20 @@ export default function AdminDashboard() {
             href="/admin/manageVendor"
             icon={UserCheck}
             cta="Open Console"
+          />
+          <ActionCard
+            title="Manage Blogs"
+            description="Compose and manage blog articles, descriptions, featured images, and metadata fields."
+            href="/admin/blogs"
+            icon={BookOpen}
+            cta="Open Blogs"
+          />
+          <ActionCard
+            title="Customer Enquiries"
+            description="View user queries submitted from the contact form and manage feedback pipelines."
+            href="/admin/enquiries"
+            icon={Inbox}
+            cta="View Inbox"
           />
         </div>
       </section>

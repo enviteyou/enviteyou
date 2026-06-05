@@ -3,6 +3,7 @@
 import api from "@/api/axios";
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { useRouter } from "next/navigation";
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { toast } from "sonner";
 import { Loader2, ListTodo, Mail, Calendar, BookOpen, Image as ImageIcon, Info, Music, UserCheck } from "lucide-react";
 
@@ -334,6 +335,27 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
     });
   }, [activeTab]);
 
+  const handleSubmitRef = useRef(handleSubmit);
+  handleSubmitRef.current = handleSubmit;
+
+  // Auto-trigger payment when user returns after logging in from the publish flow
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const shouldAutoPublish = window.sessionStorage.getItem("envite-auto-publish");
+    console.log("Auto-publish check:", shouldAutoPublish);
+    if (!shouldAutoPublish) return;
+
+    toast.loading("Resuming your publish request...");
+
+    // Small delay to ensure form data is hydrated from localStorage first
+    const timer = setTimeout(() => {
+      console.log("Auto-publish timeout fired, calling handleSubmit");
+      handleSubmitRef.current?.();
+    }, 800); // slightly longer delay to be safe
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const activeTabIndex = allowedTabs.indexOf(activeTab);
   const isFirstTab = activeTabIndex === 0;
   const isLastTab = activeTab === allowedTabs[allowedTabs.length - 1];
@@ -508,9 +530,22 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
   }
 
   async function handleSubmit() {
-    if (isSubmitting) return;
+    console.log("handleSubmit started. form:", form);
+
+    // Clear the auto-publish session storage keys here when the execution actually starts
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem("envite-auto-publish");
+      window.sessionStorage.removeItem("envite-pending-publish");
+      toast.dismiss(); // dismiss the loading toast
+    }
+
+    if (isSubmitting) {
+      console.log("handleSubmit returned because isSubmitting is true");
+      return;
+    }
 
     if (!form.bride || !form.groom || !form.date) {
+      console.log("handleSubmit validation failed:", { bride: form.bride, groom: form.groom, date: form.date });
       toast.error("Please add both names and the wedding date.");
       setActiveTab("Essentials");
       return;
@@ -519,13 +554,18 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
     try {
       const meResponse = await api.get("/auth/me");
       if (!(meResponse?.data?.success && meResponse?.data?.user)) {
-        toast.info("You need to sign in before creating an invitation.");
-        router.push(`/signin?redirect=${encodeURIComponent(window.location.pathname)}`);
+        // Save intent in sessionStorage — no URL encoding needed
+        window.sessionStorage.setItem("envite-pending-publish", window.location.pathname);
+        window.sessionStorage.setItem("envite-auto-publish", "1");
+        toast.info("Please sign in to publish your invitation.");
+        router.push("/signin");
         return;
       }
     } catch {
-      toast.info("You need to sign in before creating an invitation.");
-      router.push(`/signin?redirect=${encodeURIComponent(window.location.pathname)}`);
+      window.sessionStorage.setItem("envite-pending-publish", window.location.pathname);
+      window.sessionStorage.setItem("envite-auto-publish", "1");
+      toast.info("Please sign in to publish your invitation.");
+      router.push("/signin");
       return;
     }
 
@@ -612,8 +652,10 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
     } catch (error) {
       const status = error?.response?.status;
       if (status === 401 || status === 409) {
-        toast.info("You need to sign in before creating an invitation.");
-        router.push(`/signin?redirect=${encodeURIComponent(window.location.pathname)}`);
+        window.sessionStorage.setItem("envite-pending-publish", window.location.pathname);
+        window.sessionStorage.setItem("envite-auto-publish", "1");
+        toast.info("Please sign in to publish your invitation.");
+        router.push("/signin");
         return;
       }
       toast.error(error?.response?.data?.message || error?.message || "Payment or invitation creation failed. Please try again.");
@@ -697,8 +739,8 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                 type="button"
                 onClick={() => navigateToTab(tab)}
                 className={`flex items-center gap-1 border-b-2 py-1 text-[8.5px] xs:text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wide transition justify-center text-center w-full sm:w-auto ${isActive
-                    ? "border-[#74313d] text-[#74313d]"
-                    : "border-transparent text-black/45 hover:text-black"
+                  ? "border-[#74313d] text-[#74313d]"
+                  : "border-transparent text-black/45 hover:text-black"
                   }`}
               >
                 {tabIcons[tab] || <ListTodo className="h-3 w-3 shrink-0" />}

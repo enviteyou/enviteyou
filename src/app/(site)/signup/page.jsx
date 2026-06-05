@@ -39,7 +39,10 @@ export default function SignupPage() {
 
 	useEffect(() => {
 		if (isUser) {
-			router.replace("/my-account");
+			const pendingPublish = typeof window !== "undefined"
+				? window.sessionStorage.getItem("envite-pending-publish")
+				: null;
+			router.replace(pendingPublish || "/my-account");
 		}
 	}, [isUser, router]);
 
@@ -85,7 +88,10 @@ export default function SignupPage() {
 				password: "",
 				number: "",
 			});
-			router.replace("/my-account");
+			const pendingPublish = typeof window !== "undefined"
+				? window.sessionStorage.getItem("envite-pending-publish")
+				: null;
+			router.replace(pendingPublish || "/my-account");
 		} catch (requestError) {
 			const message =
 				requestError?.response?.data?.message || "Unable to register right now. Please try again.";

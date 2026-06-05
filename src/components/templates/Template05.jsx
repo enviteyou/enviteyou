@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Music2, Pause, Calendar, Clock, MapPin, Shirt } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
 import Image from 'next/image';
@@ -79,7 +79,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
 
     const brideParents = [formData?.brideFather, formData?.brideMother].filter(Boolean).join(" & ") || "S. Gurpreet Singh & Smt. Amanpreet Kaur";
     const groomParents = [formData?.groomFather, formData?.groomMother].filter(Boolean).join(" & ") || "Sardar Jaswinder Singh & Smt. Paramjit Kaur";
-    
+
     const topParents = reverseOrder ? groomParents : brideParents;
     const bottomParents = reverseOrder ? brideParents : groomParents;
     const topRelation = reverseOrder ? "son" : "daughter";
@@ -136,7 +136,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
         if (lower.includes('sangeet')) return '/assets/template/05/scene6/sangeetbg.png';
         if (lower.includes('anand') || lower.includes('wedding') || lower.includes('shaadi') || lower.includes('pheras')) return '/assets/template/05/scene6/weddingbg.png';
         if (lower.includes('reception')) return '/assets/template/05/scene6/receptionbg.png';
-        
+
         const bgs = [
             '/assets/template/05/scene6/eventspoojathalbg.png',
             '/assets/template/05/scene6/mehandibg.png',

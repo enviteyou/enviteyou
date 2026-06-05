@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Music2, Pause, ChevronRight } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
 import Image from 'next/image';

@@ -36,7 +36,11 @@ function SigninContent() {
 
   useEffect(() => {
     if (isUser) {
-      router.replace(redirect || "/my-account");
+      // Check sessionStorage first (set by publish-then-login flow — no URL encoding needed)
+      const pendingPublish = typeof window !== "undefined"
+        ? window.sessionStorage.getItem("envite-pending-publish")
+        : null;
+      router.replace(pendingPublish || redirect || "/my-account");
     }
   }, [isUser, router, redirect]);
 

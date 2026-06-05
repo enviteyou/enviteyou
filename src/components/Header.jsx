@@ -16,6 +16,7 @@ const TRANSLATIONS = {
     ourStory: "OUR STORY",
     getInTouch: "GET IN TOUCH",
     pricingBtn: "PRICING",
+    templates: "TEMPLATES",
   },
   es: {
     howItWorks: "COMO FUNCIONA",
@@ -25,6 +26,7 @@ const TRANSLATIONS = {
     ourStory: "NUESTRA HISTORIA",
     getInTouch: "CONTACTO",
     pricingBtn: "PRECIOS",
+    templates: "PLANTILLAS",
   },
   fr: {
     howItWorks: "FONCTIONNEMENT",
@@ -34,6 +36,7 @@ const TRANSLATIONS = {
     ourStory: "NOTRE HISTOIRE",
     getInTouch: "CONTACT",
     pricingBtn: "TARIFS",
+    templates: "MODELES",
   },
 };
 
@@ -75,11 +78,12 @@ export default function Header() {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const navItems = [
+    { label: t.templates, href: "/template" },
     { label: t.howItWorks, href: "/how-it-works" },
     { label: t.testimonials, href: "/#testimonials" },
-    { label: t.blog, href: "/#blog" },
+    { label: t.blog, href: "/blog" },
     { label: t.ourStory, href: "/about" },
-    { label: t.getInTouch, href: "mailto:care@enviteyou.com" },
+    { label: t.getInTouch, href: "/contact_us" },
   ];
 
   const mobileNavItems = navItems;

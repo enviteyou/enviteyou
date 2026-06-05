@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Music2, Pause } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
 import Image from 'next/image';
@@ -189,6 +189,23 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
     const scene7ContainerRef = useRef(null);
 
     useGSAP(() => {
+        // Guard statement: ensure DOM elements are fully rendered and references are resolved
+        // before running GSAP animations to prevent 'Cannot read properties of undefined (reading _gsap)'
+        if (
+            !containerRef.current ||
+            !skyRef.current ||
+            !moonRef.current ||
+            !palaceRef.current ||
+            !coupleRef.current ||
+            !gateRef.current ||
+            !leftLampRef.current ||
+            !rightLampRef.current ||
+            !scrollIndicatorRef.current ||
+            !textGroupRef.current
+        ) {
+            return;
+        }
+
         // --- Initial Entrance Animation ---
         const tl = gsap.timeline();
 

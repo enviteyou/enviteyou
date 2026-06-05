@@ -10,6 +10,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import TemplateDetail from "./TemplateDetail";
 import TemplateForm, { initialForm } from "./TemplateForm";
 
+// Register ScrollTrigger at module level so it is guaranteed to be ready
+// before any child templates run their useGSAP hook synchronously on mount
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 function getPriceLabel(template) {
   const raw = template?.sellPrice;
   const s = String(raw).trim();
@@ -55,16 +61,7 @@ export default function TemplateCustomizer({ template }) {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-      ScrollTrigger.defaults({ scroller: "#preview-scroller-container" });
-      setIsMounted(true);
-    }
-    return () => {
-      if (typeof window !== "undefined") {
-        ScrollTrigger.defaults({ scroller: window });
-      }
-    };
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
@@ -225,7 +222,7 @@ export default function TemplateCustomizer({ template }) {
                     {template.name}
                   </span>
                   <span className="text-[8px] text-black/45 uppercase tracking-widest">
-                    Theme Selected
+                    Template Selected
                   </span>
                 </div>
               </div>
