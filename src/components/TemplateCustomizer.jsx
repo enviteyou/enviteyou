@@ -202,13 +202,34 @@ export default function TemplateCustomizer({ template }) {
       <footer className="fixed bottom-0 left-0 w-full h-18 bg-white/86 backdrop-blur-xl border-t border-black/8 flex items-center justify-between px-4 sm:px-6 z-[1000] shadow-[0_-2px_12px_rgba(0,0,0,0.03)]">
         {/* Desktop View Bottom Bar (Original Theme Info & Direct Publish Button) */}
         <div className="hidden lg:flex w-full items-center justify-between">
-          <div>
+          <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="border border-black/15 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white rounded"
+              className="border border-black/15 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white rounded shrink-0"
             >
               Change
             </Link>
+            {template && (
+              <div className="flex items-center gap-2 border-l border-black/10 pl-3">
+                {previewImage && (
+                  <div className="h-9 w-9 rounded overflow-hidden relative border border-black/5 shrink-0 bg-gray-100">
+                    <img
+                      src={previewImage}
+                      alt={template.name || "Template Preview"}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-col text-left">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-black/85 truncate max-w-[150px]">
+                    {template.name}
+                  </span>
+                  <span className="text-[8px] text-black/45 uppercase tracking-widest">
+                    Theme Selected
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col items-center text-center">
@@ -233,24 +254,50 @@ export default function TemplateCustomizer({ template }) {
         </div>
 
         {/* Mobile View Bottom Bar (Wizard Navigation Flow) */}
-        <div className="flex lg:hidden w-full items-center justify-between">
+        <div className="flex lg:hidden w-full items-center justify-between gap-2">
           <div>
             <button
               type="button"
               onClick={goToPreviousTab}
               disabled={isFirstTab}
-              className="rounded border border-black/15 bg-white hover:bg-black/5 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black transition disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              className="rounded border border-black/15 bg-white hover:bg-black/5 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black transition disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
               Previous
             </button>
           </div>
+
+          {/* Template Info + Change button for Mobile View */}
+          {template && (
+            <div className="flex items-center gap-1.5 min-w-0 max-w-[120px] xs:max-w-[150px]">
+              {previewImage && (
+                <div className="h-6 w-6 rounded overflow-hidden relative border border-black/5 shrink-0 bg-gray-100">
+                  <img
+                    src={previewImage}
+                    alt={template.name || "Preview"}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="flex flex-col text-left min-w-0">
+                <span className="text-[9px] font-bold text-black/80 truncate">
+                  {template.name}
+                </span>
+                <Link
+                  href="/"
+                  className="text-[8px] text-[#74313d] font-bold uppercase tracking-wider hover:underline"
+                >
+                  Change
+                </Link>
+              </div>
+            </div>
+          )}
 
           <div>
             {isLastTab ? (
               <button
                 type="button"
                 onClick={() => formRef.current?.submit()}
-                className="rounded bg-[#74313d] hover:bg-[#74313d]/90 text-white px-6 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
+                className="rounded bg-[#74313d] hover:bg-[#74313d]/90 text-white px-5 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
               >
                 Publish
               </button>
@@ -258,7 +305,7 @@ export default function TemplateCustomizer({ template }) {
               <button
                 type="button"
                 onClick={goToNextTab}
-                className="rounded bg-black hover:bg-black/90 text-white px-6 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
+                className="rounded bg-black hover:bg-black/90 text-white px-5 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
               >
                 Next
               </button>

@@ -1203,6 +1203,44 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
           </>
         ) : null}
 
+        {/* Tab Navigation Buttons just below the form */}
+        <div className="flex items-center justify-between gap-4 border-t border-black/10 pt-6 mt-8">
+          <button
+            type="button"
+            onClick={() => {
+              if (activeTabIndex > 0) {
+                setActiveTab(allowedTabs[activeTabIndex - 1]);
+              }
+            }}
+            disabled={isFirstTab}
+            className="rounded border border-black/15 bg-white hover:bg-black/5 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-black transition disabled:opacity-30 disabled:pointer-events-none cursor-pointer flex items-center gap-1.5"
+          >
+            ← Previous
+          </button>
+
+          {isLastTab ? (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="rounded bg-[#74313d] hover:bg-[#74313d]/90 text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer flex items-center gap-1.5"
+            >
+              Publish & Save
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                if (activeTabIndex < allowedTabs.length - 1) {
+                  setActiveTab(allowedTabs[activeTabIndex + 1]);
+                }
+              }}
+              className="rounded bg-black hover:bg-black/90 text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer flex items-center gap-1.5"
+            >
+              Next →
+            </button>
+          )}
+        </div>
+
       </div>
     </form>
   );
