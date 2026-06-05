@@ -127,8 +127,6 @@ export default function Footer() {
                 <span className="text-sm">YouTube</span>
               </a>
             </div>
-
-            {/* <Link href="/policy" className="text-sm font-medium transition hover:text-black">Policies</Link> */}
           </div>
         </div>
       </div>
