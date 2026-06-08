@@ -37,11 +37,11 @@ export default function Loading() {
           <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#74313d] opacity-80 animate-pulse duration-[2000ms]">
             ENVITEYOU
           </h2>
-          
+
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight font-serif text-[#1e1b18] opacity-90">
             Polishing your workspace
           </h1>
-          
+
           {/* Fading elegant status updates */}
           <p className="text-xs text-black/45 tracking-wide max-w-[280px] mx-auto animate-pulse duration-[1500ms]">
             Preparing interactive layouts, theme animations, and customized invitation details...

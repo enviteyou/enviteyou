@@ -50,8 +50,8 @@ export default function ComparisonTable() {
   return (
     <section className="bg-white text-black">
       <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8 lg:py-16">
-        <h2 className="text-center text-2xl font-semibold">What Cards and Video Invites Can’t Do (But These Templates Can)</h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-black/60">See how your invite can go from one-time share to a lasting experience — without extra cost or hassle.</p>
+        <h2 className="text-left md:text-center text-2xl font-semibold">What Cards and Video Invites Can’t Do (But These Templates Can)</h2>
+        <p className="mx-auto mt-3 max-w-2xl text-left md:text-center text-sm text-black/60">See how your invite can go from one-time share to a lasting experience — without extra cost or hassle.</p>
 
         {/* Responsive, non-scroll table: compact spacing on mobile, full layout on md+ */}
         <div className="mt-6">
