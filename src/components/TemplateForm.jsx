@@ -245,7 +245,7 @@ function normalizeStoredForm(data) {
   };
 }
 
-const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab, allowedTabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"] }, ref) {
+const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab, allowedTabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"], isVendor = false }, ref) {
   const router = useRouter();
   const formRef = useRef(null);
   useImperativeHandle(ref, () => ({
@@ -552,20 +552,20 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
     }
 
     try {
-      const meResponse = await api.get("/auth/me");
+      const meResponse = await api.get(isVendor ? "/auth/me-vendor" : "/auth/me");
       if (!(meResponse?.data?.success && meResponse?.data?.user)) {
         // Save intent in sessionStorage — no URL encoding needed
         window.sessionStorage.setItem("envite-pending-publish", window.location.pathname);
         window.sessionStorage.setItem("envite-auto-publish", "1");
-        toast.info("Please sign in to publish your invitation.");
-        router.push("/signin");
+        toast.info(isVendor ? "Please sign in to publish your invitation template." : "Please sign in to publish your invitation.");
+        router.push(isVendor ? "/vendor/signin" : "/signin");
         return;
       }
     } catch {
       window.sessionStorage.setItem("envite-pending-publish", window.location.pathname);
       window.sessionStorage.setItem("envite-auto-publish", "1");
-      toast.info("Please sign in to publish your invitation.");
-      router.push("/signin");
+      toast.info(isVendor ? "Please sign in to publish your invitation template." : "Please sign in to publish your invitation.");
+      router.push(isVendor ? "/vendor/signin" : "/signin");
       return;
     }
 
@@ -642,10 +642,10 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
 
       const created = verificationResponse?.data?.data;
       const invitationId = created?._id || created?.id || null;
-      const confirmationPath = invitationId ? `/confirmation/${encodeURIComponent(invitationId)}` : null;
+      const confirmationPath = isVendor ? "/vendor/dashboard/my-templates" : (invitationId ? `/confirmation/${encodeURIComponent(invitationId)}` : null);
       clearTemplateDraft();
 
-      toast.success("Payment successful and invitation created.");
+      toast.success("Payment successful and invitation template created.");
       if (confirmationPath) {
         router.replace(confirmationPath);
       }
@@ -654,11 +654,11 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
       if (status === 401 || status === 409) {
         window.sessionStorage.setItem("envite-pending-publish", window.location.pathname);
         window.sessionStorage.setItem("envite-auto-publish", "1");
-        toast.info("Please sign in to publish your invitation.");
-        router.push("/signin");
+        toast.info(isVendor ? "Please sign in to publish your invitation template." : "Please sign in to publish your invitation.");
+        router.push(isVendor ? "/vendor/signin" : "/signin");
         return;
       }
-      toast.error(error?.response?.data?.message || error?.message || "Payment or invitation creation failed. Please try again.");
+      toast.error(error?.response?.data?.message || error?.message || "Payment or invitation template creation failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

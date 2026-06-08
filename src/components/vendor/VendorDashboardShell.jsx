@@ -12,9 +12,9 @@ import api from "@/api/axios";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
-  { label: "Create New Invitation", href: "/vendor/dashboard/create-new-website", icon: CalendarPlus },
+  { label: "Create New Invitation", href: "/vendor/dashboard/create-new-template", icon: CalendarPlus },
   { label: "Template Library", href: "/vendor/dashboard/template-library", icon: LayoutGrid },
-  { label: "My Invitations", href: "/vendor/dashboard/my-websites", icon: Monitor },
+  { label: "My Invitations", href: "/vendor/dashboard/my-templates", icon: Monitor },
   { label: "Payments", href: "/vendor/dashboard/payments", icon: CreditCard },
   { label: "Clients", href: "/vendor/dashboard/clients", icon: Users },
   { label: "Support & Help", href: "/vendor/dashboard/support-help", icon: LifeBuoy },

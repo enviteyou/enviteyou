@@ -51,11 +51,11 @@ export default function ContactUsPage() {
   };
 
   return (
-    <div className="bg-[#fcfaf8] min-h-screen pt-28 pb-20 text-black">
-      <div className="mx-auto max-w-7xl px-5 sm:px-10">
+    <div className="bg-[#fcfaf8] min-h-screen pt-28  text-black">
+      <div className="mx-auto max-w-7xl mb-10 px-5 sm:px-10">
         
-        {/* Title Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        
+        {/* <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#74313d]">Get in Touch</p>
           <h1 className="text-4xl font-bold tracking-tight text-black sm:text-5xl font-heading">
             Connect With EnviteYou
@@ -63,7 +63,7 @@ export default function ContactUsPage() {
           <p className="text-sm sm:text-base text-black/55 font-sans leading-relaxed">
             Have questions about templates, customization options, pricing, or vendor services? Drop us an enquiry below and our design specialists will get back to you.
           </p>
-        </div>
+        </div> */}
 
         {/* Form and Contact Detail Row */}
         <div className="grid gap-10 lg:grid-cols-[1fr_380px] max-w-5xl mx-auto">
@@ -100,7 +100,7 @@ export default function ContactUsPage() {
                     required
                     disabled={loading}
                     type="text"
-                    placeholder="Raghav Sharma"
+                    placeholder="John Doe"
                     value={form.name}
                     onChange={(e) => updateField("name", e.target.value)}
                     className="mt-2 w-full border border-black/10 bg-[#fbf9f7] rounded-xl px-4 py-3.5 text-sm text-black outline-none transition-all placeholder:text-black/35 focus:border-[#74313d] focus:bg-white focus:ring-4 focus:ring-[#74313d]/5"
@@ -113,7 +113,7 @@ export default function ContactUsPage() {
                     required
                     disabled={loading}
                     type="email"
-                    placeholder="raghav@example.com"
+                    placeholder="john.doe@example.com"
                     value={form.email}
                     onChange={(e) => updateField("email", e.target.value)}
                     className="mt-2 w-full border border-black/10 bg-[#fbf9f7] rounded-xl px-4 py-3.5 text-sm text-black outline-none transition-all placeholder:text-black/35 focus:border-[#74313d] focus:bg-white focus:ring-4 focus:ring-[#74313d]/5"
@@ -127,7 +127,7 @@ export default function ContactUsPage() {
                   required
                   disabled={loading}
                   type="tel"
-                  placeholder="+91 98765 43210"
+                  placeholder="+91 8828287278"
                   value={form.number}
                   onChange={(e) => updateField("number", e.target.value)}
                   className="mt-2 w-full border border-black/10 bg-[#fbf9f7] rounded-xl px-4 py-3.5 text-sm text-black outline-none transition-all placeholder:text-black/35 focus:border-[#74313d] focus:bg-white focus:ring-4 focus:ring-[#74313d]/5"
@@ -191,7 +191,7 @@ export default function ContactUsPage() {
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-black/40">Whatsapp / Helpline</p>
                     <p className="text-xs sm:text-sm font-semibold text-black mt-0.5">
-                      +91 91168 81222
+                     +91 8828287278
                     </p>
                   </div>
                 </div>

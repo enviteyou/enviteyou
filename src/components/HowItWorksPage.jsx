@@ -171,7 +171,7 @@ export default function HowItWorksPage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/pricing"
+                href="/template"
                 className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/90"
               >
                 View pricing

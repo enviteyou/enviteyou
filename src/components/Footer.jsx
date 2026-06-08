@@ -50,7 +50,7 @@ export default function Footer() {
                   alt="EnviteYou"
                   width={160}
                   height={80}
-                  className="h-12 w-auto max-w-[150px]"
+                  className="h-12 w-auto max-w-37.5"
                 />
               </Link>
             </div>

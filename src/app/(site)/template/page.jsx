@@ -12,8 +12,8 @@ export default async function TemplateCatalogPage() {
   const templates = await getTemplates();
 
   return (
-    <div className="bg-white min-h-screen pt-28 pb-16">
-      <div className="mx-auto max-w-7xl px-5 text-center sm:px-10">
+    <div className="bg-white min-h-screen pt-2 pb-16">
+      {/* <div className="mx-auto max-w-7xl px-5 text-center sm:px-10">
         <div className="mb-4 flex justify-center">
           <div className="rounded-sm border border-black/25 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-black/70">
             Catalog Overview
@@ -25,8 +25,8 @@ export default async function TemplateCatalogPage() {
         <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-black/60 font-sans leading-relaxed">
           Discover our curated collection of elegant, mobile-first invitation layouts. Filter by religious traditions or themes, and start customizing your invite in minutes.
         </p>
-      </div>
-      <div className="mt-6">
+      </div> */}
+      <div className="">
         <HeroTemplate templates={templates} />
       </div>
     </div>

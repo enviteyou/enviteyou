@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import api from "@/api/axios";
 import { normalizeTemplates } from "@/lib/templateService";
 import TemplateCustomizer from "@/components/TemplateCustomizer";
 import TemplateDetail from "@/components/TemplateDetail";
+import TemplateForm from "@/components/TemplateForm";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Copy, ExternalLink, Eye, IndianRupee, LayoutGrid, Megaphone, MessageSquareMore, Monitor, Search, Sparkles, Users } from "lucide-react";
 
@@ -74,7 +75,7 @@ function TemplateGridCard({ template, selected, onSelect }) {
   );
 }
 
-function InvitationTable({ invitations, onSelect, selectedId }) {
+function InvitationTable({ invitations, onSelect, selectedId, onDownload }) {
   return (
     <div className="overflow-hidden rounded-[1.35rem] border border-black/10 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
       <div className="border-b border-black/8 px-5 py-4">
@@ -86,7 +87,7 @@ function InvitationTable({ invitations, onSelect, selectedId }) {
             <tr>
               <th className="px-5 py-4 font-medium">Date</th>
               <th className="px-5 py-4 font-medium">Couple Name</th>
-              <th className="px-5 py-4 font-medium">Website Link</th>
+              <th className="px-5 py-4 font-medium">Invitation Link</th>
               <th className="px-5 py-4 font-medium">Amount</th>
               <th className="px-5 py-4 font-medium">Status</th>
               <th className="px-5 py-4 font-medium">Actions</th>
@@ -103,12 +104,12 @@ function InvitationTable({ invitations, onSelect, selectedId }) {
                   <td className="px-5 py-4 text-black/60">
                     <span className="break-all">enviteyou.com/invitations/{slug}</span>
                   </td>
-                  <td className="px-5 py-4 font-medium text-black">{formatCurrency(400)}</td>
+                  <td className="px-5 py-4 font-medium text-black">{formatCurrency(item.amountPaid ? item.amountPaid / 100 : 400)}</td>
                   <td className="px-5 py-4"><span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Paid</span></td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3 text-black/65">
                       <button type="button" className="inline-flex items-center gap-1 hover:text-black"><Eye className="h-4 w-4" /> View Details</button>
-                      <button type="button" className="inline-flex items-center gap-1 hover:text-black"><ExternalLink className="h-4 w-4" /> Download</button>
+                      <button type="button" onClick={(e) => { e.stopPropagation(); onDownload?.(item._id); }} className="inline-flex items-center gap-1 hover:text-black"><ExternalLink className="h-4 w-4" /> Download</button>
                     </div>
                   </td>
                 </tr>
@@ -131,12 +132,15 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
   const [loadingTemplates, setLoadingTemplates] = useState(false);
   const [loadingInvitations, setLoadingInvitations] = useState(false);
   const [query, setQuery] = useState("");
+  const [formData, setFormData] = useState({});
+  const [formTab, setFormTab] = useState("Essentials");
+  const formRef = useRef(null);
 
   const selectedTemplate = templates.find((template) => String(template.templateId || template.id) === String(selectedTemplateId)) || templates[0] || null;
   const selectedInvitation = invitations.find((invitation) => invitation._id === selectedInvitationId) || invitations[0] || null;
 
   useEffect(() => {
-    const needsTemplates = ["dashboard", "create-new-website", "template-library"].includes(activeTab);
+    const needsTemplates = ["dashboard", "create-new-template", "template-library"].includes(activeTab);
     if (!needsTemplates) return;
 
     let ignore = false;
@@ -168,7 +172,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
   }, [activeTab, searchParams]);
 
   useEffect(() => {
-    const needsInvitations = ["dashboard", "my-websites", "payments", "clients"].includes(activeTab);
+    const needsInvitations = ["dashboard", "my-templates", "payments", "clients"].includes(activeTab);
     if (!needsInvitations) return;
 
     let ignore = false;
@@ -199,16 +203,34 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
     return templates.filter((template) => [template.name, template.category, template.description, template.tag].some((value) => String(value || "").toLowerCase().includes(term)));
   }, [templates, query]);
 
-  const totalRevenue = invitations.length * 400;
+  const handleDownloadInvoice = async (invitationId) => {
+    try {
+      const res = await api.get(`/payments/${invitationId}/invoice`, { responseType: 'blob' });
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${invitationId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Unable to download invoice');
+    }
+  };
+
+  const totalRevenue = invitations.reduce((sum, item) => sum + (item.amountPaid ? item.amountPaid / 100 : 400), 0);
   const publishedCount = invitations.length;
 
-  if (activeTab === "create-new-website") {
+  if (activeTab === "create-new-template") {
+    const templatePrice = selectedTemplate?.vendorPrice || selectedTemplate?.sellPrice || 400;
     return (
       <div className="space-y-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Overview</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Create New Website</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-black/60">Fill wedding details and generate a premium invitation in minutes.</p>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Create New Template</h1>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-black/60">Fill wedding details and generate a premium invitation template in minutes.</p>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -239,7 +261,14 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
             {loadingTemplates ? (
               <SectionCard title="Loading templates..."><p className="text-sm text-black/60">Fetching vendor templates...</p></SectionCard>
             ) : selectedTemplate ? (
-              <TemplateCustomizer template={selectedTemplate} />
+              <TemplateForm
+                ref={formRef}
+                template={selectedTemplate}
+                onPreviewChange={setFormData}
+                activeTab={formTab}
+                setActiveTab={setFormTab}
+                isVendor={true}
+              />
             ) : (
               <SectionCard title="No template selected"><p className="text-sm text-black/60">No templates available right now.</p></SectionCard>
             )}
@@ -248,7 +277,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
           <div className="space-y-6">
             <SectionCard title="Live Preview">
               <div className="rounded-[1.35rem] border border-black/10 bg-[#faf7f3] p-4">
-                {selectedTemplate ? <TemplateDetail template={selectedTemplate} formData={{}} /> : <div className="rounded-[1.35rem] border border-black/10 bg-white p-6 text-sm text-black/55">Select a template to preview it here.</div>}
+                {selectedTemplate ? <TemplateDetail template={selectedTemplate} formData={formData} fullscreen={true} /> : <div className="rounded-[1.35rem] border border-black/10 bg-white p-6 text-sm text-black/55">Select a template to preview it here.</div>}
               </div>
               <p className="mt-4 text-center text-sm text-black/45">Live preview updates as you fill the form.</p>
             </SectionCard>
@@ -257,14 +286,14 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/40">Publishing Cost</p>
-                  <p className="mt-2 text-3xl font-semibold text-black">₹400</p>
+                  <p className="mt-2 text-3xl font-semibold text-black">{formatCurrency(templatePrice)}</p>
                   <p className="mt-1 text-sm text-black/55">Pay only when ready to publish.</p>
                 </div>
                 <div className="rounded-full border border-black/10 px-3 py-1 text-xs font-semibold text-black/55">Secure &amp; Safe Payments</div>
               </div>
               <div className="mt-5 grid gap-3">
-                <Button variant="outline" className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => toast.success("Preview website opened")}>Preview Website</Button>
-                <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => toast.success("Publish flow is ready")}>Pay ₹400 &amp; Publish</Button>
+                <Button variant="outline" className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => toast.success("Live preview is updated on the left column")}>Preview Template</Button>
+                <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => formRef.current?.submit()}>Pay {formatCurrency(templatePrice)} &amp; Publish</Button>
               </div>
             </SectionCard>
           </div>
@@ -281,9 +310,9 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Catalog</p>
               <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Template Library</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Browse premium wedding website templates for your clients.</p>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Browse premium wedding templates for your clients.</p>
             </div>
-            <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => router.push("/vendor/dashboard/create-new-website")}>+ Create New Website</Button>
+            <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => router.push("/vendor/dashboard/create-new-template")}>+ Create New Template</Button>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -324,7 +353,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
               <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Royal Theme</div>
               <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Luxury Invite</div>
             </div>
-            <Button className="mt-5 h-11 w-full bg-black text-white hover:bg-black/90" onClick={() => router.push(`/vendor/dashboard/create-new-website?template=${selectedTemplate?.templateId || selectedTemplate?.id || "1"}`)}>
+            <Button className="mt-5 h-11 w-full bg-black text-white hover:bg-black/90" onClick={() => router.push(`/vendor/dashboard/create-new-template?template=${selectedTemplate?.templateId || selectedTemplate?.id || "1"}`)}>
               Use This Template
             </Button>
           </SectionCard>
@@ -333,12 +362,12 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
     );
   }
 
-  if (activeTab === "my-websites") {
+  if (activeTab === "my-templates") {
     return (
       <div className="space-y-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">My work</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">My Websites</h1>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">My Templates</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">All invitations created with the vendor auth flow are listed here from your vendor invitation endpoint.</p>
         </div>
 
@@ -368,7 +397,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
               })}
             </div>
 
-            <SectionCard title="Website details">
+            <SectionCard title="Template details">
               {selectedInvitation ? (
                 <div className="space-y-4 text-sm text-black/65">
                   <div className="flex items-center gap-4 border-b border-black/8 pb-4">
@@ -383,10 +412,10 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
                     <div className="rounded-2xl border border-black/10 bg-black/2 p-4"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Events</p><p className="mt-2 text-black">{Array.isArray(selectedInvitation.selectedEvents) ? selectedInvitation.selectedEvents.join(", ") : "—"}</p></div>
                   </div>
                   <div className="flex flex-col gap-3 sm:flex-row">
-                    <Button className="h-11 flex-1 bg-black text-white hover:bg-black/90" onClick={() => window.open(`/invitations/${selectedInvitation.slug}`, "_blank")}>Open Website</Button>
+                    <Button className="h-11 flex-1 bg-black text-white hover:bg-black/90" onClick={() => window.open(`/invitations/${selectedInvitation.slug}`, "_blank")}>Open Template</Button>
                     <Button variant="outline" className="h-11 flex-1 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={async () => {
                       await navigator.clipboard.writeText(`${window.location.origin}/invitations/${selectedInvitation.slug}`);
-                      toast.success("Website link copied");
+                      toast.success("Template link copied");
                     }}>
                       <Copy className="mr-2 h-4 w-4" /> Copy Link
                     </Button>
@@ -396,7 +425,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
             </SectionCard>
           </div>
         ) : (
-          <SectionCard title="No websites yet"><p className="text-sm text-black/60">No vendor invitations found. Create your first website from the builder.</p></SectionCard>
+          <SectionCard title="No templates yet"><p className="text-sm text-black/60">No vendor invitations found. Create your first template from the builder.</p></SectionCard>
         )}
       </div>
     );
@@ -408,18 +437,18 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Payments</p>
           <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Payments</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Track published website payments and download receipts.</p>
-          <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#f7eecf] px-3 py-1.5 text-sm font-medium text-black"><span className="text-[#b7882f]">•</span> Each published website costs ₹400.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Track published template payments and download receipts.</p>
+          <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#f7eecf] px-3 py-1.5 text-sm font-medium text-black"><span className="text-[#b7882f]">•</span> Published templates are billed based on vendor pricing.</p>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-3">
           <Metric label="Total Paid" value={formatCurrency(totalRevenue)} icon={IndianRupee} hint="Total paid till now" />
-          <Metric label="Websites Published" value={publishedCount} icon={LayoutGrid} hint="Successfully published" />
-          <Metric label="Wallet Recharge" value="Coming Soon" icon={Monitor} hint="Soon you will be able to add balance and publish websites faster" />
+          <Metric label="Templates Published" value={publishedCount} icon={LayoutGrid} hint="Successfully published" />
+          <Metric label="Wallet Recharge" value="Coming Soon" icon={Monitor} hint="Soon you will be able to add balance and publish templates faster" />
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-          <InvitationTable invitations={invitations} onSelect={setSelectedInvitationId} selectedId={selectedInvitationId} />
+          <InvitationTable invitations={invitations} onSelect={setSelectedInvitationId} selectedId={selectedInvitationId} onDownload={handleDownloadInvoice} />
 
           <SectionCard title="Payment Details">
             {selectedInvitation ? (
@@ -436,16 +465,16 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
 
                 <div className="space-y-3 rounded-2xl border border-black/10 bg-black/2 p-4">
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Couple</p><p className="mt-1 text-black">{selectedInvitation.bride} &amp; {selectedInvitation.groom}</p></div>
-                  <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Amount</p><p className="mt-1 text-black">₹400</p></div>
+                  <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Amount</p><p className="mt-1 text-black">{formatCurrency(selectedInvitation.amountPaid ? selectedInvitation.amountPaid / 100 : 400)}</p></div>
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Status</p><p className="mt-1 text-black">Paid</p></div>
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Payment Date</p><p className="mt-1 text-black">{formatDate(selectedInvitation.createdAt)}</p></div>
-                  <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Website Link</p><p className="mt-1 break-all text-black">enviteyou.com/invitations/{selectedInvitation.slug}</p></div>
+                  <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Template Link</p><p className="mt-1 break-all text-black">enviteyou.com/invitations/{selectedInvitation.slug}</p></div>
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Transaction ID</p><p className="mt-1 text-black">EVY-{String(selectedInvitation._id).slice(-8).toUpperCase()}</p></div>
                 </div>
 
                 <div className="grid gap-3">
-                  <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => toast.success("Receipt download started")}>Download Receipt</Button>
-                  <Button variant="outline" className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => window.open(`/invitations/${selectedInvitation.slug}`, "_blank")}>Open Website</Button>
+                  <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => handleDownloadInvoice(selectedInvitation._id)}>Download Receipt</Button>
+                  <Button variant="outline" className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => window.open(`/invitations/${selectedInvitation.slug}`, "_blank")}>Open Template</Button>
                 </div>
               </div>
             ) : null}
@@ -525,13 +554,13 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Support</p>
           <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Support &amp; Help</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Get help with your vendor account, website creation, and template publishing.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Get help with your vendor account, template creation, and template publishing.</p>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
           <SectionCard title="Chat Support"><p className="text-sm leading-7 text-black/60">Our team is available on WhatsApp for quick setup help and vendor onboarding.</p><Button className="mt-4 h-11 w-full bg-black text-white hover:bg-black/90" onClick={() => window.open("https://wa.me/919999999999", "_blank")}>Chat on WhatsApp</Button></SectionCard>
           <SectionCard title="Email Support"><p className="text-sm leading-7 text-black/60">Send template and account queries to care@enviteyou.com.</p><Button variant="outline" className="mt-4 h-11 w-full border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => window.location.href = "mailto:care@enviteyou.com"}>Email Us</Button></SectionCard>
-          <SectionCard title="Help Topics"><div className="space-y-3 text-sm text-black/65"><p>• Template setup and preview</p><p>• Pricing and vendor rates</p><p>• Website publishing and invoice help</p><p>• Invitation sharing and RSVP issues</p></div></SectionCard>
+          <SectionCard title="Help Topics"><div className="space-y-3 text-sm text-black/65"><p>• Template setup and preview</p><p>• Pricing and vendor rates</p><p>• Template publishing and invoice help</p><p>• Invitation sharing and RSVP issues</p></div></SectionCard>
         </div>
       </div>
     );
@@ -547,8 +576,8 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Metric label="Templates" value={loadingTemplates ? "..." : templates.length} icon={LayoutGrid} hint="Available designs" />
-        <Metric label="Websites" value={loadingInvitations ? "..." : invitations.length} icon={Monitor} hint="Vendor invitations" />
-        <Metric label="Revenue" value={loadingInvitations ? "..." : formatCurrency(totalRevenue)} icon={IndianRupee} hint="Estimated from published websites" />
+        <Metric label="Invitations" value={loadingInvitations ? "..." : invitations.length} icon={Monitor} hint="Vendor templates" />
+        <Metric label="Revenue" value={loadingInvitations ? "..." : formatCurrency(totalRevenue)} icon={IndianRupee} hint="Estimated from published templates" />
         <Metric label="Clients" value={loadingInvitations ? "..." : invitations.length} icon={Users} hint="Couple records" />
       </div>
 
@@ -556,9 +585,9 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         <SectionCard title="Quick Actions">
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
-              { label: "Create New Website", href: "/vendor/dashboard/create-new-website" },
+              { label: "Create New Template", href: "/vendor/dashboard/create-new-template" },
               { label: "Template Library", href: "/vendor/dashboard/template-library" },
-              { label: "My Websites", href: "/vendor/dashboard/my-websites" },
+              { label: "My Templates", href: "/vendor/dashboard/my-templates" },
               { label: "Payments", href: "/vendor/dashboard/payments" },
             ].map((item) => (
               <Link key={item.href} href={item.href} className="rounded-2xl border border-black/10 bg-black/2 px-4 py-5 text-sm font-semibold text-black transition hover:bg-black hover:text-white">
@@ -570,7 +599,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
 
         <SectionCard title="Recent Activity">
           <div className="space-y-3 text-sm text-black/65">
-            {loadingInvitations ? <p>Loading recent websites...</p> : invitations.slice(0, 3).map((invitation) => <p key={invitation._id}>{invitation.bride} &amp; {invitation.groom} • {formatDate(invitation.createdAt)}</p>)}
+            {loadingInvitations ? <p>Loading recent templates...</p> : invitations.slice(0, 3).map((invitation) => <p key={invitation._id}>{invitation.bride} &amp; {invitation.groom} • {formatDate(invitation.createdAt)}</p>)}
             {!loadingInvitations && !invitations.length ? <p>No invitations yet.</p> : null}
           </div>
         </SectionCard>

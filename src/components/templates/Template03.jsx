@@ -87,11 +87,11 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
 
     // Events summary (Scene 4) and Scene 5
     const defaultEvts = [
-        { name: 'Mehendi', date: '19 FEB 2027 • 11:00 AM', time: 'FRIDAY | 11:00 AM ONWARDS', dress: 'Green & Vibrant', icon: 'fruits-icon.png', quote: 'Hands decorated with love, heart filled with joy.' },
-        { name: 'Haldi', date: '20 FEB 2027 • 11:00 AM', time: 'SATURDAY | 11:00 AM ONWARDS', dress: 'Yellow & Sunny', icon: 'diya-icon.png', quote: 'A golden glow for a bright beginning.' },
-        { name: 'Sangeet', date: '20 FEB 2027 • 7:00 PM', time: 'SATURDAY | 7:00 PM ONWARDS', dress: 'Glitz & Glamour', icon: 'music-icon.png', quote: 'Where hearts sing, feet dance, and joy knows no end.' },
-        { name: 'Wedding', date: '21 FEB 2027 • 4:30 PM', time: 'SUNDAY | 4:30 PM ONWARDS', dress: 'Royal Neutrals & Pastels', icon: 'mandap-icon.png', quote: 'Two hearts, two families, one timeless promise.' },
-        { name: 'Reception', date: '21 FEB 2027 • 8:30 PM', time: 'SUNDAY | 8:30 PM ONWARDS', dress: 'Elegant Evening Wear', icon: 'wine-cheers.png', quote: 'An evening of celebration and toasts to the new couple.' }
+        { name: 'Mehendi', date: '19 FEB 2027 • 11:00 AM', time: 'FRIDAY | 11:00 AM ONWARDS', dress: 'Green & Vibrant', icon: 'fruits-icon.png', quote: 'Hands decorated with love, heart filled with joy.', venue: 'The Grand Raj Palace, Jaipur' },
+        { name: 'Haldi', date: '20 FEB 2027 • 11:00 AM', time: 'SATURDAY | 11:00 AM ONWARDS', dress: 'Yellow & Sunny', icon: 'diya-icon.png', quote: 'A golden glow for a bright beginning.', venue: 'The Grand Raj Palace, Jaipur' },
+        { name: 'Sangeet', date: '20 FEB 2027 • 7:00 PM', time: 'SATURDAY | 7:00 PM ONWARDS', dress: 'Glitz & Glamour', icon: 'music-icon.png', quote: 'Where hearts sing, feet dance, and joy knows no end.', venue: 'The Grand Raj Palace, Jaipur' },
+        { name: 'Wedding', date: '21 FEB 2027 • 4:30 PM', time: 'SUNDAY | 4:30 PM ONWARDS', dress: 'Royal Neutrals & Pastels', icon: 'mandap-icon.png', quote: 'Two hearts, two families, one timeless promise.', venue: 'The Grand Raj Palace, Jaipur' },
+        { name: 'Reception', date: '21 FEB 2027 • 8:30 PM', time: 'SUNDAY | 8:30 PM ONWARDS', dress: 'Elegant Evening Wear', icon: 'wine-cheers.png', quote: 'An evening of celebration and toasts to the new couple.', venue: 'The Grand Raj Palace, Jaipur' }
     ];
 
     const getEventIcon = (name) => {
@@ -504,8 +504,8 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                                 <div className="w-4 h-4 mb-4">
                                     <Image src="/assets/template/03/scene7/icon.png" alt="Pin" className="w-full h-full object-contain" width={16} height={16} />
                                 </div>
-                                <p className="text-[9px] font-sans tracking-widest uppercase text-[#4A3B2C] font-semibold mb-1">{evt.venue.split(',')[0] || evt.venue}</p>
-                                <p className="text-[8px] font-sans tracking-widest uppercase text-[#4A3B2C] opacity-80 mb-6">{evt.venue.split(',').slice(1).join(',') || ''}</p>
+                                <p className="text-[9px] font-sans tracking-widest uppercase text-[#4A3B2C] font-semibold mb-1">{(evt.venue || '').split(',')[0] || evt.venue || ''}</p>
+                                <p className="text-[8px] font-sans tracking-widest uppercase text-[#4A3B2C] opacity-80 mb-6">{(evt.venue || '').split(',').slice(1).join(',') || ''}</p>
 
                                 <p className="text-[9px] font-sans tracking-widest uppercase text-[#8A7350] font-semibold mb-1">Dress Code</p>
                                 <p className="text-[9px] font-sans text-[#4A3B2C] opacity-90 mb-8">{evt.dress}</p>
