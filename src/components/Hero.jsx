@@ -301,8 +301,8 @@ export default function Hero() {
         </p>
 
         <button
-          onClick={() => router.push("/templates")}
-          className="pointer-events-auto rounded-full bg-black px-8 py-2 text-sm md:text-base font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-gray-800 shadow-xl shadow-black/10 flex items-center gap-2"
+          onClick={() => router.push("/template")}
+          className="absolute bottom-30 md:relative pointer-events-auto rounded-full bg-black px-8 py-2 text-sm md:text-base font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-gray-800 shadow-xl shadow-black/10 flex items-center gap-2"
         >
           Explore Templates
           <svg
