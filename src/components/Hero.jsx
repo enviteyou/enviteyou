@@ -1,8 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { useRouter } from "next/navigation";
+
 const SLIDES = [
   { src: "/1.png", title: "Bride and Groom" },
   { src: "/2.png", title: "Countdown Begins" },
@@ -18,242 +19,313 @@ const SLIDES = [
   { src: "/6.png", title: "Kanika" },
 ];
 
-const DOUBLE_SLIDES = [...SLIDES, ...SLIDES];
+function createAlphaTexture(renderer) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 1024;
+  const ctx = canvas.getContext("2d");
 
-// Group 12 slides into 6 arms (opposite pairs)
-const ARMS_DATA = [];
-for (let i = 0; i < 6; i++) {
-  ARMS_DATA.push({
-    angle: i * 30,
-    slideRight: DOUBLE_SLIDES[i],
-    slideLeft: DOUBLE_SLIDES[i + 6],
-    indexRight: i,
-    indexLeft: i + 6,
-  });
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(0, 0, 512, 1024);
+
+  ctx.fillStyle = "#ffffff";
+  const r = 40;
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(512 - r, 0);
+  ctx.quadraticCurveTo(512, 0, 512, r);
+  ctx.lineTo(512, 1024 - r);
+  ctx.quadraticCurveTo(512, 1024, 512 - r, 1024);
+  ctx.lineTo(r, 1024);
+  ctx.quadraticCurveTo(0, 1024, 0, 1024 - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.fill();
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return tex;
 }
 
-function LinearCard({ src, title, isActive }) {
-  return (
-    <div className="h-full w-full overflow-hidden rounded-md bg-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
-      <div className="relative h-full w-full bg-white">
-        <Image
-          src={src}
-          alt={title}
-          fill
-          sizes="280px"
-          className="object-cover rounded-md"
-          priority={isActive}
-        />
-      </div>
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0)_28%,rgba(0,0,0,0.04)_100%)]" />
-    </div>
-  );
-}
-
-export default function Hero({ templates = [] }) {
-  const trackRef = useRef(null);
-  const [activeCategory, setActiveCategory] = useState("All");
+export default function Hero() {
+  const mountRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const track = trackRef.current;
-    if (!track || prefersReducedMotion) return undefined;
+    if (!mountRef.current) return;
 
-    let currentAngle = 0;
+    let w = window.innerWidth;
+    let h = window.innerHeight;
 
-    // Use GSAP quickSetters for high performance 3D rotation and depth placement
-    const setRotationY = gsap.quickSetter(track, "rotationY", "deg");
-    const setZ = gsap.quickSetter(track, "z", "px");
+    const scene = new THREE.Scene();
+    // scene.background = new THREE.Color(0xf8f8fa);
+    // scene.fog = new THREE.FogExp2(0xf8f8fa, 0.015);
 
-    // Dynamic depth positioning of the cylinder center relative to viewport width
-    let targetZ = window.innerWidth < 640 ? -50 : -100;
-    setZ(targetZ);
+    const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 200);
 
-    const handleResize = () => {
-      targetZ = window.innerWidth < 640 ? -50 : -100;
-      setZ(targetZ);
-    };
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    mountRef.current.appendChild(renderer.domElement);
 
-    window.addEventListener("resize", handleResize, { passive: true });
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
+    scene.add(ambientLight);
 
-    // Select the 12 card elements to apply dynamic depth/blur/shading effects
-    const cards = track.querySelectorAll(".carousel-card");
-    const cardElements = Array.from(cards).map(card => {
-      const baseAngle = parseFloat(card.getAttribute("data-angle"));
-      return {
-        element: card,
-        baseAngle,
-      };
+    const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    dirLight.position.set(0, 20, 20); // Above and slightly behind camera
+    // dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 100;
+    dirLight.shadow.camera.left = -30;
+    dirLight.shadow.camera.right = 30;
+    dirLight.shadow.camera.top = 30;
+    dirLight.shadow.camera.bottom = -30;
+    dirLight.shadow.bias = -0.001;
+    scene.add(dirLight);
+
+    const centerLight = new THREE.PointLight(0xffffff, 1.5, 100);
+    centerLight.position.set(0, 5, 0); // Illuminates the inside of the concave curve
+    scene.add(centerLight);
+
+    const carouselGroup = new THREE.Group();
+    scene.add(carouselGroup);
+
+    const numPanels = SLIDES.length;
+    const isMobile = w < 768;
+
+    // Increased radius to create a massive concave amphitheater effect
+    const radius = isMobile ? 12 : 24;
+    const panelHeight = isMobile ? 14 : 20;
+    const gap = isMobile ? 0.04 : 0.03;
+    const anglePerPanel = (Math.PI * 2) / numPanels;
+    const panelAngle = anglePerPanel - gap;
+
+    // Place the camera INSIDE the cylinder, looking at the far inner wall (-Z)
+    camera.position.z = radius * 0.85; // Pushed back so the curve is completely "in front"
+    camera.position.y = 0; // Centered vertically
+    camera.lookAt(0, 0, -radius);
+    dirLight.target.position.set(0, 0, -radius);
+    scene.add(dirLight.target);
+
+    carouselGroup.position.y = 0; // Centered vertically
+
+    // Slight tilt for depth
+    carouselGroup.rotation.x = -0.02;
+
+    const floorGeo = new THREE.PlaneGeometry(100, 100);
+    const floorMat = new THREE.ShadowMaterial({ opacity: 0.06 });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = - (panelHeight / 2) - 1;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const alphaTexture = createAlphaTexture(renderer);
+    const textureLoader = new THREE.TextureLoader();
+
+    const meshes = [];
+
+    SLIDES.forEach((slide, i) => {
+      const geometry = new THREE.CylinderGeometry(
+        radius,
+        radius,
+        panelHeight,
+        256,
+        1,
+        true,
+        i * anglePerPanel,
+        panelAngle
+      );
+
+      const material = new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        roughness: 0.2,
+        metalness: 0.1,
+        side: THREE.DoubleSide,
+        alphaMap: alphaTexture,
+        transparent: true,
+        depthWrite: false, // Ensures perfectly soft anti-aliased corners inside the cylinder without sorting bugs
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.2,
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      textureLoader.load(slide.src, (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+        const imgAspect = tex.image.width / tex.image.height;
+        const panelAspect = (radius * panelAngle) / panelHeight;
+
+        // Since we are viewing the inside of the cylinder, the texture would normally appear mirrored.
+        // We fix this by flipping the texture mapping coordinates horizontally.
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+
+        if (imgAspect > panelAspect) {
+          const scale = panelAspect / imgAspect;
+          tex.repeat.set(-scale, 1);
+          tex.offset.set((1 + scale) / 2, 0);
+        } else {
+          const scale = imgAspect / panelAspect;
+          tex.repeat.set(-1, scale);
+          tex.offset.set(1, (1 - scale) / 2);
+        }
+
+        material.map = tex;
+        material.needsUpdate = true;
+      });
+
+      carouselGroup.add(mesh);
+      meshes.push(mesh);
     });
 
-    const update = (time, deltaTime) => {
-      // Rotate 0.008 degrees per millisecond (approx 28.8 degrees per second)
-      currentAngle += deltaTime * 0.008;
-      setRotationY(currentAngle);
+    let targetRotation = 0;
+    let currentRotation = 0;
+    let isDragging = false;
+    let previousX = 0;
+    let autoRotateSpeed = 0.0015;
 
-      // Apply dynamic depth features based on current world-space Y rotation of each card
-      cardElements.forEach(item => {
-        // Adjust with -90 degree phase shift to align focus with the front center card
-        const cardWorldAngle = currentAngle + item.baseAngle - 90;
-        const rad = cardWorldAngle * Math.PI / 180;
-        const cosVal = Math.cos(rad);
-
-        // depthFactor: 0.0 at center-front (cosVal = 1), 1.0 at center-back (cosVal = -1)
-        const depthFactor = (1 - cosVal) / 2;
-
-        const scale = 1.12 - 0.32 * depthFactor;
-        const opacity = 1 - 0.8 * depthFactor;
-        const blurAmount = 8 * depthFactor;
-        const brightnessAmount = 1 - 0.7 * depthFactor;
-
-        // Directly manipulate DOM style properties for highest performance, bypass wrapper overhead
-        item.element.style.transform = `scale(${scale})`;
-        item.element.style.opacity = opacity;
-        item.element.style.filter = `blur(${blurAmount}px) brightness(${brightnessAmount})`;
-      });
+    const onPointerDown = (e) => {
+      isDragging = true;
+      previousX = e.clientX || e.touches?.[0].clientX;
     };
 
-    gsap.ticker.add(update);
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const x = e.clientX || e.touches?.[0].clientX;
+      const deltaX = x - previousX;
+      // Subtract because from the inside, increasing Y rotation moves panels left
+      targetRotation -= deltaX * 0.003;
+      previousX = x;
+    };
+
+    const onPointerUp = () => {
+      isDragging = false;
+    };
+
+    const container = mountRef.current;
+    container.addEventListener("mousedown", onPointerDown);
+    window.addEventListener("mousemove", onPointerMove);
+    window.addEventListener("mouseup", onPointerUp);
+    container.addEventListener("touchstart", onPointerDown, { passive: true });
+    window.addEventListener("touchmove", onPointerMove, { passive: true });
+    window.addEventListener("touchend", onPointerUp);
+
+    let animationFrameId;
+    const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+
+      if (!isDragging) {
+        targetRotation += autoRotateSpeed;
+      }
+
+      currentRotation += (targetRotation - currentRotation) * 0.08;
+      carouselGroup.rotation.y = currentRotation;
+
+      // Add a slight vertical bobbing effect
+      carouselGroup.position.y = Math.sin(Date.now() * 0.001) * 0.3;
+
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const handleResize = () => {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      camera.aspect = w / h;
+
+      const isMob = w < 768;
+      const r = isMob ? 12 : 24;
+      camera.position.z = r * 0.85;
+      camera.position.y = 0;
+      camera.lookAt(0, 0, -r);
+
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      gsap.ticker.remove(update);
+      container.removeEventListener("mousedown", onPointerDown);
+      window.removeEventListener("mousemove", onPointerMove);
+      window.removeEventListener("mouseup", onPointerUp);
+      container.removeEventListener("touchstart", onPointerDown);
+      window.removeEventListener("touchmove", onPointerMove);
+      window.removeEventListener("touchend", onPointerUp);
       window.removeEventListener("resize", handleResize);
+
+      cancelAnimationFrame(animationFrameId);
+
+      meshes.forEach((mesh) => {
+        mesh.geometry.dispose();
+        if (mesh.material.map) mesh.material.map.dispose();
+        if (mesh.material.alphaMap) mesh.material.alphaMap.dispose();
+        mesh.material.dispose();
+      });
+      alphaTexture.dispose();
+      renderer.dispose();
+      scene.clear();
+
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
     };
   }, []);
 
   return (
-    <section id="how-it-works" className="relative isolate overflow-hidden bg-white text-black hero-carousel-section">
-      {/* Scope responsive styles using CSS variables for clean viewport sizing */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        .hero-carousel-section {
-          --carousel-radius: 650px;
-          --card-width: 280px;
-          --card-height: 380px;
-        }
-        @media (max-width: 1024px) {
-          .hero-carousel-section {
-            --carousel-radius: 500px;
-            --card-width: 220px;
-            --card-height: 300px;
-          }
-        }
-        @media (max-width: 768px) {
-          .hero-carousel-section {
-            --carousel-radius: 380px;
-            --card-width: 180px;
-            --card-height: 250px;
-          }
-        }
-        @media (max-width: 480px) {
-          .hero-carousel-section {
-            --carousel-radius: 230px;
-            --card-width: 120px;
-            --card-height: 170px;
-          }
-        }
-      `}} />
-
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.06),transparent_68%)] blur-3xl" />
-        <div className="absolute -right-32 top-24 h-112 w-md rounded-full bg-[radial-gradient(circle,rgba(230,200,165,0.22),transparent_70%)] blur-3xl" />
-      </div>
-
-      <div className="mx-auto flex w-full flex-col px-5 pb-0 md:px-10">
-        <div className="order-2 flex flex-col items-center justify-start pt-8 text-center md:order-1 md:pt-12">
-          <p className="text-xs font-semibold tracking-widest text-black/50">Pay Once. No Expiry. No Hidden Fees.</p>
-
-          <h1 className="mt-2 max-w-5xl text-xl font-bold leading-tight tracking-normal text-black min-[380px]:text-5xl sm:text-5xl lg:text-6xl">
-            Build Your Wedding Website, Online Forever.
-          </h1>
-
-          <p className="mt-4 max-w-3xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
-            Create in minutes. Invitations,
-            <br className="hidden sm:block" />RSVP, photos, and memories—all in one place.
-          </p>
-
-          <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
-            <button onClick={() => window.location.href = "/templates"} className="rounded-full bg-black px-7 py-3 cursor-pointer text-sm font-semibold text-white transition duration-300 hover:-translate-y-1">
-              Explore Templates
-            </button>
-          </div>
+    <section className="relative isolate w-full min-h-screen overflow-hidden flex flex-col items-center justify-start pt-10 cursor-grab active:cursor-grabbing">
+      <div className="-mb-55 z-10 flex flex-col items-center text-center px-5 max-w-3xl pointer-events-none">
+        <div className="inline-flex items-center rounded-full border border-gray-200 bg-white/50 px-3 py-1 text-xs md:text-sm font-medium text-gray-900 backdrop-blur-sm mb-4 shadow-sm">
+          <span className="flex h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+          Pay Once. No Expiry. No Hidden Fees.
         </div>
 
-        <div className="order-1 relative left-1/2 mt-4 flex w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:order-2 md:mt-6">
-          <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-full blur-3xl" />
+        <h1 className="text-2xl md:text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 mb-2 drop-shadow-sm">
+          Build Your Wedding Website,
+          <br className="hidden md:block" />{" "}
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-gray-500 to-gray-900">
+            Online Forever.
+          </span>
+        </h1>
 
-          {/* 3D Scene Viewport Container */}
-          <div
-            className="relative w-screen overflow-hidden flex items-center justify-center"
-            style={{
-              height: "calc(var(--card-height) + 80px)",
-              perspective: "1000px",
-              transformStyle: "preserve-3d"
-            }}
+        <p className="text-xs md:text-sm text-gray-600 mb-4 max-w-lg font-medium leading-relaxed">
+          Create in minutes. Invitations, RSVP, photos, and memories—all in one
+          place, beautifully designed.
+        </p>
+
+        <button
+          onClick={() => router.push("/templates")}
+          className="pointer-events-auto rounded-full bg-black px-8 py-2 text-sm md:text-base font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-gray-800 shadow-xl shadow-black/10 flex items-center gap-2"
+        >
+          Explore Templates
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <div className="absolute inset-y-0 left-0 w-16 bg-linear-to-r from-white via-white/70 to-transparent z-10" />
-            <div className="absolute inset-y-0 right-0 w-16 bg-linear-to-l from-white via-white/70 to-transparent z-10" />
-
-            {/* Rotating 3D Cylinder Track */}
-            <div
-              ref={trackRef}
-              className="absolute left-1/2 top-1/2"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {ARMS_DATA.map((arm, i) => (
-                <div
-                  key={i}
-                  className="absolute left-1/2 top-1/2"
-                  style={{
-                    width: "calc(2 * var(--carousel-radius))",
-                    height: "var(--card-height)",
-                    transform: `translate(-50%, -50%) rotateY(${arm.angle}deg)`,
-                    transformStyle: "preserve-3d",
-                  }}
-                >
-                  {/* Right Card Slot (faces outward) */}
-                  <div
-                    className="absolute right-0 top-0"
-                    style={{
-                      width: "var(--card-width)",
-                      height: "var(--card-height)",
-                      transform: "translate(50%, 0) rotateY(-90deg)",
-                      transformStyle: "preserve-3d",
-                    }}
-                  >
-                    <div
-                      className="carousel-card h-full w-full"
-                      data-angle={arm.angle}
-                      style={{ transformStyle: "preserve-3d" }}
-                    >
-                      <LinearCard src={arm.slideRight.src} title={arm.slideRight.title} />
-                    </div>
-                  </div>
-
-                  {/* Left Card Slot (faces outward) */}
-                  <div
-                    className="absolute left-0 top-0"
-                    style={{
-                      width: "var(--card-width)",
-                      height: "var(--card-height)",
-                      transform: "translate(-50%, 0) rotateY(90deg)",
-                      transformStyle: "preserve-3d",
-                    }}
-                  >
-                    <div
-                      className="carousel-card h-full w-full"
-                      data-angle={arm.angle + 180}
-                      style={{ transformStyle: "preserve-3d" }}
-                    >
-                      <LinearCard src={arm.slideLeft.src} title={arm.slideLeft.title} />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 5l7 7-7 7"
+            ></path>
+          </svg>
+        </button>
       </div>
+
+      {/* 3D Canvas Container */}
+      <div
+        ref={mountRef}
+        className="w-full pointer-events-auto touch-pan-y"
+      />
 
     </section>
   );
