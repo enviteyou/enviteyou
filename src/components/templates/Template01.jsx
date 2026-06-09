@@ -211,7 +211,9 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
             }
         };
     }, [embedded]);
-
+    const scrollerTarget = embedded
+        ? "#preview-scroller-container"
+        : window;
     // Derived values from formData (fall back to defaults)
     const brideName = (formData?.bride || "Janvi").trim();
     const groomName = (formData?.groom || "Prateek").trim();
@@ -381,6 +383,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                 const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: card,
+                        scroller: scrollerTarget,
                         start: "top 80%",
                         end: "top 40%",
                         scrub: 1.2, // Adds smooth lag to absorb scroll jitter
@@ -433,6 +436,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                 const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: gallerySection,
+                        scroller: scrollerTarget,
                         pin: true,
                         anticipatePin: 1,
                         scrub: 1,
@@ -477,6 +481,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                     ease: "power2.out",
                     scrollTrigger: {
                         trigger: ".essentials-grid",
+                        scroller: scrollerTarget,
                         start: "top 85%",
                         toggleActions: "play none none reverse",
                         markers: showGSAPMarkers,
@@ -496,6 +501,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                     ease: "power2.out",
                     scrollTrigger: {
                         trigger: ".rsvp-trigger",
+                        scroller: scrollerTarget,
                         start: "top 80%",
                         toggleActions: "play none none reverse",
                         markers: showGSAPMarkers,
@@ -515,6 +521,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                     ease: "power3.out",
                     scrollTrigger: {
                         trigger: ".awaiting-trigger",
+                        scroller: scrollerTarget,
                         start: "top 75%",
                         toggleActions: "play none none reverse",
                         markers: showGSAPMarkers,
@@ -1166,7 +1173,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                     </div>
                 </section>
 
-                
+
 
                 {/* -------------------------------------------------------- */}
                 {/* AWAITING YOUR PRESENCE SECTION */}

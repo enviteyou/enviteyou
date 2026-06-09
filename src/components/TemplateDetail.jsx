@@ -25,7 +25,7 @@ const templateComponentMap = {
   default: Template01,
 };
 
-export default function TemplateDetail({ template, formData, fullscreen = false }) {
+export default function TemplateDetail({ template, formData, fullscreen = false, embedded = false }) {
   if (!template) {
     return (
       <div className="rounded-3xl border border-black/10 bg-white p-8 text-black shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
@@ -50,7 +50,7 @@ export default function TemplateDetail({ template, formData, fullscreen = false 
     return (
       <div className="w-full bg-[#faf7f3]">
         <section className="relative w-full bg-black">
-          <SelectedTemplate formData={formData} template={template} embedded fullscreen />
+          <SelectedTemplate formData={formData} template={template} embedded={embedded} fullscreen />
         </section>
       </div>
     );
@@ -61,7 +61,7 @@ export default function TemplateDetail({ template, formData, fullscreen = false 
       <div className="bg-[#faf7f3] px-3 py-3 sm:px-5 sm:py-5">
         <div className="mx-auto w-full max-w-[390px] overflow-visible rounded-[24px] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.14)]">
           <section className="relative bg-black">
-            <SelectedTemplate formData={formData} template={template} embedded />
+            <SelectedTemplate formData={formData} template={template} embedded={embedded} />
           </section>
         </div>
       </div>

@@ -47,6 +47,10 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
         };
     }, [startAudio, isPlaying]);
 
+    const scrollerTarget = embedded
+        ? "#preview-scroller-container"
+        : window;
+
     // Force ScrollTrigger refresh on layout changes
     useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
@@ -177,6 +181,12 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
     const scene7ContainerRef = useRef(null);
 
     useGSAP(() => {
+        if (!containerRef.current) return;
+
+        const scrollerTarget = embedded
+            ? (containerRef.current.closest("#preview-scroller-container") || window)
+            : window;
+
         // --- Scene 1: Hero ---
         const tl1 = gsap.timeline();
         tl1.from(archRef.current, { scale: 1.1, opacity: 0, duration: 1.5, ease: 'power2.out' }, 0)
@@ -187,6 +197,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
             scrollTrigger: {
                 trigger: scene1ContainerRef.current,
                 start: 'top top',
+                scroller: scrollerTarget,
                 end: '+=150%',
                 scrub: 1,
                 pin: true,
@@ -203,11 +214,11 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
         if (s2BottomLeftFloralRef.current) gsap.to(s2BottomLeftFloralRef.current, { rotation: -4, transformOrigin: "bottom left", duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1 });
         if (s2BottomRightFloralRef.current) gsap.to(s2BottomRightFloralRef.current, { rotation: 4, transformOrigin: "bottom right", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
         gsap.from(ganpatiRef.current, {
-            scrollTrigger: { trigger: scene2ContainerRef.current, start: 'top 60%', toggleActions: 'play none none reverse' },
+            scrollTrigger: { trigger: scene2ContainerRef.current, start: 'top 60%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
             scale: 0.8, opacity: 0, duration: 1.5, ease: 'back.out(1.2)'
         });
         gsap.from(scene2TextRef.current.children, {
-            scrollTrigger: { trigger: scene2ContainerRef.current, start: 'top 50%', toggleActions: 'play none none reverse' },
+            scrollTrigger: { trigger: scene2ContainerRef.current, start: 'top 50%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
             y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out'
         });
 
@@ -215,24 +226,24 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
         if (s3TopRightFloralRef.current) gsap.to(s3TopRightFloralRef.current, { rotation: -6, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
         if (s3BottomLeftFloralRef.current) gsap.to(s3BottomLeftFloralRef.current, { rotation: -4, transformOrigin: "bottom left", duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1 });
         gsap.from(scene3FrameRef.current, {
-            scrollTrigger: { trigger: scene3ContainerRef.current, start: 'top 70%', toggleActions: 'play none none reverse' },
+            scrollTrigger: { trigger: scene3ContainerRef.current, start: 'top 70%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
             y: 50, opacity: 0, duration: 1.2, ease: 'power2.out'
         });
         gsap.from(scene3TextRef.current.children, {
-            scrollTrigger: { trigger: scene3ContainerRef.current, start: 'top 50%', toggleActions: 'play none none reverse' },
+            scrollTrigger: { trigger: scene3ContainerRef.current, start: 'top 50%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
             y: 20, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out', delay: 0.4
         });
 
         // --- Scene 4: Events List ---
         gsap.from(scene4ContainerRef.current.querySelector('h1'), {
-            scrollTrigger: { trigger: scene4ContainerRef.current, start: 'top 75%', toggleActions: 'play none none reverse' },
+            scrollTrigger: { trigger: scene4ContainerRef.current, start: 'top 75%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
             y: 30, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
         const cards = scene4CardsRef.current.children;
         Array.from(cards).forEach((card, i) => {
             gsap.from(card, {
-                scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none reverse' },
+                scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
                 y: 40, opacity: 0, rotationX: -10, duration: 0.6, ease: 'power2.out'
             });
         });
@@ -247,6 +258,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
             const tl5 = gsap.timeline({
                 scrollTrigger: {
                     trigger: scene5ContainerRef.current,
+                    scroller: scrollerTarget,
                     start: 'top top',
                     end: '+=400%',
                     scrub: 1,
@@ -273,7 +285,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
         if (s6FloralRightRef.current) gsap.to(s6FloralRightRef.current, { rotation: -8, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
         gsap.from(scene6ContainerRef.current.querySelector('h1'), {
-            scrollTrigger: { trigger: scene6ContainerRef.current, start: 'top 80%', toggleActions: 'play none none reverse' },
+            scrollTrigger: { trigger: scene6ContainerRef.current, start: 'top 80%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
             y: 30, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
@@ -283,6 +295,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
             const tl6 = gsap.timeline({
                 scrollTrigger: {
                     trigger: scene6ContainerRef.current,
+                    scroller: scrollerTarget,
                     start: 'top top',
                     end: '+=200%',
                     scrub: 1,
@@ -306,7 +319,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
 
         // --- Scene 7: RSVP ---
         gsap.from(scene7ContainerRef.current.children, {
-            scrollTrigger: { trigger: scene7ContainerRef.current, start: 'top 60%', toggleActions: 'play none none reverse' },
+            scrollTrigger: { trigger: scene7ContainerRef.current, start: 'top 60%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
             y: 40, opacity: 0, duration: 1.2, stagger: 0.2, ease: 'power2.out'
         });
 

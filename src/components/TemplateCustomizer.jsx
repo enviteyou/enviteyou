@@ -191,7 +191,7 @@ export default function TemplateCustomizer({ template }) {
           {/* Clean Mobile-Sized Invitation Card (No thick device frame/border) */}
           <div className="w-full max-w-[375px] shadow-[0_22px_60px_rgba(0,0,0,0.12)] rounded-[24px] bg-white border border-black/10 overflow-hidden shrink-0">
             {isMounted && (
-              <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} fullscreen={true} />
+              <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} fullscreen={true} embedded={true} />
             )}
           </div>
         </section>
@@ -203,7 +203,7 @@ export default function TemplateCustomizer({ template }) {
         <div className="hidden lg:flex w-full items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
-              href="/"
+              href="/template"
               className="border border-black/15 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#74313d] transition hover:bg-[#74313d] hover:text-white rounded shrink-0"
             >
               Change
@@ -283,7 +283,7 @@ export default function TemplateCustomizer({ template }) {
                   {template.name}
                 </span>
                 <Link
-                  href="/"
+                  href="/template"
                   className="text-[8px] text-[#74313d] font-bold uppercase tracking-wider hover:underline"
                 >
                   Change
@@ -326,7 +326,7 @@ export default function TemplateCustomizer({ template }) {
 
       {/* Fullscreen Mobile Preview Modal */}
       {showPreviewModal && (
-        <div className="fixed inset-0 z-[5000] bg-[#faf7f3] overflow-y-auto flex flex-col">
+        <div id="preview-scroller-container" className="fixed inset-0 z-[5000] bg-[#faf7f3] overflow-y-auto flex flex-col">
           <div className="sticky top-0 bg-white border-b border-black/10 px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between z-50 shadow-sm">
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#74313d] bg-[#74313d]/10 px-2.5 py-1 rounded">Live Preview</span>
@@ -342,7 +342,7 @@ export default function TemplateCustomizer({ template }) {
           <div className="flex-1 w-full max-w-[390px] mx-auto py-8 px-4 flex justify-center items-start">
             {/* Clean Mobile-Sized Invitation Card inside modal (No thick device frame/border) */}
             <div className="w-full max-w-[375px] shadow-[0_22px_60px_rgba(0,0,0,0.12)] rounded-[24px] bg-white border border-black/10 overflow-hidden">
-              <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} fullscreen={true} />
+              <TemplateDetail key={templateKey || "template-detail"} template={template} formData={previewData} fullscreen={true} embedded={true} />
             </div>
           </div>
         </div>

@@ -152,7 +152,7 @@ export default function ConfirmationPage() {
 			<div className="mx-auto mt-10 w-full max-w-2xl rounded-[2rem] border border-black/10 bg-white p-6 text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
 				<p className="text-xs font-semibold uppercase tracking-[0.22em] text-black/40">Invitation unavailable</p>
 				<p className="mt-3 text-base text-red-600">{error}</p>
-				<button onClick={() => router.back()} className="mt-5 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-black">
+				<button onClick={() => router.back()} className="mt-5 rounded border border-black/10 px-4 py-2 text-sm font-semibold text-black">
 					Go back
 				</button>
 			</div>

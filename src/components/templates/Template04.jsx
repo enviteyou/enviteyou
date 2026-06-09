@@ -39,6 +39,8 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             }
         };
 
+
+
         // We listen to multiple interaction events. 
         // We don't use `{ once: true }` because the first event (e.g. scroll) might be blocked by browser policies.
         // We keep trying on subsequent interactions until isPlaying becomes true.
@@ -52,6 +54,9 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             events.forEach(event => window.removeEventListener(event, handleInteraction));
         };
     }, [startAudio, isPlaying]);
+    const scrollerTarget = embedded
+        ? "#preview-scroller-container"
+        : window;
 
     // Force ScrollTrigger refresh on layout changes (e.g. lazy loaded images)
     useEffect(() => {
@@ -206,6 +211,10 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             return;
         }
 
+        const scrollerTarget = embedded
+            ? (containerRef.current.closest("#preview-scroller-container") || window)
+            : window;
+
         // --- Initial Entrance Animation ---
         const tl = gsap.timeline();
 
@@ -258,6 +267,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         const scrollTl = gsap.timeline({
             scrollTrigger: {
                 trigger: containerRef.current,
+                scroller: scrollerTarget,
                 start: 'top top',
                 end: '+=100%', // Reduced distance so it feels faster
                 scrub: 0.5, // Lower scrub for smoother/snappier response
@@ -295,6 +305,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         gsap.from(scene2ContentRef.current.children, {
             scrollTrigger: {
                 trigger: scene2ContainerRef.current,
+                scroller: scrollerTarget,
                 start: 'top 70%',
                 toggleActions: 'play none none reverse',
             },
@@ -309,6 +320,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         gsap.to(ganeshaIconRef.current, {
             scrollTrigger: {
                 trigger: scene2ContainerRef.current,
+                scroller: scrollerTarget,
                 start: 'top bottom',
                 end: 'bottom top',
                 scrub: 1,
@@ -324,6 +336,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         gsap.from(scene3ContentRef.current.children, {
             scrollTrigger: {
                 trigger: scene3ContainerRef.current,
+                scroller: scrollerTarget,
                 start: 'top 70%',
                 toggleActions: 'play none none reverse',
             },
@@ -338,6 +351,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         const scene3ScrollTl = gsap.timeline({
             scrollTrigger: {
                 trigger: scene3ContainerRef.current,
+                scroller: scrollerTarget,
                 start: 'top bottom',
                 end: 'bottom top',
                 scrub: 1,
@@ -375,6 +389,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         gsap.from(scene4ContentRef.current.children[0], {
             scrollTrigger: {
                 trigger: scene4ContainerRef.current,
+                scroller: scrollerTarget,
                 start: 'top 75%',
                 toggleActions: 'play none none reverse',
             },
@@ -387,6 +402,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: card,
+                    scroller: scrollerTarget,
                     start: 'top 95%',  // Start animating when card enters bottom of screen
                     end: 'bottom 15%', // Finish animation when card reaches top of screen
                     scrub: 1,
@@ -407,6 +423,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         gsap.from(scene4ContentRef.current.children[2], {
             scrollTrigger: {
                 trigger: scene4ContentRef.current.children[2],
+                scroller: scrollerTarget,
                 start: 'top 95%',
                 toggleActions: 'play none none reverse',
             },
@@ -419,6 +436,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             const tl5 = gsap.timeline({
                 scrollTrigger: {
                     trigger: scene5ContainerRef.current,
+                    scroller: scrollerTarget,
                     start: 'top top',
                     end: '+=400%',
                     scrub: 1,
@@ -443,6 +461,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             const tl6 = gsap.timeline({
                 scrollTrigger: {
                     trigger: scene6ContainerRef.current,
+                    scroller: scrollerTarget,
                     start: 'top top',
                     end: '+=300%',
                     scrub: 1,
