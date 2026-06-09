@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "The EnviteYou Journal | Wedding Inspiration & Invitations",
-  description: "Read the latest tips, guides, and trends on wedding invitations, wedding planning, custom themes, and digital RSVP delivery from the EnviteYou editorial team.",
+  description: "Read the latest tips, guides, and trends on wedding invitations, wedding planning, custom invitations, and digital RSVP delivery from the EnviteYou editorial team.",
 };
 
 async function fetchBlogs() {

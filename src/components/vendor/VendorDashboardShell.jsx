@@ -113,11 +113,10 @@ export default function VendorDashboardShell({ children }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${
-                    active
-                      ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
-                      : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
-                  }`}
+                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${active
+                    ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
+                    : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
+                    }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span>{item.label}</span>
@@ -193,11 +192,10 @@ export default function VendorDashboardShell({ children }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${
-                    active
-                      ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
-                      : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
-                  }`}
+                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${active
+                    ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
+                    : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
+                    }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span>{item.label}</span>
@@ -264,7 +262,7 @@ export default function VendorDashboardShell({ children }) {
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="hidden text-xs text-black/45 sm:block">Lucknow, India</div>
+                {/* <div className="hidden text-xs text-black/45 sm:block">Lucknow, India</div> */}
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3">
@@ -278,10 +276,10 @@ export default function VendorDashboardShell({ children }) {
                   Save Draft
                 </Button>
 
-                <button type="button" className="relative flex h-11 w-11 items-center justify-center rounded border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
+                {/* <button type="button" className="relative flex h-11 w-11 items-center justify-center rounded border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
                   <Bell className="h-5 w-5 text-black/70" />
                   <span className="absolute right-0 top-0 inline-flex h-5 min-w-5 items-center justify-center rounded-md bg-[#c8a24c] px-1 text-[10px] font-semibold text-white">3</span>
-                </button>
+                </button> */}
 
                 <button type="button" className="flex h-11 w-11 items-center justify-center rounded bg-black text-sm font-semibold text-[#c8a24c] shadow-[0_10px_24px_rgba(0,0,0,0.1)]">
                   {(vendorName || workspace)

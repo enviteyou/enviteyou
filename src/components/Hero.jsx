@@ -168,12 +168,12 @@ export default function Hero({ templates = [] }) {
           </h1>
 
           <p className="mt-4 max-w-3xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
-            Create a beautiful digital wedding website in minutes.
-            <br className="hidden sm:block" />Send it to your guests today, and keep it online forever as a digital scrapbook of your big day.
+            Create in minutes. Invitations,
+            <br className="hidden sm:block" />RSVP, photos, and memories—all in one place.
           </p>
 
           <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
-            <button className="rounded-full bg-black px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1">
+            <button onClick={() => window.location.href = "/templates"} className="rounded-full bg-black px-7 py-3 cursor-pointer text-sm font-semibold text-white transition duration-300 hover:-translate-y-1">
               Explore Templates
             </button>
           </div>
