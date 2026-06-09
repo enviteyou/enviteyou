@@ -17,15 +17,15 @@ export default function HeroTemplate({ templates = [] }) {
             <div className="mx-auto flex  w-full flex-col px-5 pb-0 md:px-10">
                 <div className="order-3 border-t border-black/10">
                     <div className="mx-auto w-full max-w-6xl px-5 py-8 md:px-10 md:py-10">
-                        <div className="mb-5 flex justify-center">
+                        <div className="mb-5 flex md:justify-center justify-start">
                             <div className="rounded-sm border  border-black/25 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-black/70">
                                 New Releases
                             </div>
                         </div>
-                        <h2 className="mx-auto max-w-3xl text-center text-xl font-bold leading-tight tracking-tight text-black sm:text-3xl">
+                        <h2 className="mx-auto max-w-3xl text-center md:text-left text-xl font-bold leading-tight tracking-tight text-black sm:text-3xl">
                             Built for your big day. Simple to edit. Just type, save, and share.
                         </h2>
-                        <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-black/60">
+                        <p className="mx-auto mt-3 max-w-3xl text-center md:text-left text-sm text-black/60">
                             Select your theme. Tell your story. Send it in minutes.
                         </p>
                     </div>

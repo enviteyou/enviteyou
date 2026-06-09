@@ -12,7 +12,7 @@ const footerLinks = {
     { label: "Blog", href: "/blogs" },
 
   ],
-  'Important Links': [
+  'Important ': [
     { label: "Refund Policy", href: "/refund_policy" },
     { label: "Shipping Policy", href: "/shipping_policy" },
     { label: "Contact us", href: "mailto:care@enviteyou.com" },
@@ -108,7 +108,7 @@ export default function Footer() {
         <div className="mt-12 h-px w-full bg-linear-to-r from-transparent via-black/12 to-transparent" />
 
         <div className="mt-6 flex flex-col gap-4 text-sm text-black/48 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Elevate Ecommerce Synergies. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} EES. All rights reserved.</p>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <div className="flex flex-wrap items-center gap-4">
