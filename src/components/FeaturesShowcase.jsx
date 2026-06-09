@@ -38,7 +38,7 @@ const features = [
 
 export default function FeaturesShowcase() {
   return (
-    <section className="relative bg-white text-black">
+    <section className="relative bg-white text-black sm:px-2">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
           {/* Left Column - Scrolls Normally */}
