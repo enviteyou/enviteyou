@@ -17,7 +17,7 @@ export default function HeroTemplate({ templates = [] }) {
             <div className="mx-auto flex  w-full flex-col px-5 pb-0 md:px-10">
                 <div className="order-3 border-t border-black/10">
                     <div className="mx-auto w-full max-w-6xl px-5 py-8 md:px-10 md:py-10">
-                        <div className="mb-5 flex md:justify-center justify-start">
+                        <div className="mb-5 flex justify-center">
                             <div className="rounded-sm border  border-black/25 px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-black/70">
                                 New Releases
                             </div>
