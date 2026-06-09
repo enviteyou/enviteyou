@@ -48,30 +48,41 @@ function Metric({ label, value, icon: Icon, hint }) {
   );
 }
 
-function TemplateGridCard({ template, selected, onSelect }) {
+function TemplateGridCard({ template, selected, onSelect, onUse }) {
   return (
-    <button
-      type="button"
-      onClick={onSelect}
+    <div
       className={`group overflow-hidden rounded-[1.35rem] border bg-white text-left shadow-[0_18px_50px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 ${selected ? "border-black" : "border-black/10"}`}
     >
-      <div className="aspect-[4/3] overflow-hidden bg-black/5">
-        {template?.preview ? <img src={template.preview} alt={template.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-sm text-black/45">No preview</div>}
-      </div>
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <h3 className="text-lg font-semibold text-black">{template.name}</h3>
-            <p className="text-sm text-black/55">{template.tag}</p>
-          </div>
-          <span className="rounded-full border border-black/10 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-black/50">{template.category}</span>
+      <div className="cursor-pointer" onClick={onSelect}>
+        <div className="aspect-[4/3] overflow-hidden bg-black/5">
+          {template?.preview ? <img src={template.preview} alt={template.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-sm text-black/45">No preview</div>}
         </div>
+        <div className="p-4 pb-0">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="text-lg font-semibold text-black">{template.name}</h3>
+              <p className="text-sm text-black/55">{template.tag}</p>
+            </div>
+            <span className="rounded-full border border-black/10 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-black/50">{template.category}</span>
+          </div>
+        </div>
+      </div>
+      <div className="p-4 pt-2">
         <div className="mt-4 flex items-center justify-between gap-3 text-sm">
           <span className="rounded-full border border-black/10 px-3 py-1.5 font-medium text-black/70">Vendor Price {formatCurrency(template.vendorPrice || template.sellPrice)}</span>
-          <span className="rounded-full bg-black px-3 py-1.5 font-medium text-white">Use Template</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onUse?.(template);
+            }}
+            className="rounded-full bg-black px-3 py-1.5 font-medium text-white hover:bg-black/90 cursor-pointer"
+          >
+            Use Template
+          </button>
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -135,6 +146,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
   const [formData, setFormData] = useState({});
   const [formTab, setFormTab] = useState("Essentials");
   const formRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedTemplate = templates.find((template) => String(template.templateId || template.id) === String(selectedTemplateId)) || templates[0] || null;
   const selectedInvitation = invitations.find((invitation) => invitation._id === selectedInvitationId) || invitations[0] || null;
@@ -205,7 +217,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
 
   const handleDownloadInvoice = async (invitationId) => {
     try {
-      const res = await api.get(`/payments/${invitationId}/invoice`, { responseType: 'blob' });
+      const res = await api.get(`/payments/${invitationId}/invoice?isVendor=true`, { responseType: 'blob' });
       const blob = new Blob([res.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -268,6 +280,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
                 activeTab={formTab}
                 setActiveTab={setFormTab}
                 isVendor={true}
+                onSubmittingChange={setIsSubmitting}
               />
             ) : (
               <SectionCard title="No template selected"><p className="text-sm text-black/60">No templates available right now.</p></SectionCard>
@@ -292,8 +305,8 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
                 <div className="rounded-full border border-black/10 px-3 py-1 text-xs font-semibold text-black/55">Secure &amp; Safe Payments</div>
               </div>
               <div className="mt-5 grid gap-3">
-                <Button variant="outline" className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => toast.success("Live preview is updated on the left column")}>Preview Template</Button>
-                <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => formRef.current?.submit()}>Pay {formatCurrency(templatePrice)} &amp; Publish</Button>
+                <Button variant="outline" disabled={isSubmitting} className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => toast.success("Live preview is updated on the left column")}>Preview Template</Button>
+                <Button className="h-11 bg-black text-white hover:bg-black/90" disabled={isSubmitting} onClick={() => formRef.current?.submit()}>Pay {formatCurrency(templatePrice)} &amp; Publish</Button>
               </div>
             </SectionCard>
           </div>
@@ -332,7 +345,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
               {filteredTemplates.map((template) => (
-                <TemplateGridCard key={template.templateId || template.id} template={template} selected={String(selectedTemplateId) === String(template.templateId || template.id)} onSelect={() => setSelectedTemplateId(String(template.templateId || template.id))} />
+                <TemplateGridCard key={template.templateId || template.id} template={template} selected={String(selectedTemplateId) === String(template.templateId || template.id)} onSelect={() => setSelectedTemplateId(String(template.templateId || template.id))} onUse={(t) => router.push(`/vendor/dashboard/create-new-template?template=${t.templateId || t.id}`)} />
               ))}
             </div>
           )}

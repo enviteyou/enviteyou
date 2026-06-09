@@ -245,7 +245,7 @@ function normalizeStoredForm(data) {
   };
 }
 
-const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab, allowedTabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"], isVendor = false }, ref) {
+const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChange, activeTab, setActiveTab, allowedTabs = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"], isVendor = false, onSubmittingChange }, ref) {
   const router = useRouter();
   const formRef = useRef(null);
   useImperativeHandle(ref, () => ({
@@ -259,6 +259,10 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
   const [customEventName, setCustomEventName] = useState("");
   const [storySubTab, setStorySubTab] = useState("Personality Tags");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    onSubmittingChange?.(isSubmitting);
+  }, [isSubmitting, onSubmittingChange]);
   const [loadingStage, setLoadingStage] = useState("initializing");
   const templateStorageKey = getTemplateStorageKey(template);
   const [form, setForm] = useState(() => {
@@ -531,6 +535,11 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
 
   async function handleSubmit() {
     console.log("handleSubmit started. form:", form);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+      document.body.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     // Clear the auto-publish session storage keys here when the execution actually starts
     if (typeof window !== "undefined") {
@@ -575,6 +584,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
 
       const orderResponse = await api.post("/payments/create-order", {
         templateId: template?.templateId || template?.id || template?._id,
+        isVendor,
       });
       const order = orderResponse?.data?.order;
       const razorpayKeyId = orderResponse?.data?.keyId;
@@ -622,6 +632,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                 ...response,
                 invitationData,
                 orderAmount: orderAmountPaise,
+                isVendor,
               });
               resolve(verifyResponse);
             } catch (error) {
@@ -671,7 +682,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
       className="relative bg-white pb-8"
     >
       {isSubmitting ? (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/92 px-4 py-10 backdrop-blur-[2px]">
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/40 backdrop-blur-md px-4 py-10">
           <div className="w-full max-w-sm rounded-3xl border border-black/10 bg-white px-6 py-7 text-center shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-black/10 bg-black text-white">
               <Loader2 className="h-6 w-6 animate-spin" />

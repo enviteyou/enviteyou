@@ -354,7 +354,7 @@ export default function TestimonialsSection() {
         )}
 
         {/* Detailed Customer Reviews List (Full scrolling list below) */}
-        <div className="mt-16">
+        {/* <div className="mt-16">
           <h3 className="text-xl font-semibold tracking-tight text-black sm:text-2xl mb-6 border-b border-black/5 pb-3">
             All Reviews ({reviews.length})
           </h3>
@@ -424,7 +424,7 @@ export default function TestimonialsSection() {
               )}
             </>
           )}
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -43,6 +43,7 @@ export default function TemplateCustomizer({ template }) {
   const isFirstRender = useRef(true);
   const saveTimeoutRef = useRef(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const activeTabIndex = allowedTabs.indexOf(activeTab);
   const isFirstTab = activeTabIndex === 0;
@@ -171,6 +172,7 @@ export default function TemplateCustomizer({ template }) {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             allowedTabs={allowedTabs}
+            onSubmittingChange={setIsSubmitting}
           />
         </section>
 
@@ -243,7 +245,8 @@ export default function TemplateCustomizer({ template }) {
             <button
               type="button"
               onClick={() => formRef.current?.submit()}
-              className="rounded bg-black hover:bg-black/90 text-white px-6 sm:px-8 py-2.5 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
+              disabled={isSubmitting}
+              className="rounded bg-black hover:bg-black/90 text-white px-6 sm:px-8 py-2.5 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
             >
               Publish
             </button>
@@ -294,7 +297,8 @@ export default function TemplateCustomizer({ template }) {
               <button
                 type="button"
                 onClick={() => formRef.current?.submit()}
-                className="rounded bg-[#74313d] hover:bg-[#74313d]/90 text-white px-5 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer"
+                disabled={isSubmitting}
+                className="rounded bg-[#74313d] hover:bg-[#74313d]/90 text-white px-5 sm:px-8 py-2 text-xs font-bold uppercase tracking-wider transition duration-200 shadow-md cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
               >
                 Publish
               </button>
