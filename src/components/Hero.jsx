@@ -118,7 +118,7 @@ export default function Hero({ templates = [] }) {
           </p>
 
           <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
-            <button className="rounded-full bg-black px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1">
+            <button onClick={() => window.location.href = "/templates"} className="rounded-full bg-black px-7 py-3 cursor-pointer text-sm font-semibold text-white transition duration-300 hover:-translate-y-1">
               Explore Templates
             </button>
 
