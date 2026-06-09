@@ -1,5 +1,5 @@
 import { getTemplates } from "@/lib/templateService";
-import Hero from "../../components/Hero";
+import Hero from "../../components/Hero3d";
 import HeroTemplate from "../../components/HeroTemplate";
 import FeaturesShowcase from "../../components/FeaturesShowcase";
 import TestimonialsSection from "../../components/TestimonialsSection";
@@ -13,7 +13,8 @@ export default async function Home() {
 
   return (
     <>
-      <Hero templates={templates} />
+      {/* <Hero templates={templates} /> */}
+      <Hero />
       <HeroTemplate templates={templates} />
       <FeaturesShowcase />
       <TestimonialsSection />
