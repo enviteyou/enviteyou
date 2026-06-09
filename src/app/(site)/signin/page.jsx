@@ -46,13 +46,13 @@ function SigninContent() {
 
   if (loading) {
     return (
-      <main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+      <div className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
         <section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
           <p className="text-sm font-medium text-black/60">
             Checking your session...
           </p>
         </section>
-      </main>
+      </div>
     );
   }
 
@@ -87,14 +87,13 @@ function SigninContent() {
   };
 
   return (
-    <main className="relative isolate flex py-20 px-4 items-center justify-center">
+    <div className="relative isolate flex py-40 px-4 -mt-20 items-center justify-center">
       <Image
         src="/form_background.jpeg"
         alt="Background"
-        width={2000}
-        height={2000}
+        fill
         priority
-        className="absolute object-cover"
+        className="object-cover object-center"
         style={{ zIndex: -1 }}
       />
 
@@ -236,20 +235,20 @@ function SigninContent() {
           </Link>
         </p>
       </section>
-    </main>
+    </div>
   );
 }
 
 export default function SigninPage() {
   return (
     <Suspense fallback={
-      <main className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
+      <div className="relative isolate min-h-screen overflow-hidden bg-white px-4 py-10 sm:px-6 lg:px-8">
         <section className="relative mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
           <p className="text-sm font-medium text-black/60">
             Loading...
           </p>
         </section>
-      </main>
+      </div>
     }>
       <SigninContent />
     </Suspense>

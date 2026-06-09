@@ -325,7 +325,7 @@ export default function Hero() {
       {/* 3D Canvas Container */}
       <div
         ref={mountRef}
-        className="w-full pointer-events-auto touch-pan-y -mb-50 md:-mb-10"
+        className="w-full pointer-events-auto touch-pan-y -mb-40 md:-mb-10"
       />
 
     </section>
