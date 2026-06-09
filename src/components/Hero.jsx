@@ -97,9 +97,10 @@ export default function Hero() {
     const numPanels = SLIDES.length;
     const isMobile = w < 768;
 
-    // Increased radius to create a massive concave amphitheater effect
-    const radius = isMobile ? 12 : 24;
-    const panelHeight = isMobile ? 14 : 20;
+    // Adjust radius and panelHeight to maintain a pleasant portrait aspect ratio
+    // This prevents images from looking vertically stretched (heavily cropped horizontally)
+    const radius = isMobile ? 14 : 24;
+    const panelHeight = isMobile ? 12 : 18;
     const gap = isMobile ? 0.04 : 0.03;
     const anglePerPanel = (Math.PI * 2) / numPanels;
     const panelAngle = anglePerPanel - gap;
@@ -190,7 +191,7 @@ export default function Hero() {
     let currentRotation = 0;
     let isDragging = false;
     let previousX = 0;
-    let autoRotateSpeed = 0.0015;
+    let autoRotateSpeed = 0.0025;
 
     const onPointerDown = (e) => {
       isDragging = true;
@@ -242,7 +243,7 @@ export default function Hero() {
       camera.aspect = w / h;
 
       const isMob = w < 768;
-      const r = isMob ? 12 : 24;
+      const r = isMob ? 14 : 24;
       camera.position.z = r * 0.85;
       camera.position.y = 0;
       camera.lookAt(0, 0, -r);
@@ -280,7 +281,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative isolate w-full min-h-screen overflow-hidden flex flex-col items-center justify-start pt-10 cursor-grab active:cursor-grabbing">
+    <section className="relative isolate w-full flex flex-col items-center justify-start pt-10 cursor-grab active:cursor-grabbing">
       <div className="-mb-55 z-10 flex flex-col items-center text-center px-5 max-w-3xl pointer-events-none">
         <div className="inline-flex items-center rounded-full border border-gray-200 bg-white/50 px-3 py-1 text-xs md:text-sm font-medium text-gray-900 backdrop-blur-sm mb-4 shadow-sm">
           <span className="flex h-2 w-2 rounded-full bg-green-500 mr-2"></span>
@@ -302,7 +303,7 @@ export default function Hero() {
 
         <button
           onClick={() => router.push("/template")}
-          className="absolute bottom-30 md:relative pointer-events-auto rounded-full bg-black px-8 py-2 text-sm md:text-base font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-gray-800 shadow-xl shadow-black/10 flex items-center gap-2"
+          className="pointer-events-auto rounded-full bg-black px-8 py-2 text-sm md:text-base font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-gray-800 shadow-xl shadow-black/10 flex items-center gap-2"
         >
           Explore Templates
           <svg
@@ -324,7 +325,7 @@ export default function Hero() {
       {/* 3D Canvas Container */}
       <div
         ref={mountRef}
-        className="w-full pointer-events-auto touch-pan-y"
+        className="w-full pointer-events-auto touch-pan-y -mb-50 md:-mb-10"
       />
 
     </section>
