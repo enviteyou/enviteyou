@@ -113,8 +113,8 @@ export default function Hero({ templates = [] }) {
           </h1>
 
           <p className="mt-4 max-w-3xl text-sm leading-6 text-black/65 sm:text-base sm:leading-7">
-            Create a beautiful digital wedding website in minutes.
-            <br className="hidden sm:block" />Send it to your guests today, and keep it online forever as a digital scrapbook of your big day.
+            Create in minutes. Invitations,
+            <br className="hidden sm:block" />RSVP, photos, and memories—all in one place.
           </p>
 
           <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
