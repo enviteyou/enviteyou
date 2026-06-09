@@ -12,14 +12,11 @@ const SLIDES = [
   { src: "/5.png", title: "Shaadi" },
   { src: "/6.png", title: "Kanika" },
   { src: "/7.png", title: "Kanika" },
+  { src: "/8.png", title: "Kanika" },
   { src: "/1.png", title: "Bride and Groom" },
   { src: "/2.png", title: "Countdown Begins" },
   { src: "/3.png", title: "Lanterns" },
   { src: "/4.png", title: "Arbishek" },
-  { src: "/5.png", title: "Shaadi" },
-  { src: "/6.png", title: "Kanika" },
-  { src: "/7.png", title: "Kanika" },
-
 ];
 
 function createAlphaTexture(renderer) {
