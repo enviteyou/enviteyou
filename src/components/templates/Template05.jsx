@@ -11,6 +11,7 @@ import Image from 'next/image';
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
 export default function Template05({ formData = {}, template = {}, embedded = false, fullscreen = false }) {
@@ -236,14 +237,14 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
         // --- Scene 1: Entrance ---
         const tl = gsap.timeline();
 
-        tl.from(fabricRef.current, { y: -100, opacity: 0, duration: 1.5, ease: 'power2.out' }, 0)
-            .from(templeRef.current, { y: 50, opacity: 0, scale: 0.95, duration: 1.5, ease: 'power2.out' }, 0.2)
-            .from(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5, ease: 'power2.out' }, 0.4)
-            .from(diyaRef.current, { scale: 0, opacity: 0, duration: 1, ease: 'back.out(1.5)' }, 0.8)
+        tl.from(fabricRef.current, { y: -100, opacity: 0, duration: 1.5, ease: 'power2.out', force3D: true }, 0)
+            .from(templeRef.current, { y: 50, opacity: 0, scale: 0.95, duration: 1.5, ease: 'power2.out', force3D: true }, 0.2)
+            .from(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5, ease: 'power2.out', force3D: true }, 0.4)
+            .from(diyaRef.current, { scale: 0, opacity: 0, duration: 1, ease: 'back.out(1.5)', force3D: true }, 0.8)
             .from(scrollIndicatorRef.current, { opacity: 0, duration: 1 }, 1.2);
 
-        // Diya flicker
-        gsap.to(diyaRef.current, { opacity: 0.7, scale: 0.95, duration: 0.1, yoyo: true, repeat: -1, ease: 'rough' });
+        // Diya flicker - Optimized to slow down rate and use transform layer
+        gsap.to(diyaRef.current, { opacity: 0.7, scale: 0.98, duration: 0.6, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true });
 
         gsap.set(textGroupRef.current.children, { opacity: 0, y: 30 });
 
@@ -261,15 +262,16 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
 
         scrollTl
             .to(scrollIndicatorRef.current, { opacity: 0, y: -20, duration: 0.2 }, 0)
-            .to(textGroupRef.current.children, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' }, 0.1)
-            .to(textGroupRef.current, { y: -50, opacity: 0, duration: 1.5 }, 1.5)
-            .to(fabricRef.current, { y: -100, opacity: 0, duration: 1.5 }, 1.5)
-            .to(templeRef.current, { y: 50, opacity: 0, duration: 1.5 }, 1.5)
-            .to(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5 }, 1.5)
-            .to(diyaRef.current, { opacity: 0, duration: 1.5 }, 1.5);
+            .to(textGroupRef.current.children, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out', force3D: true }, 0.1)
+            .to(textGroupRef.current, { y: -50, opacity: 0, duration: 1.5, force3D: true }, 1.5)
+            .to(fabricRef.current, { y: -100, opacity: 0, duration: 1.5, force3D: true }, 1.5)
+            .to(templeRef.current, { y: 50, opacity: 0, duration: 1.5, force3D: true }, 1.5)
+            .to(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5, force3D: true }, 1.5)
+            .to(diyaRef.current, { opacity: 0, duration: 1.5, force3D: true }, 1.5);
 
         // --- Scene 2: Blessings ---
-        gsap.to(diya2Ref.current, { opacity: 0.8, scale: 0.95, duration: 0.15, yoyo: true, repeat: -1, ease: 'rough' });
+        // Optimized warm candle glow
+        gsap.to(diya2Ref.current, { opacity: 0.8, scale: 0.98, duration: 0.7, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true });
 
         gsap.from(ikOnkarRef.current, {
             scrollTrigger: {
@@ -278,7 +280,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 60%',
                 toggleActions: 'play none none reverse',
             },
-            scale: 0, rotation: 180, opacity: 0, duration: 1.5, ease: 'back.out(1.2)'
+            scale: 0, rotation: 180, opacity: 0, duration: 1.5, ease: 'back.out(1.2)', force3D: true
         });
 
         gsap.from(scene2ContentRef.current.children, {
@@ -288,7 +290,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 50%',
                 toggleActions: 'play none none reverse',
             },
-            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out'
+            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out', force3D: true
         });
 
         // Parallax gate
@@ -302,7 +304,8 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
             },
             scale: 1.05,
             y: -20,
-            ease: 'none'
+            ease: 'none',
+            force3D: true
         });
 
         // --- Scene 3: Invitation Details ---
@@ -313,7 +316,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 80%',
                 toggleActions: 'play none none reverse',
             },
-            y: 100, opacity: 0, duration: 1.2, ease: 'power2.out'
+            y: 100, opacity: 0, duration: 1.2, ease: 'power2.out', force3D: true
         });
 
         gsap.from(scene3ContentRef.current.children, {
@@ -323,15 +326,15 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 50%',
                 toggleActions: 'play none none reverse',
             },
-            y: 20, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out', delay: 0.3
+            y: 20, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out', delay: 0.3, force3D: true
         });
 
         // --- Scene 4: Countdown ---
         gsap.to(topLightsRef.current, {
-            rotation: 2, transformOrigin: 'top center', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut'
+            rotation: 2, transformOrigin: 'top center', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true
         });
         gsap.to(sideLightsRef.current, {
-            rotation: -2, transformOrigin: 'top center', duration: 3.5, yoyo: true, repeat: -1, ease: 'sine.inOut'
+            rotation: -2, transformOrigin: 'top center', duration: 3.5, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true
         });
 
         gsap.from(scene4ContentRef.current.children, {
@@ -341,7 +344,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 70%',
                 toggleActions: 'play none none reverse',
             },
-            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out'
+            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out', force3D: true
         });
 
         gsap.from(countdownRef.current.children, {
@@ -351,7 +354,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 85%',
                 toggleActions: 'play none none reverse',
             },
-            scale: 0.8, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'back.out(1.5)'
+            scale: 0.8, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'back.out(1.5)', force3D: true
         });
 
         // --- Scene 5: Events List ---
@@ -362,7 +365,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 75%',
                 toggleActions: 'play none none reverse',
             },
-            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out'
+            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out', force3D: true
         });
 
         const eventCards = scene5ContainerRef.current.querySelectorAll('.event-card');
@@ -379,10 +382,10 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
 
             tl.fromTo(card,
                 { y: 80, opacity: 0, scale: 0.8, rotationX: -15 },
-                { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.3, ease: 'power2.out' }
+                { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.3, ease: 'power2.out', force3D: true }
             )
                 .to(card, { y: 0, duration: 0.4 })
-                .to(card, { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in' });
+                .to(card, { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in', force3D: true });
         });
 
         // --- Scene 6: Detailed Events (Pinned Scroll) ---
@@ -413,12 +416,12 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
             contentBlocks.forEach((block, i) => {
                 if (i !== 0) {
                     // Fade out previous
-                    tl6.to(bgImages[i - 1], { opacity: 0, duration: 1 }, `+=${0.5}`);
-                    tl6.to(contentBlocks[i - 1], { opacity: 0, y: -50, duration: 1 }, `<`);
+                    tl6.to(bgImages[i - 1], { opacity: 0, duration: 1, force3D: true }, `+=${0.5}`);
+                    tl6.to(contentBlocks[i - 1], { opacity: 0, y: -50, duration: 1, force3D: true }, `<`);
 
                     // Fade in next
-                    tl6.to(bgImages[i], { opacity: 1, duration: 1 }, `<0.5`);
-                    tl6.to(block, { opacity: 1, y: 0, duration: 1 }, `<`);
+                    tl6.to(bgImages[i], { opacity: 1, duration: 1, force3D: true }, `<0.5`);
+                    tl6.to(block, { opacity: 1, y: 0, duration: 1, force3D: true }, `<`);
                 }
             });
         }
@@ -427,7 +430,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
         const diyas = [leftDiyaRef.current, rightDiyaRef.current].filter(Boolean);
         if (diyas.length > 0) {
             gsap.to(diyas, {
-                opacity: 0.6, scale: 0.9, duration: 0.2, yoyo: true, repeat: -1, ease: 'rough', stagger: 0.1
+                opacity: 0.6, scale: 0.95, duration: 0.8, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: 0.2, force3D: true
             });
         }
 
@@ -438,7 +441,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 60%',
                 toggleActions: 'play none none reverse',
             },
-            y: 40, opacity: 0, duration: 1.2, stagger: 0.2, ease: 'power2.out'
+            y: 40, opacity: 0, duration: 1.2, stagger: 0.2, ease: 'power2.out', force3D: true
         });
 
     }, { scope: containerRef });

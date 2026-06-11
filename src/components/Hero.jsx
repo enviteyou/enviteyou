@@ -56,18 +56,19 @@ export default function Hero() {
 
     let w = window.innerWidth;
     let h = window.innerHeight;
+    const isMobile = w < 768;
 
     const scene = new THREE.Scene();
-    // scene.background = new THREE.Color(0xf8f8fa);
-    // scene.fog = new THREE.FogExp2(0xf8f8fa, 0.015);
 
     const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 200);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // Turn off antialiasing on mobile to increase frame rates
+    const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
     renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // Limit pixel ratio to 1.5 on desktop, and 1.0 on mobile to save GPU processing
+    renderer.setPixelRatio(isMobile ? 1.0 : Math.min(window.devicePixelRatio, 1.5));
+    // Disable shadow maps completely to save substantial GPU resources since shadows are not active
+    renderer.shadowMap.enabled = false;
     mountRef.current.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
@@ -75,16 +76,6 @@ export default function Hero() {
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
     dirLight.position.set(0, 20, 20); // Above and slightly behind camera
-    // dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 1024;
-    dirLight.shadow.mapSize.height = 1024;
-    dirLight.shadow.camera.near = 0.5;
-    dirLight.shadow.camera.far = 100;
-    dirLight.shadow.camera.left = -30;
-    dirLight.shadow.camera.right = 30;
-    dirLight.shadow.camera.top = 30;
-    dirLight.shadow.camera.bottom = -30;
-    dirLight.shadow.bias = -0.001;
     scene.add(dirLight);
 
     const centerLight = new THREE.PointLight(0xffffff, 1.5, 100);
@@ -95,7 +86,6 @@ export default function Hero() {
     scene.add(carouselGroup);
 
     const numPanels = SLIDES.length;
-    const isMobile = w < 768;
 
     // Adjust radius and panelHeight to maintain a pleasant portrait aspect ratio
     // This prevents images from looking vertically stretched (heavily cropped horizontally)
@@ -122,20 +112,22 @@ export default function Hero() {
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = - (panelHeight / 2) - 1;
-    floor.receiveShadow = true;
     scene.add(floor);
 
     const alphaTexture = createAlphaTexture(renderer);
     const textureLoader = new THREE.TextureLoader();
 
     const meshes = [];
+    const loadedTextures = [];
+    let isMounted = true;
 
     SLIDES.forEach((slide, i) => {
+      // Reduced radial segments from 256 to 64 (desktop) / 32 (mobile) to optimize vertex counts
       const geometry = new THREE.CylinderGeometry(
         radius,
         radius,
         panelHeight,
-        256,
+        isMobile ? 32 : 64,
         1,
         true,
         i * anglePerPanel,
@@ -155,12 +147,16 @@ export default function Hero() {
       });
 
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
 
       textureLoader.load(slide.src, (tex) => {
+        if (!isMounted) {
+          tex.dispose();
+          return;
+        }
+        loadedTextures.push(tex);
         tex.colorSpace = THREE.SRGBColorSpace;
-        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        // Limit anisotropy to 4 (instead of max) to reduce GPU memory bandwidth cost
+        tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 4);
 
         const imgAspect = tex.image.width / tex.image.height;
         const panelAspect = (radius * panelAngle) / panelHeight;
@@ -254,6 +250,7 @@ export default function Hero() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      isMounted = false;
       container.removeEventListener("mousedown", onPointerDown);
       window.removeEventListener("mousemove", onPointerMove);
       window.removeEventListener("mouseup", onPointerUp);
@@ -266,10 +263,10 @@ export default function Hero() {
 
       meshes.forEach((mesh) => {
         mesh.geometry.dispose();
-        if (mesh.material.map) mesh.material.map.dispose();
         if (mesh.material.alphaMap) mesh.material.alphaMap.dispose();
         mesh.material.dispose();
       });
+      loadedTextures.forEach((tex) => tex.dispose());
       alphaTexture.dispose();
       renderer.dispose();
       scene.clear();
