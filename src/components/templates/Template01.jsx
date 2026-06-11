@@ -205,16 +205,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
     const [selectedPhoto, setSelectedPhoto] = useState(null); // 3D Lightbox selected image state
     const [copiedHashtag, setCopiedHashtag] = useState(false);
 
-    useEffect(() => {
-        if (typeof window !== "undefined" && !embedded) {
-            ScrollTrigger.normalizeScroll(true);
-        }
-        return () => {
-            if (typeof window !== "undefined" && !embedded) {
-                ScrollTrigger.normalizeScroll(false);
-            }
-        };
-    }, [embedded]);
+
     const scrollerTarget = embedded
         ? "#preview-scroller-container"
         : window;

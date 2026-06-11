@@ -22,6 +22,8 @@ export default function useLenis({ enabled = true } = {}) {
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      syncTouch: true,
+      syncTouchLerp: 0.075,
       touchMultiplier: 1.5, // slightly more responsive on touch devices
     });
 
