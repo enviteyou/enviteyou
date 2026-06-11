@@ -471,7 +471,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div ref={templeRef} className="absolute inset-0 z-10 flex flex-col justify-end items-center mb-16">
-                    <Image src="/assets/template/05/scene1/goldentemple.png" alt="Golden Temple" className="w-full object-contain" width={400} height={400} />
+                    <Image src="/assets/template/05/scene1/goldentemple.png" alt="Golden Temple" className="w-full object-contain" width={400} height={400} style={{ height: 'auto' }} />
                 </div>
 
                 <div ref={bottomPalaceRef} className="absolute bottom-0 inset-x-0 z-15">
@@ -479,7 +479,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div ref={diyaRef} className="absolute bottom-8 right-8 z-20">
-                    <Image src="/assets/template/05/scene1/diya.png" alt="Diya" className="w-16 object-contain" width={64} height={64} />
+                    <Image src="/assets/template/05/scene1/diya.png" alt="Diya" className="w-16 object-contain" width={64} height={64} style={{ height: 'auto' }} />
                 </div>
 
                 {/* Gradient Overlay for text */}
@@ -508,7 +508,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
 
                     <div ref={scrollIndicatorRef} className="absolute bottom-10 flex flex-col items-center justify-center space-y-2 opacity-80">
                         <div className="w-8 h-8 rounded-full border border-[#D4AF37] flex items-center justify-center mb-1">
-                            <Image src="/assets/template/05/scene1/downmark-icon.png" alt="Scroll" className="w-4 animate-bounce" width={16} height={16} />
+                            <Image src="/assets/template/05/scene1/downmark-icon.png" alt="Scroll" className="w-4 animate-bounce" width={16} height={16} style={{ height: 'auto' }} />
                         </div>
                         <span className="text-[7px] tracking-[0.2em] uppercase text-[#D4AF37]">Scroll to explore</span>
                     </div>
@@ -525,14 +525,14 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div className="absolute top-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene2/toppattern.png" alt="Top Pattern" className="w-full object-contain opacity-50" width={400} height={100} />
+                    <Image src="/assets/template/05/scene2/toppattern.png" alt="Top Pattern" className="w-full object-contain opacity-50" width={400} height={100} style={{ height: 'auto' }} />
                 </div>
                 <div className="absolute bottom-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene2/bottompatter.png" alt="Bottom Pattern" className="w-full object-contain opacity-50" width={400} height={100} />
+                    <Image src="/assets/template/05/scene2/bottompatter.png" alt="Bottom Pattern" className="w-full object-contain opacity-50" width={400} height={100} style={{ height: 'auto' }} />
                 </div>
 
                 <div ref={gateRef} className="absolute inset-0 z-15 flex justify-center items-center opacity-40">
-                    <Image src="/assets/template/05/scene2/entrancegate.png" alt="Gate" className="w-[90%] h-[90%] object-contain" width={360} height={700} />
+                    <Image src="/assets/template/05/scene2/entrancegate.png" alt="Gate" className="w-[90%] h-[90%] object-contain" width={360} height={700} style={{ height: 'auto' }} />
                 </div>
 
                 <div className="relative z-20 flex flex-col items-center text-center w-full mt-4">
@@ -545,7 +545,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         <p className="text-xs font-serif italic text-[#F4EBD9] opacity-90">With the blessings of</p>
                         <h2 className="text-4xl font-serif text-[#F4EBD9]">Waheguru</h2>
                         <div className="w-48 my-4">
-                            <Image src="/assets/template/05/scene2/seperator.png" alt="Separator" className="w-full object-contain" width={200} height={20} />
+                            <Image src="/assets/template/05/scene2/seperator.png" alt="Separator" className="w-full object-contain" width={200} height={20} style={{ height: 'auto' }} />
                         </div>
                         <p className="text-xs font-serif text-[#F4EBD9] opacity-80 leading-loose max-w-[250px]">
                             {blessingText}
@@ -597,7 +597,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         </div>
 
                         <div className="w-32 sm:w-40 my-4">
-                            <Image src="/assets/template/05/scene3/goldenseprator.png" alt="Separator" className="w-full object-contain" width={160} height={20} />
+                            <Image src="/assets/template/05/scene3/goldenseprator.png" alt="Separator" className="w-full object-contain" width={160} height={20} style={{ height: 'auto' }} />
                         </div>
 
                         <div className="space-y-2 mb-4">
@@ -610,7 +610,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         </div>
 
                         <div className="w-24 sm:w-32 mt-auto mb-6">
-                            <Image src="/assets/template/05/scene3/bottomflowerseperator.png" alt="Flowers" className="w-full object-contain" width={128} height={40} />
+                            <Image src="/assets/template/05/scene3/bottomflowerseperator.png" alt="Flowers" className="w-full object-contain" width={128} height={40} style={{ height: 'auto' }} />
                         </div>
                     </div>
                 </div>
@@ -626,10 +626,10 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div ref={topLightsRef} className="absolute top-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene4/tophangingfairylights.png" alt="Lights" className="w-full object-contain" width={400} height={100} />
+                    <Image src="/assets/template/05/scene4/tophangingfairylights.png" alt="Lights" className="w-full object-contain" width={400} height={100} style={{ height: 'auto' }} />
                 </div>
                 <div ref={sideLightsRef} className="absolute top-10 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene4/fairylightv2.png" alt="Lights" className="w-full object-contain" width={400} height={100} />
+                    <Image src="/assets/template/05/scene4/fairylightv2.png" alt="Lights" className="w-full object-contain" width={400} height={100} style={{ height: 'auto' }} />
                 </div>
 
                 <div className="absolute inset-0 z-15 bg-gradient-to-t from-[#2D060E] via-[#2D060E]/50 to-transparent" />
@@ -658,7 +658,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                     </div>
 
                     <div className="w-48">
-                        <Image src="/assets/template/05/scene4/goldenseprator.png" alt="Separator" className="w-full object-contain" width={200} height={20} />
+                        <Image src="/assets/template/05/scene4/goldenseprator.png" alt="Separator" className="w-full object-contain" width={200} height={20} style={{ height: 'auto' }} />
                     </div>
                 </div>
             </div>
@@ -673,7 +673,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div className="absolute top-0 inset-x-0 flex justify-center z-10 pointer-events-none opacity-20">
-                    <Image src="/assets/template/05/scene5/mandala.png" alt="Mandala" className="w-[150%] max-w-none -translate-y-1/2 object-contain" width={600} height={600} />
+                    <Image src="/assets/template/05/scene5/mandala.png" alt="Mandala" className="w-[150%] max-w-none -translate-y-1/2 object-contain" width={600} height={600} style={{ height: 'auto' }} />
                 </div>
 
                 <div className="absolute bottom-0 inset-x-0 z-10">
@@ -683,7 +683,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 <div className="relative z-20 flex flex-col items-center w-full mt-4">
                     <div className="text-center mb-8">
                         <div className="w-24 mx-auto mb-3">
-                            <Image src="/assets/template/05/scene5/floralseperator.png" alt="Floral" className="w-full object-contain" width={96} height={30} />
+                            <Image src="/assets/template/05/scene5/floralseperator.png" alt="Floral" className="w-full object-contain" width={96} height={30} style={{ height: 'auto' }} />
                         </div>
                         <h1 className="text-3xl font-serif text-[#4A0E17]">Wedding Celebrations</h1>
                     </div>
@@ -795,7 +795,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div className="absolute top-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene7/topb.png" alt="Top Pattern" className="w-full object-contain" width={400} height={100} />
+                    <Image src="/assets/template/05/scene7/topb.png" alt="Top Pattern" className="w-full object-contain" width={400} height={100} style={{ height: 'auto' }} />
                 </div>
 
                 {/* Content Top Half */}
