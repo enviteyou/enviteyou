@@ -5,10 +5,8 @@ import { useParams } from "next/navigation";
 import TemplateDetail from "@/components/TemplateDetail";
 import api from "@/api/axios";
 import { getTemplateById } from "@/lib/templateService";
-import useLenis from "@/hooks/useLenis";
 
 export default function InviteBySlugPage() {
-	useLenis();
 	const params = useParams();
 	const slug = params?.slug;
 	const [result, setResult] = useState({

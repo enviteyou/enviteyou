@@ -11,7 +11,6 @@ import Image from 'next/image';
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
 export default function Template05({ formData = {}, template = {}, embedded = false, fullscreen = false }) {
@@ -237,14 +236,14 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
         // --- Scene 1: Entrance ---
         const tl = gsap.timeline();
 
-        tl.from(fabricRef.current, { y: -100, opacity: 0, duration: 1.5, ease: 'power2.out', force3D: true }, 0)
-            .from(templeRef.current, { y: 50, opacity: 0, scale: 0.95, duration: 1.5, ease: 'power2.out', force3D: true }, 0.2)
-            .from(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5, ease: 'power2.out', force3D: true }, 0.4)
-            .from(diyaRef.current, { scale: 0, opacity: 0, duration: 1, ease: 'back.out(1.5)', force3D: true }, 0.8)
+        tl.from(fabricRef.current, { y: -100, opacity: 0, duration: 1.5, ease: 'power2.out' }, 0)
+            .from(templeRef.current, { y: 50, opacity: 0, scale: 0.95, duration: 1.5, ease: 'power2.out' }, 0.2)
+            .from(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5, ease: 'power2.out' }, 0.4)
+            .from(diyaRef.current, { scale: 0, opacity: 0, duration: 1, ease: 'back.out(1.5)' }, 0.8)
             .from(scrollIndicatorRef.current, { opacity: 0, duration: 1 }, 1.2);
 
-        // Diya flicker - Optimized to slow down rate and use transform layer
-        gsap.to(diyaRef.current, { opacity: 0.7, scale: 0.98, duration: 0.6, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true });
+        // Diya flicker
+        gsap.to(diyaRef.current, { opacity: 0.7, scale: 0.95, duration: 0.1, yoyo: true, repeat: -1, ease: 'rough' });
 
         gsap.set(textGroupRef.current.children, { opacity: 0, y: 30 });
 
@@ -262,16 +261,15 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
 
         scrollTl
             .to(scrollIndicatorRef.current, { opacity: 0, y: -20, duration: 0.2 }, 0)
-            .to(textGroupRef.current.children, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out', force3D: true }, 0.1)
-            .to(textGroupRef.current, { y: -50, opacity: 0, duration: 1.5, force3D: true }, 1.5)
-            .to(fabricRef.current, { y: -100, opacity: 0, duration: 1.5, force3D: true }, 1.5)
-            .to(templeRef.current, { y: 50, opacity: 0, duration: 1.5, force3D: true }, 1.5)
-            .to(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5, force3D: true }, 1.5)
-            .to(diyaRef.current, { opacity: 0, duration: 1.5, force3D: true }, 1.5);
+            .to(textGroupRef.current.children, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' }, 0.1)
+            .to(textGroupRef.current, { y: -50, opacity: 0, duration: 1.5 }, 1.5)
+            .to(fabricRef.current, { y: -100, opacity: 0, duration: 1.5 }, 1.5)
+            .to(templeRef.current, { y: 50, opacity: 0, duration: 1.5 }, 1.5)
+            .to(bottomPalaceRef.current, { y: 100, opacity: 0, duration: 1.5 }, 1.5)
+            .to(diyaRef.current, { opacity: 0, duration: 1.5 }, 1.5);
 
         // --- Scene 2: Blessings ---
-        // Optimized warm candle glow
-        gsap.to(diya2Ref.current, { opacity: 0.8, scale: 0.98, duration: 0.7, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true });
+        gsap.to(diya2Ref.current, { opacity: 0.8, scale: 0.95, duration: 0.15, yoyo: true, repeat: -1, ease: 'rough' });
 
         gsap.from(ikOnkarRef.current, {
             scrollTrigger: {
@@ -280,7 +278,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 60%',
                 toggleActions: 'play none none reverse',
             },
-            scale: 0, rotation: 180, opacity: 0, duration: 1.5, ease: 'back.out(1.2)', force3D: true
+            scale: 0, rotation: 180, opacity: 0, duration: 1.5, ease: 'back.out(1.2)'
         });
 
         gsap.from(scene2ContentRef.current.children, {
@@ -290,7 +288,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 50%',
                 toggleActions: 'play none none reverse',
             },
-            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out', force3D: true
+            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out'
         });
 
         // Parallax gate
@@ -304,8 +302,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
             },
             scale: 1.05,
             y: -20,
-            ease: 'none',
-            force3D: true
+            ease: 'none'
         });
 
         // --- Scene 3: Invitation Details ---
@@ -316,7 +313,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 80%',
                 toggleActions: 'play none none reverse',
             },
-            y: 100, opacity: 0, duration: 1.2, ease: 'power2.out', force3D: true
+            y: 100, opacity: 0, duration: 1.2, ease: 'power2.out'
         });
 
         gsap.from(scene3ContentRef.current.children, {
@@ -326,15 +323,15 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 50%',
                 toggleActions: 'play none none reverse',
             },
-            y: 20, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out', delay: 0.3, force3D: true
+            y: 20, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out', delay: 0.3
         });
 
         // --- Scene 4: Countdown ---
         gsap.to(topLightsRef.current, {
-            rotation: 2, transformOrigin: 'top center', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true
+            rotation: 2, transformOrigin: 'top center', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut'
         });
         gsap.to(sideLightsRef.current, {
-            rotation: -2, transformOrigin: 'top center', duration: 3.5, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true
+            rotation: -2, transformOrigin: 'top center', duration: 3.5, yoyo: true, repeat: -1, ease: 'sine.inOut'
         });
 
         gsap.from(scene4ContentRef.current.children, {
@@ -344,7 +341,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 70%',
                 toggleActions: 'play none none reverse',
             },
-            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out', force3D: true
+            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out'
         });
 
         gsap.from(countdownRef.current.children, {
@@ -354,7 +351,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 85%',
                 toggleActions: 'play none none reverse',
             },
-            scale: 0.8, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'back.out(1.5)', force3D: true
+            scale: 0.8, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'back.out(1.5)'
         });
 
         // --- Scene 5: Events List ---
@@ -365,7 +362,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 75%',
                 toggleActions: 'play none none reverse',
             },
-            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out', force3D: true
+            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
         const eventCards = scene5ContainerRef.current.querySelectorAll('.event-card');
@@ -382,10 +379,10 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
 
             tl.fromTo(card,
                 { y: 80, opacity: 0, scale: 0.8, rotationX: -15 },
-                { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.3, ease: 'power2.out', force3D: true }
+                { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.3, ease: 'power2.out' }
             )
                 .to(card, { y: 0, duration: 0.4 })
-                .to(card, { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in', force3D: true });
+                .to(card, { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in' });
         });
 
         // --- Scene 6: Detailed Events (Pinned Scroll) ---
@@ -416,12 +413,12 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
             contentBlocks.forEach((block, i) => {
                 if (i !== 0) {
                     // Fade out previous
-                    tl6.to(bgImages[i - 1], { opacity: 0, duration: 1, force3D: true }, `+=${0.5}`);
-                    tl6.to(contentBlocks[i - 1], { opacity: 0, y: -50, duration: 1, force3D: true }, `<`);
+                    tl6.to(bgImages[i - 1], { opacity: 0, duration: 1 }, `+=${0.5}`);
+                    tl6.to(contentBlocks[i - 1], { opacity: 0, y: -50, duration: 1 }, `<`);
 
                     // Fade in next
-                    tl6.to(bgImages[i], { opacity: 1, duration: 1, force3D: true }, `<0.5`);
-                    tl6.to(block, { opacity: 1, y: 0, duration: 1, force3D: true }, `<`);
+                    tl6.to(bgImages[i], { opacity: 1, duration: 1 }, `<0.5`);
+                    tl6.to(block, { opacity: 1, y: 0, duration: 1 }, `<`);
                 }
             });
         }
@@ -430,7 +427,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
         const diyas = [leftDiyaRef.current, rightDiyaRef.current].filter(Boolean);
         if (diyas.length > 0) {
             gsap.to(diyas, {
-                opacity: 0.6, scale: 0.95, duration: 0.8, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: 0.2, force3D: true
+                opacity: 0.6, scale: 0.9, duration: 0.2, yoyo: true, repeat: -1, ease: 'rough', stagger: 0.1
             });
         }
 
@@ -441,7 +438,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 start: 'top 60%',
                 toggleActions: 'play none none reverse',
             },
-            y: 40, opacity: 0, duration: 1.2, stagger: 0.2, ease: 'power2.out', force3D: true
+            y: 40, opacity: 0, duration: 1.2, stagger: 0.2, ease: 'power2.out'
         });
 
     }, { scope: containerRef });
@@ -471,7 +468,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div ref={templeRef} className="absolute inset-0 z-10 flex flex-col justify-end items-center mb-16">
-                    <Image src="/assets/template/05/scene1/goldentemple.png" alt="Golden Temple" className="w-full object-contain" width={400} height={400} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene1/goldentemple.png" alt="Golden Temple" className="w-full object-contain" width={400} height={400} />
                 </div>
 
                 <div ref={bottomPalaceRef} className="absolute bottom-0 inset-x-0 z-15">
@@ -479,7 +476,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div ref={diyaRef} className="absolute bottom-8 right-8 z-20">
-                    <Image src="/assets/template/05/scene1/diya.png" alt="Diya" className="w-16 object-contain" width={64} height={64} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene1/diya.png" alt="Diya" className="w-16 object-contain" width={64} height={64} />
                 </div>
 
                 {/* Gradient Overlay for text */}
@@ -508,7 +505,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
 
                     <div ref={scrollIndicatorRef} className="absolute bottom-10 flex flex-col items-center justify-center space-y-2 opacity-80">
                         <div className="w-8 h-8 rounded-full border border-[#D4AF37] flex items-center justify-center mb-1">
-                            <Image src="/assets/template/05/scene1/downmark-icon.png" alt="Scroll" className="w-4 animate-bounce" width={16} height={16} style={{ height: 'auto' }} />
+                            <Image src="/assets/template/05/scene1/downmark-icon.png" alt="Scroll" className="w-4 animate-bounce" width={16} height={16} />
                         </div>
                         <span className="text-[7px] tracking-[0.2em] uppercase text-[#D4AF37]">Scroll to explore</span>
                     </div>
@@ -525,14 +522,14 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div className="absolute top-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene2/toppattern.png" alt="Top Pattern" className="w-full object-contain opacity-50" width={400} height={100} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene2/toppattern.png" alt="Top Pattern" className="w-full object-contain opacity-50" width={400} height={100} />
                 </div>
                 <div className="absolute bottom-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene2/bottompatter.png" alt="Bottom Pattern" className="w-full object-contain opacity-50" width={400} height={100} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene2/bottompatter.png" alt="Bottom Pattern" className="w-full object-contain opacity-50" width={400} height={100} />
                 </div>
 
                 <div ref={gateRef} className="absolute inset-0 z-15 flex justify-center items-center opacity-40">
-                    <Image src="/assets/template/05/scene2/entrancegate.png" alt="Gate" className="w-[90%] h-[90%] object-contain" width={360} height={700} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene2/entrancegate.png" alt="Gate" className="w-[90%] h-[90%] object-contain" width={360} height={700} />
                 </div>
 
                 <div className="relative z-20 flex flex-col items-center text-center w-full mt-4">
@@ -545,7 +542,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         <p className="text-xs font-serif italic text-[#F4EBD9] opacity-90">With the blessings of</p>
                         <h2 className="text-4xl font-serif text-[#F4EBD9]">Waheguru</h2>
                         <div className="w-48 my-4">
-                            <Image src="/assets/template/05/scene2/seperator.png" alt="Separator" className="w-full object-contain" width={200} height={20} style={{ height: 'auto' }} />
+                            <Image src="/assets/template/05/scene2/seperator.png" alt="Separator" className="w-full object-contain" width={200} height={20} />
                         </div>
                         <p className="text-xs font-serif text-[#F4EBD9] opacity-80 leading-loose max-w-[250px]">
                             {blessingText}
@@ -597,7 +594,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         </div>
 
                         <div className="w-32 sm:w-40 my-4">
-                            <Image src="/assets/template/05/scene3/goldenseprator.png" alt="Separator" className="w-full object-contain" width={160} height={20} style={{ height: 'auto' }} />
+                            <Image src="/assets/template/05/scene3/goldenseprator.png" alt="Separator" className="w-full object-contain" width={160} height={20} />
                         </div>
 
                         <div className="space-y-2 mb-4">
@@ -610,7 +607,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         </div>
 
                         <div className="w-24 sm:w-32 mt-auto mb-6">
-                            <Image src="/assets/template/05/scene3/bottomflowerseperator.png" alt="Flowers" className="w-full object-contain" width={128} height={40} style={{ height: 'auto' }} />
+                            <Image src="/assets/template/05/scene3/bottomflowerseperator.png" alt="Flowers" className="w-full object-contain" width={128} height={40} />
                         </div>
                     </div>
                 </div>
@@ -626,10 +623,10 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div ref={topLightsRef} className="absolute top-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene4/tophangingfairylights.png" alt="Lights" className="w-full object-contain" width={400} height={100} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene4/tophangingfairylights.png" alt="Lights" className="w-full object-contain" width={400} height={100} />
                 </div>
                 <div ref={sideLightsRef} className="absolute top-10 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene4/fairylightv2.png" alt="Lights" className="w-full object-contain" width={400} height={100} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene4/fairylightv2.png" alt="Lights" className="w-full object-contain" width={400} height={100} />
                 </div>
 
                 <div className="absolute inset-0 z-15 bg-gradient-to-t from-[#2D060E] via-[#2D060E]/50 to-transparent" />
@@ -658,7 +655,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                     </div>
 
                     <div className="w-48">
-                        <Image src="/assets/template/05/scene4/goldenseprator.png" alt="Separator" className="w-full object-contain" width={200} height={20} style={{ height: 'auto' }} />
+                        <Image src="/assets/template/05/scene4/goldenseprator.png" alt="Separator" className="w-full object-contain" width={200} height={20} />
                     </div>
                 </div>
             </div>
@@ -673,7 +670,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div className="absolute top-0 inset-x-0 flex justify-center z-10 pointer-events-none opacity-20">
-                    <Image src="/assets/template/05/scene5/mandala.png" alt="Mandala" className="w-[150%] max-w-none -translate-y-1/2 object-contain" width={600} height={600} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene5/mandala.png" alt="Mandala" className="w-[150%] max-w-none -translate-y-1/2 object-contain" width={600} height={600} />
                 </div>
 
                 <div className="absolute bottom-0 inset-x-0 z-10">
@@ -683,7 +680,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 <div className="relative z-20 flex flex-col items-center w-full mt-4">
                     <div className="text-center mb-8">
                         <div className="w-24 mx-auto mb-3">
-                            <Image src="/assets/template/05/scene5/floralseperator.png" alt="Floral" className="w-full object-contain" width={96} height={30} style={{ height: 'auto' }} />
+                            <Image src="/assets/template/05/scene5/floralseperator.png" alt="Floral" className="w-full object-contain" width={96} height={30} />
                         </div>
                         <h1 className="text-3xl font-serif text-[#4A0E17]">Wedding Celebrations</h1>
                     </div>
@@ -795,7 +792,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div className="absolute top-0 inset-x-0 z-10">
-                    <Image src="/assets/template/05/scene7/topb.png" alt="Top Pattern" className="w-full object-contain" width={400} height={100} style={{ height: 'auto' }} />
+                    <Image src="/assets/template/05/scene7/topb.png" alt="Top Pattern" className="w-full object-contain" width={400} height={100} />
                 </div>
 
                 {/* Content Top Half */}

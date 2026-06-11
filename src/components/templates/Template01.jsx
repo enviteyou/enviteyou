@@ -23,7 +23,7 @@ const showGSAPMarkers = false;
 const FallingPetals = () => {
     const containerRef = useRef(null);
 
-    useGSAP(() => {
+    useEffect(() => {
         if (!containerRef.current) return;
         const container = containerRef.current;
         const petals = [];
@@ -31,11 +31,8 @@ const FallingPetals = () => {
         const width = container.clientWidth;
         const height = window.innerHeight;
 
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-        const petalCount = isMobile ? 10 : 22;
-
         // Create petal elements
-        for (let i = 0; i < petalCount; i++) {
+        for (let i = 0; i < 25; i++) {
             const petal = document.createElement("div");
             petal.className = "absolute size-2 md:size-4 bg-[#e63946] rounded-tl-full rounded-br-full opacity-80 z-20 pointer-events-none shadow-sm";
 
@@ -50,7 +47,7 @@ const FallingPetals = () => {
             container.appendChild(petal);
             petals.push(petal);
 
-            // Animate each petal continuously with GPU acceleration
+            // Animate each petal continuously
             gsap.to(petal, {
                 y: height + 100,
                 x: `+=${Math.random() * 200 - 100}`,
@@ -59,7 +56,6 @@ const FallingPetals = () => {
                 ease: "none",
                 repeat: -1,
                 delay: Math.random() * 5,
-                force3D: true,
             });
         }
 
@@ -205,7 +201,16 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
     const [selectedPhoto, setSelectedPhoto] = useState(null); // 3D Lightbox selected image state
     const [copiedHashtag, setCopiedHashtag] = useState(false);
 
-
+    useEffect(() => {
+        if (typeof window !== "undefined" && !embedded) {
+            ScrollTrigger.normalizeScroll(true);
+        }
+        return () => {
+            if (typeof window !== "undefined" && !embedded) {
+                ScrollTrigger.normalizeScroll(false);
+            }
+        };
+    }, [embedded]);
     const scrollerTarget = embedded
         ? "#preview-scroller-container"
         : window;
@@ -306,7 +311,6 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
         }
     }, [formData?.eventDate, coupleNames, venue]);
 
-    const mainContainerRef = useRef(null);
     const heroRef = useRef(null);
     const eventsRef = useRef(null);
 
@@ -357,181 +361,178 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
             }, "-=1");
     }, [hasStarted, playAudio]);
 
-    useGSAP(() => {
-        // Scroll animations for event scrolls unrolling
-        gsap.utils.toArray(".event-card-container").forEach((card, idx) => {
-            const closedScroll = card.querySelector(".closed-scroll");
-            const openScroll = card.querySelector(".open-scroll");
-            const textContent = card.querySelector(".text-content");
-            const cardGlow = card.querySelector(".card-bg-glow");
-            const progressLine = card.querySelector(".timeline-progress-line");
+    useEffect(() => {
+        let ctx = gsap.context(() => {
+            // Scroll animations for event scrolls unrolling
+            gsap.utils.toArray(".event-card-container").forEach((card, idx) => {
+                const closedScroll = card.querySelector(".closed-scroll");
+                const openScroll = card.querySelector(".open-scroll");
+                const textContent = card.querySelector(".text-content");
+                const cardGlow = card.querySelector(".card-bg-glow");
+                const progressLine = card.querySelector(".timeline-progress-line");
 
-            // Timeline nodes
-            const nodePulse = card.querySelector(".timeline-node-pulse");
-            const nodeDot = card.querySelector(".timeline-node-dot");
-            const nodeCore = card.querySelector(".timeline-node-core");
+                // Timeline nodes
+                const nodePulse = card.querySelector(".timeline-node-pulse");
+                const nodeDot = card.querySelector(".timeline-node-dot");
+                const nodeCore = card.querySelector(".timeline-node-core");
 
-            // Initialize starting states
-            gsap.set(openScroll, { scaleY: 0.26, opacity: 0 });
-            gsap.set(textContent, { opacity: 0, scale: 0.9, y: 15 });
-            if (progressLine) {
-                gsap.set(progressLine, { scaleY: 0, transformOrigin: "top center" });
-            }
+                // Initialize starting states
+                gsap.set(openScroll, { scaleY: 0.26, opacity: 0 });
+                gsap.set(textContent, { opacity: 0, scale: 0.9, y: 15 });
 
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: card,
-                    scroller: scrollerTarget,
-                    start: "top 80%",
-                    end: "top 40%",
-                    scrub: 1.2, // Adds smooth lag to absorb scroll jitter
-                    markers: showGSAPMarkers,
-                    id: `card-${idx}`
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: card,
+                        scroller: scrollerTarget,
+                        start: "top 80%",
+                        end: "top 40%",
+                        scrub: 1.2, // Adds smooth lag to absorb scroll jitter
+                        markers: showGSAPMarkers,
+                        id: `card-${idx}`
+                    }
+                });
+
+                // Smooth morphing, unrolling, and item transitions
+                tl.to(closedScroll, { opacity: 0, duration: 0.3 }, 0)
+                    .fromTo(openScroll,
+                        { scaleY: 0.26, opacity: 0 },
+                        { scaleY: 1, opacity: 1, duration: 0.8, ease: "power3.out" },
+                        0
+                    )
+                    .to(cardGlow, { opacity: 0.6, scale: 1, duration: 0.5 }, 0.2)
+
+                    // Animate the corresponding timeline node dot
+                    .to(nodePulse, { scale: 1, opacity: 1, duration: 0.3 }, 0.1)
+                    .to(nodeDot, { borderColor: "#ffd79d", borderWidth: "2px", boxShadow: "0 0 12px rgba(209,171,117,0.7)", duration: 0.3 }, 0.1)
+                    .to(nodeCore, { scale: 1.2, duration: 0.3 }, 0.1);
+
+                // If this card has a progress line segment going to the next card, animate it filling up
+                if (progressLine) {
+                    tl.to(progressLine, { height: "100%", duration: 0.6, ease: "none" }, 0.2);
                 }
+
+                // Text content fades in beautifully after unrolling is mostly complete
+                tl.fromTo(textContent,
+                    { opacity: 0, scale: 0.9, y: 15 },
+                    { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out" },
+                    0.5
+                );
             });
 
-            // Smooth morphing, unrolling, and item transitions with force3D GPU acceleration
-            tl.to(closedScroll, { opacity: 0, duration: 0.3 }, 0)
-                .fromTo(openScroll,
-                    { scaleY: 0.26, opacity: 0 },
-                    { scaleY: 1, opacity: 1, duration: 0.8, ease: "power3.out", force3D: true },
-                    0
-                )
-                .to(cardGlow, { opacity: 0.6, scale: 1, duration: 0.5, force3D: true }, 0.2)
+            // Horizontal Carousel on Scroll for Gallery
+            // Unified approach: GSAP Pinned Scroll-Jacking across ALL devices
+            const gallerySection = document.querySelector(".gallery-section");
+            const galleryContainer = document.querySelector(".gallery-carousel");
 
-                // Animate the corresponding timeline node dot
-                .to(nodePulse, { scale: 1, opacity: 1, duration: 0.3, force3D: true }, 0.1)
-                .to(nodeDot, { borderColor: "#ffd79d", scale: 1.2, boxShadow: "0 0 12px rgba(209,171,117,0.7)", duration: 0.3, force3D: true }, 0.1)
-                .to(nodeCore, { scale: 1.2, duration: 0.3, force3D: true }, 0.1);
+            if (gallerySection && galleryContainer) {
+                const getScrollAmount = () => {
+                    const frames = galleryContainer.querySelectorAll(".gallery-frame-container");
+                    if (!frames || frames.length === 0) return 0;
+                    const lastFrame = frames[frames.length - 1];
+                    const centerOfLastSlide = lastFrame.offsetLeft + (lastFrame.offsetWidth / 2);
+                    return -(centerOfLastSlide - (window.innerWidth / 2));
+                };
 
-            // If this card has a progress line segment going to the next card, animate it filling up using scaleY instead of height
-            if (progressLine) {
-                tl.to(progressLine, { scaleY: 1, duration: 0.6, ease: "none", force3D: true }, 0.2);
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: gallerySection,
+                        scroller: scrollerTarget,
+                        pin: true,
+                        anticipatePin: 1,
+                        scrub: 1,
+                        end: () => `+=${Math.abs(getScrollAmount())}`,
+                        invalidateOnRefresh: true,
+                        fastScrollEnd: true
+                    }
+                });
+
+                tl.to(galleryContainer, {
+                    x: getScrollAmount,
+                    ease: "none"
+                }, 0);
+
+                // Add subtle 3D effects based on scroll
+                gsap.utils.toArray(".gallery-frame-container").forEach((frame) => {
+                    const innerFrame = frame.querySelector(".gallery-inner-frame");
+                    const chain = frame.querySelector(".gallery-chain");
+                    const photoImage = frame.querySelector(".gallery-photo-image");
+
+                    gsap.set(frame, { transformPerspective: 900, transformStyle: "preserve-3d" });
+                    gsap.set(innerFrame, { transformStyle: "preserve-3d", willChange: "transform, box-shadow" });
+                    gsap.set(photoImage, { scale: 1.08, transformOrigin: "center center" });
+
+                    tl.fromTo(photoImage, { scale: 1.08, xPercent: -3 }, { scale: 1, xPercent: 3, ease: "none" }, 0)
+                        .fromTo(innerFrame, { xPercent: -2 }, { xPercent: 2, ease: "none" }, 0);
+
+                    if (chain) {
+                        tl.fromTo(chain, { opacity: 0.4, skewX: -1 }, { opacity: 0.8, skewX: 1, ease: "none" }, 0);
+                    }
+                });
             }
 
-            // Text content fades in beautifully after unrolling is mostly complete
-            tl.fromTo(textContent,
-                { opacity: 0, scale: 0.9, y: 15 },
-                { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out", force3D: true },
-                0.5
+            // Things to Know staggered card entrances
+            gsap.fromTo(".essentials-card",
+                { y: 30, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: ".essentials-grid",
+                        scroller: scrollerTarget,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse",
+                        markers: showGSAPMarkers,
+                        id: "essentials-cards"
+                    }
+                }
+            );
+
+            // RSVP staggered entrances
+            gsap.fromTo(".rsvp-anim",
+                { y: 30, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: ".rsvp-trigger",
+                        scroller: scrollerTarget,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse",
+                        markers: showGSAPMarkers,
+                        id: "rsvp-animations"
+                    }
+                }
+            );
+
+            // Awaiting Your Presence staggered entrances
+            gsap.fromTo(".awaiting-anim",
+                { y: 40, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    stagger: 0.22,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: ".awaiting-trigger",
+                        scroller: scrollerTarget,
+                        start: "top 75%",
+                        toggleActions: "play none none reverse",
+                        markers: showGSAPMarkers,
+                        id: "awaiting-animations"
+                    }
+                }
             );
         });
 
-        // Horizontal Carousel on Scroll for Gallery
-        // Unified approach: GSAP Pinned Scroll-Jacking across ALL devices
-        const gallerySection = mainContainerRef.current?.querySelector(".gallery-section");
-        const galleryContainer = mainContainerRef.current?.querySelector(".gallery-carousel");
-
-        if (gallerySection && galleryContainer) {
-            const getScrollAmount = () => {
-                const frames = galleryContainer.querySelectorAll(".gallery-frame-container");
-                if (!frames || frames.length === 0) return 0;
-                const lastFrame = frames[frames.length - 1];
-                const centerOfLastSlide = lastFrame.offsetLeft + (lastFrame.offsetWidth / 2);
-                return -(centerOfLastSlide - (window.innerWidth / 2));
-            };
-
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: gallerySection,
-                    scroller: scrollerTarget,
-                    pin: true,
-                    anticipatePin: 1,
-                    scrub: 1,
-                    end: () => `+=${Math.abs(getScrollAmount())}`,
-                    invalidateOnRefresh: true,
-                    fastScrollEnd: true
-                }
-            });
-
-            tl.to(galleryContainer, {
-                x: getScrollAmount,
-                ease: "none",
-                force3D: true
-            }, 0);
-
-            // Add subtle 3D effects based on scroll
-            gsap.utils.toArray(".gallery-frame-container").forEach((frame) => {
-                const innerFrame = frame.querySelector(".gallery-inner-frame");
-                const chain = frame.querySelector(".gallery-chain");
-                const photoImage = frame.querySelector(".gallery-photo-image");
-
-                gsap.set(frame, { transformPerspective: 900, transformStyle: "preserve-3d" });
-                gsap.set(innerFrame, { transformStyle: "preserve-3d", willChange: "transform, box-shadow" });
-                gsap.set(photoImage, { scale: 1.08, transformOrigin: "center center" });
-
-                tl.fromTo(photoImage, { scale: 1.08, xPercent: -3 }, { scale: 1, xPercent: 3, ease: "none", force3D: true }, 0)
-                    .fromTo(innerFrame, { xPercent: -2 }, { xPercent: 2, ease: "none", force3D: true }, 0);
-
-                if (chain) {
-                    tl.fromTo(chain, { opacity: 0.4, skewX: -1 }, { opacity: 0.8, skewX: 1, ease: "none", force3D: true }, 0);
-                }
-            });
-        }
-
-        // Things to Know staggered card entrances
-        gsap.fromTo(".essentials-card",
-            { y: 30, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: "power2.out",
-                force3D: true,
-                scrollTrigger: {
-                    trigger: ".essentials-grid",
-                    scroller: scrollerTarget,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse",
-                    markers: showGSAPMarkers,
-                    id: "essentials-cards"
-                }
-            }
-        );
-
-        // RSVP staggered entrances
-        gsap.fromTo(".rsvp-anim",
-            { y: 30, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                stagger: 0.2,
-                ease: "power2.out",
-                force3D: true,
-                scrollTrigger: {
-                    trigger: ".rsvp-trigger",
-                    scroller: scrollerTarget,
-                    start: "top 80%",
-                    toggleActions: "play none none reverse",
-                    markers: showGSAPMarkers,
-                    id: "rsvp-animations"
-                }
-            }
-        );
-
-        // Awaiting Your Presence staggered entrances
-        gsap.fromTo(".awaiting-anim",
-            { y: 40, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                stagger: 0.22,
-                ease: "power3.out",
-                force3D: true,
-                scrollTrigger: {
-                    trigger: ".awaiting-trigger",
-                    scroller: scrollerTarget,
-                    start: "top 75%",
-                    toggleActions: "play none none reverse",
-                    markers: showGSAPMarkers,
-                    id: "awaiting-animations"
-                }
-            }
-        );
-    }, { scope: mainContainerRef });
+        return () => ctx.revert();
+    }, []);
 
 
     const scrollToEvents = useCallback(() => {
@@ -546,7 +547,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
 
     return (
         <div className={`bg-white ${embedded || fullscreen ? 'w-full h-full' : 'min-h-screen'} flex justify-center`}>
-            <div ref={mainContainerRef} className={`w-full relative bg-[#fcf8f2] min-h-screen font-serif selection:bg-[#7d2432] selection:text-white ${fullscreen ? 'max-w-none shadow-none ring-0' : 'max-w-120 shadow-2xl ring-1 ring-white/10'} ${hasStarted ? "overflow-x-hidden" : "overflow-hidden h-screen"}`}>
+            <div className={`w-full relative bg-[#fcf8f2] min-h-screen font-serif selection:bg-[#7d2432] selection:text-white ${fullscreen ? 'max-w-none shadow-none ring-0' : 'max-w-120 shadow-2xl ring-1 ring-white/10'} ${hasStarted ? "overflow-x-hidden" : "overflow-hidden h-screen"}`}>
                 {audioNode}
                 <FallingPetals />
 
@@ -736,7 +737,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                                         {/* Outer glowing pulsing ring */}
                                         <div className="absolute size-7 bg-[#d1ab75]/10 rounded-full scale-0 opacity-0 transition-all duration-500 ease-out timeline-node-pulse shadow-[0_0_12px_rgba(209,171,117,0.3)]"></div>
                                         {/* Inner border ring */}
-                                        <div className="size-3 rounded-full bg-[#1f0d16] border-2 border-[#d1ab75]/30 flex items-center justify-center transition-all duration-500 timeline-node-dot">
+                                        <div className="size-3 rounded-full bg-[#1f0d16] border border-[#d1ab75]/50 flex items-center justify-center transition-all duration-500 timeline-node-dot">
                                             {/* Core center dot */}
                                             <div className="size-1 bg-[#d1ab75] rounded-full scale-50 transition-transform duration-500 timeline-node-core"></div>
                                         </div>
@@ -747,7 +748,7 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
                                         <div className="absolute -left-3.25 top-1/2 w-px bg-linear-to-b from-[#d1ab75]/35 to-[#d1ab75]/10 z-0 pointer-events-none"
                                             style={{ height: 'calc(100% + 48px)' }}>
                                             {/* Animated progress filling line */}
-                                            <div className="absolute top-0 left-0 w-full bg-linear-to-b from-[#ffd79d] to-[#d1ab75] shadow-[0_0_8px_rgba(209,171,117,0.6)] timeline-progress-line" style={{ height: '100%', transform: 'scaleY(0)', transformOrigin: 'top center' }}></div>
+                                            <div className="absolute top-0 left-0 w-full bg-linear-to-b from-[#ffd79d] to-[#d1ab75] shadow-[0_0_8px_rgba(209,171,117,0.6)] timeline-progress-line" style={{ height: '0%' }}></div>
                                         </div>
                                     )}
 

@@ -102,10 +102,9 @@ function SigninContent() {
           <Image
             src="/icon.png"
             alt="EnviteYou"
-            width={40}
+            width={20}
             height={40}
             priority
-            style={{ height: 'auto' }}
           />
           <span className="text-sm font-semibold uppercase tracking-[0.24em] text-black/85">
             ENVITEYOU

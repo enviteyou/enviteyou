@@ -10,7 +10,6 @@ import Image from 'next/image';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
 export default function Template03({ formData = {}, template = {}, embedded = false, fullscreen = false }) {
@@ -190,8 +189,8 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
 
         // --- Scene 1: Hero ---
         const tl1 = gsap.timeline();
-        tl1.from(archRef.current, { scale: 1.1, opacity: 0, duration: 1.5, ease: 'power2.out', force3D: true }, 0)
-            .from(heroTextRef.current.children, { y: 30, opacity: 0, duration: 1, stagger: 0.15, ease: 'power2.out', force3D: true }, 0.8);
+        tl1.from(archRef.current, { scale: 1.1, opacity: 0, duration: 1.5, ease: 'power2.out' }, 0)
+            .from(heroTextRef.current.children, { y: 30, opacity: 0, duration: 1, stagger: 0.15, ease: 'power2.out' }, 0.8);
 
         // Pin and zoom scroll for Scene 1
         const scrollTl = gsap.timeline({
@@ -205,53 +204,53 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
             }
         });
 
-        scrollTl.to(scene1BgRef.current, { scale: 1.5, duration: 1, force3D: true }, 0)
-            .to(archRef.current, { scale: 1.4, y: -50, duration: 1, force3D: true }, 0)
-            .to(heroTextRef.current, { y: -100, opacity: 0, duration: 1, force3D: true }, 0);
+        scrollTl.to(scene1BgRef.current, { scale: 1.5, duration: 1 }, 0)
+            .to(archRef.current, { scale: 1.4, y: -50, duration: 1 }, 0)
+            .to(heroTextRef.current, { y: -100, opacity: 0, duration: 1 }, 0);
 
         // --- Scene 2: Blessings ---
-        if (s2TopLeftFloralRef.current) gsap.to(s2TopLeftFloralRef.current, { rotation: 6, transformOrigin: "top left", duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
-        if (s2TopRightFloralRef.current) gsap.to(s2TopRightFloralRef.current, { rotation: -6, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
-        if (s2BottomLeftFloralRef.current) gsap.to(s2BottomLeftFloralRef.current, { rotation: -4, transformOrigin: "bottom left", duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
-        if (s2BottomRightFloralRef.current) gsap.to(s2BottomRightFloralRef.current, { rotation: 4, transformOrigin: "bottom right", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
+        if (s2TopLeftFloralRef.current) gsap.to(s2TopLeftFloralRef.current, { rotation: 6, transformOrigin: "top left", duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        if (s2TopRightFloralRef.current) gsap.to(s2TopRightFloralRef.current, { rotation: -6, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        if (s2BottomLeftFloralRef.current) gsap.to(s2BottomLeftFloralRef.current, { rotation: -4, transformOrigin: "bottom left", duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        if (s2BottomRightFloralRef.current) gsap.to(s2BottomRightFloralRef.current, { rotation: 4, transformOrigin: "bottom right", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
         gsap.from(ganpatiRef.current, {
             scrollTrigger: { trigger: scene2ContainerRef.current, start: 'top 60%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-            scale: 0.8, opacity: 0, duration: 1.5, ease: 'back.out(1.2)', force3D: true
+            scale: 0.8, opacity: 0, duration: 1.5, ease: 'back.out(1.2)'
         });
         gsap.from(scene2TextRef.current.children, {
             scrollTrigger: { trigger: scene2ContainerRef.current, start: 'top 50%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out', force3D: true
+            y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: 'power2.out'
         });
 
         // --- Scene 3: Invitation Details ---
-        if (s3TopRightFloralRef.current) gsap.to(s3TopRightFloralRef.current, { rotation: -6, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
-        if (s3BottomLeftFloralRef.current) gsap.to(s3BottomLeftFloralRef.current, { rotation: -4, transformOrigin: "bottom left", duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
+        if (s3TopRightFloralRef.current) gsap.to(s3TopRightFloralRef.current, { rotation: -6, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        if (s3BottomLeftFloralRef.current) gsap.to(s3BottomLeftFloralRef.current, { rotation: -4, transformOrigin: "bottom left", duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1 });
         gsap.from(scene3FrameRef.current, {
             scrollTrigger: { trigger: scene3ContainerRef.current, start: 'top 70%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-            y: 50, opacity: 0, duration: 1.2, ease: 'power2.out', force3D: true
+            y: 50, opacity: 0, duration: 1.2, ease: 'power2.out'
         });
         gsap.from(scene3TextRef.current.children, {
             scrollTrigger: { trigger: scene3ContainerRef.current, start: 'top 50%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-            y: 20, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out', delay: 0.4, force3D: true
+            y: 20, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out', delay: 0.4
         });
 
         // --- Scene 4: Events List ---
         gsap.from(scene4ContainerRef.current.querySelector('h1'), {
             scrollTrigger: { trigger: scene4ContainerRef.current, start: 'top 75%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out', force3D: true
+            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
         const cards = scene4CardsRef.current.children;
         Array.from(cards).forEach((card, i) => {
             gsap.from(card, {
                 scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-                y: 40, opacity: 0, rotationX: -10, duration: 0.6, ease: 'power2.out', force3D: true
+                y: 40, opacity: 0, rotationX: -10, duration: 0.6, ease: 'power2.out'
             });
         });
 
         // --- Scene 5: Detailed Events (Pinned) ---
-        if (s5FloralLeftRef.current) gsap.to(s5FloralLeftRef.current, { y: -10, scale: 1.05, duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
-        if (s5FloralRightRef.current) gsap.to(s5FloralRightRef.current, { y: -10, scale: 1.05, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
+        if (s5FloralLeftRef.current) gsap.to(s5FloralLeftRef.current, { y: -10, scale: 1.05, duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        if (s5FloralRightRef.current) gsap.to(s5FloralRightRef.current, { y: -10, scale: 1.05, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
         if (scene5ContentRef.current) {
             const contentBlocks = Array.from(scene5ContentRef.current.children);
@@ -275,19 +274,19 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
             // Transitions
             contentBlocks.forEach((block, i) => {
                 if (i !== 0) {
-                    tl5.to(contentBlocks[i - 1], { opacity: 0, y: -50, duration: 1, force3D: true }, `+=${0.5}`);
-                    tl5.to(block, { opacity: 1, y: 0, duration: 1, force3D: true }, `<`);
+                    tl5.to(contentBlocks[i - 1], { opacity: 0, y: -50, duration: 1 }, `+=${0.5}`);
+                    tl5.to(block, { opacity: 1, y: 0, duration: 1 }, `<`);
                 }
             });
         }
 
         // --- Scene 6: Meet the Couple (Pinned Gallery) ---
-        if (s6FloralLeftRef.current) gsap.to(s6FloralLeftRef.current, { rotation: 8, transformOrigin: "top left", duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
-        if (s6FloralRightRef.current) gsap.to(s6FloralRightRef.current, { rotation: -8, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, force3D: true });
+        if (s6FloralLeftRef.current) gsap.to(s6FloralLeftRef.current, { rotation: 8, transformOrigin: "top left", duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        if (s6FloralRightRef.current) gsap.to(s6FloralRightRef.current, { rotation: -8, transformOrigin: "top right", duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
         gsap.from(scene6ContainerRef.current.querySelector('h1'), {
             scrollTrigger: { trigger: scene6ContainerRef.current, start: 'top 80%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out', force3D: true
+            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
         if (coupleImgRef.current) {
@@ -312,8 +311,8 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
             // Crossfade transitions
             galleryImages.forEach((img, i) => {
                 if (i !== 0) {
-                    tl6.to(galleryImages[i - 1], { opacity: 0, duration: 1, force3D: true }, `+=${0.5}`);
-                    tl6.to(img, { opacity: 1, duration: 1, force3D: true }, `<`);
+                    tl6.to(galleryImages[i - 1], { opacity: 0, duration: 1 }, `+=${0.5}`);
+                    tl6.to(img, { opacity: 1, duration: 1 }, `<`);
                 }
             });
         }
@@ -321,7 +320,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
         // --- Scene 7: RSVP ---
         gsap.from(scene7ContainerRef.current.children, {
             scrollTrigger: { trigger: scene7ContainerRef.current, start: 'top 60%', toggleActions: 'play none none reverse', scroller: scrollerTarget },
-            y: 40, opacity: 0, duration: 1.2, stagger: 0.2, ease: 'power2.out', force3D: true
+            y: 40, opacity: 0, duration: 1.2, stagger: 0.2, ease: 'power2.out'
         });
 
     }, { scope: containerRef });

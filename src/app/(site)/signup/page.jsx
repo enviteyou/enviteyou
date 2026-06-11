@@ -119,7 +119,7 @@ export default function SignupPage() {
 
 			<section className="relative mx-auto w-full max-w-lg rounded-lg border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(70,35,25,0.12)] sm:p-8">
 				<div className="flex items-center gap-3 mb-2">
-					<Image src="/icon.png" alt="EnviteYou" width={40} height={40} style={{ height: 'auto' }} />
+					<Image src="/icon.png" alt="EnviteYou" width={40} height={40} />
 					<span className="text-sm font-semibold uppercase tracking-[0.24em] text-black/85">ENVITEYOU</span>
 				</div>
 				<h1 className="mt-2 text-4xl font-bold tracking-tight text-black">Create an account</h1>

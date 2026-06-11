@@ -219,18 +219,17 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         const tl = gsap.timeline();
 
         // Speed up initial animations
-        tl.from(skyRef.current, { opacity: 0, scale: 1.05, duration: 1.5, ease: 'power2.out', force3D: true }, 0)
-            .from(moonRef.current, { opacity: 0, y: 30, scale: 0.9, duration: 1.5, ease: 'power3.out', force3D: true }, 0.3)
-            .from(palaceRef.current, { opacity: 0, y: 20, duration: 1.5, ease: 'power2.out', force3D: true }, 0.5)
-            .from(coupleRef.current, { opacity: 0, y: 20, duration: 1.5, ease: 'power2.out', force3D: true }, 0.6)
-            .from(gateRef.current, { opacity: 0, scale: 1.1, duration: 1.2, ease: 'power2.out', force3D: true }, 0.7)
+        tl.from(skyRef.current, { opacity: 0, scale: 1.05, duration: 1.5, ease: 'power2.out' }, 0)
+            .from(moonRef.current, { opacity: 0, y: 30, scale: 0.9, duration: 1.5, ease: 'power3.out' }, 0.3)
+            .from(palaceRef.current, { opacity: 0, y: 20, duration: 1.5, ease: 'power2.out' }, 0.5)
+            .from(coupleRef.current, { opacity: 0, y: 20, duration: 1.5, ease: 'power2.out' }, 0.6)
+            .from(gateRef.current, { opacity: 0, scale: 1.1, duration: 1.2, ease: 'power2.out' }, 0.7)
             .from([leftLampRef.current, rightLampRef.current], {
                 opacity: 0,
                 y: -50,
                 duration: 1.2,
                 stagger: 0.1,
-                ease: 'back.out(1.2)',
-                force3D: true
+                ease: 'back.out(1.2)'
             }, 0.9)
             .from(scrollIndicatorRef.current, { opacity: 0, duration: 1 }, 1.2);
 
@@ -241,8 +240,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             duration: 2.5,
             yoyo: true,
             repeat: -1,
-            ease: 'sine.inOut',
-            force3D: true
+            ease: 'sine.inOut'
         });
 
         gsap.to(rightLampRef.current, {
@@ -251,8 +249,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             duration: 2.5,
             yoyo: true,
             repeat: -1,
-            ease: 'sine.inOut',
-            force3D: true
+            ease: 'sine.inOut'
         });
 
         gsap.to(moonImageRef.current, {
@@ -260,8 +257,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             duration: 5,
             yoyo: true,
             repeat: -1,
-            ease: 'sine.inOut',
-            force3D: true
+            ease: 'sine.inOut'
         });
 
         // Initially hide text
@@ -289,20 +285,19 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                 y: 0,
                 duration: 0.6,
                 stagger: 0.1,
-                ease: 'power2.out',
-                force3D: true
+                ease: 'power2.out'
             }, 0.1)
             // Fade out the bride and groom image and slide them completely off-screen left
-            .to(coupleRef.current, { opacity: 0, duration: 5, force3D: true }, 0.1)
+            .to(coupleRef.current, { opacity: 0, duration: 5, }, 0.1)
 
             // 3. Exit Scene 
             // Using fromTo fixes the issue where elements disappear on reverse scroll 
             // because ScrollTrigger won't rely on the opacity: 0 start state from the initial `.from()` tl.
-            .to(textGroupRef.current, { y: -50, opacity: 0, duration: 1.5, force3D: true }, 1.5)
-            .fromTo(moonRef.current, { y: 0, scale: 1 }, { y: -100, scale: 0.8, duration: 1.5, force3D: true }, 1.5)
-            .fromTo(palaceRef.current, { y: 0, scale: 1, opacity: 1 }, { y: 50, scale: 1.1, opacity: 0.5, duration: 1.5, force3D: true }, 1.5)
-            .fromTo(gateRef.current, { scale: 1, opacity: 1 }, { scale: 1.8, opacity: 0, duration: 1.5, force3D: true }, 1.5)
-            .fromTo([leftLampRef.current, rightLampRef.current], { y: 0, opacity: 1 }, { y: -150, opacity: 0, duration: 2, force3D: true }, 2.5)
+            .to(textGroupRef.current, { y: -50, opacity: 0, duration: 1.5 }, 1.5)
+            .fromTo(moonRef.current, { y: 0, scale: 1 }, { y: -100, scale: 0.8, duration: 1.5 }, 1.5)
+            .fromTo(palaceRef.current, { y: 0, scale: 1, opacity: 1 }, { y: 50, scale: 1.1, opacity: 0.5, duration: 1.5 }, 1.5)
+            .fromTo(gateRef.current, { scale: 1, opacity: 1 }, { scale: 1.8, opacity: 0, duration: 1.5 }, 1.5)
+            .fromTo([leftLampRef.current, rightLampRef.current], { y: 0, opacity: 1 }, { y: -150, opacity: 0, duration: 2 }, 2.5)
             .fromTo(skyRef.current, { opacity: 1 }, { opacity: 0, duration: 2 }, 2.5);
 
         // --- Scene 2 Animations ---
@@ -318,8 +313,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             opacity: 0,
             duration: 1.2,
             stagger: 0.2,
-            ease: 'power2.out',
-            force3D: true
+            ease: 'power2.out'
         });
 
         // Endless parallax scrolling for Ganesha
@@ -334,8 +328,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             y: -50,
             scale: 1.08,
             rotation: 2,
-            ease: 'none',
-            force3D: true
+            ease: 'none'
         });
 
         // --- Scene 3 Animations ---
@@ -351,8 +344,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             opacity: 0,
             duration: 1,
             stagger: 0.15,
-            ease: 'power2.out',
-            force3D: true
+            ease: 'power2.out'
         });
 
         // Parallax for flowers and sketch
@@ -367,9 +359,9 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
         });
 
         scene3ScrollTl
-            .fromTo(topFlowerRef.current, { y: -50, x: 20 }, { y: 20, x: 0, ease: 'none', force3D: true }, 0)
-            .fromTo(bottomFlowerRef.current, { y: 50, x: -20 }, { y: -20, x: 0, ease: 'none', force3D: true }, 0)
-            .fromTo(palaceSketchRef.current, { y: 30 }, { y: -10, ease: 'none', force3D: true }, 0);
+            .fromTo(topFlowerRef.current, { y: -50, x: 20 }, { y: 20, x: 0, ease: 'none' }, 0)
+            .fromTo(bottomFlowerRef.current, { y: 50, x: -20 }, { y: -20, x: 0, ease: 'none' }, 0)
+            .fromTo(palaceSketchRef.current, { y: 30 }, { y: -10, ease: 'none' }, 0);
 
         // Continuous ambient sway for flowers
         gsap.to(topFlowerRef.current, {
@@ -379,8 +371,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             duration: 3,
             yoyo: true,
             repeat: -1,
-            ease: 'sine.inOut',
-            force3D: true
+            ease: 'sine.inOut'
         });
 
         gsap.to(bottomFlowerRef.current, {
@@ -390,8 +381,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
             duration: 3.5,
             yoyo: true,
             repeat: -1,
-            ease: 'sine.inOut',
-            force3D: true
+            ease: 'sine.inOut'
         });
 
         // --- Scene 4 Animations ---
@@ -403,7 +393,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                 start: 'top 75%',
                 toggleActions: 'play none none reverse',
             },
-            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out', force3D: true
+            y: 30, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
         // Individual Event Cards (Advanced scrub entry/exit)
@@ -421,11 +411,11 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
 
             tl.fromTo(card,
                 { y: 80, opacity: 0, scale: 0.8, rotationX: -15 },
-                { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.3, ease: 'power2.out', force3D: true }
+                { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.3, ease: 'power2.out' }
             )
                 .to(card, { y: 0, duration: 0.4 }) // Hold statically in the middle of scroll
                 .to(card,
-                    { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in', force3D: true }
+                    { y: -80, opacity: 0, scale: 0.8, rotationX: 15, duration: 0.3, ease: 'power2.in' }
                 );
         });
 
@@ -437,7 +427,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                 start: 'top 95%',
                 toggleActions: 'play none none reverse',
             },
-            y: 20, opacity: 0, duration: 0.8, ease: 'power2.out', force3D: true
+            y: 20, opacity: 0, duration: 0.8, ease: 'power2.out'
         });
 
         // --- Scene 5 Animations ---
@@ -456,10 +446,10 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
 
             scene5Events.forEach((event, i) => {
                 if (i !== 0) {
-                    tl5.fromTo(event, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1, force3D: true }, `+=${0.5}`);
+                    tl5.fromTo(event, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1 }, `+=${0.5}`);
                 }
                 if (i !== scene5Events.length - 1) {
-                    tl5.to(event, { opacity: 0, scale: 1.2, duration: 1, force3D: true }, `+=${1}`);
+                    tl5.to(event, { opacity: 0, scale: 1.2, duration: 1 }, `+=${1}`);
                 }
             });
         }
@@ -481,12 +471,12 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
 
             scene6Images.forEach((img, i) => {
                 if (i !== 0) {
-                    tl6.fromTo(img, { opacity: 0, x: 100 }, { opacity: 1, x: 0, duration: 1, force3D: true }, `+=${0.5}`);
-                    tl6.to(scene6Dots[i - 1], { opacity: 0.5, scale: 1, borderColor: 'rgba(212,175,55,0.5)', duration: 0.1, force3D: true }, `<`);
-                    tl6.to(scene6Dots[i], { opacity: 1, scale: 1.1, borderColor: 'rgba(212,175,55,1)', duration: 0.1, force3D: true }, `<`);
+                    tl6.fromTo(img, { opacity: 0, x: 100 }, { opacity: 1, x: 0, duration: 1 }, `+=${0.5}`);
+                    tl6.to(scene6Dots[i - 1], { opacity: 0.5, scale: 1, borderColor: 'rgba(212,175,55,0.5)', duration: 0.1 }, `<`);
+                    tl6.to(scene6Dots[i], { opacity: 1, scale: 1.1, borderColor: 'rgba(212,175,55,1)', duration: 0.1 }, `<`);
                 }
                 if (i !== scene6Images.length - 1) {
-                    tl6.to(img, { opacity: 0, x: -100, duration: 1, force3D: true }, `+=${1}`);
+                    tl6.to(img, { opacity: 0, x: -100, duration: 1 }, `+=${1}`);
                 }
             });
         }
