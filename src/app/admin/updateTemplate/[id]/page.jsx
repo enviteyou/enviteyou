@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import api from "@/api/axios";
 import { ArrowLeft, Upload, Check, Layout, AlertCircle } from "lucide-react";
+import Image from "next/image";
 
 const AVAILABLE_TABS = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"];
 
@@ -241,11 +242,10 @@ export default function UpdateTemplate() {
                   return (
                     <label
                       key={tab}
-                      className={`group flex items-center justify-between gap-2.5 cursor-pointer border rounded-xl p-3.5 text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
-                        isChecked
+                      className={`group flex items-center justify-between gap-2.5 cursor-pointer border rounded-xl p-3.5 text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${isChecked
                           ? "border-[#74313d] bg-[#74313d]/2 text-[#74313d]"
                           : "border-black/5 bg-[#fbf9f7] text-black/60 hover:bg-black/5 hover:text-black"
-                      }`}
+                        }`}
                     >
                       <span className="font-sans font-bold tracking-wide">{tab}</span>
                       <div className="relative flex items-center justify-center shrink-0">
@@ -262,9 +262,8 @@ export default function UpdateTemplate() {
                           className="peer absolute inset-0 size-5 opacity-0 cursor-pointer"
                         />
                         <div
-                          className={`flex size-5 items-center justify-center rounded-lg border transition-colors ${
-                            isChecked ? "bg-[#74313d] border-[#74313d] text-white" : "border-black/20 bg-white"
-                          }`}
+                          className={`flex size-5 items-center justify-center rounded-lg border transition-colors ${isChecked ? "bg-[#74313d] border-[#74313d] text-white" : "border-black/20 bg-white"
+                            }`}
                         >
                           {isChecked && <Check className="size-3" strokeWidth={3} />}
                         </div>
@@ -287,12 +286,14 @@ export default function UpdateTemplate() {
             {filePreview ? (
               <div className="relative mt-4 aspect-4/3 w-full overflow-hidden rounded-xl border border-black/5 bg-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={filePreview} alt="Mockup preview" className="h-full w-full object-cover" />
+                <Image src={filePreview} alt="Mockup preview" width={400}
+                  height={400} className="h-full w-full object-cover" />
               </div>
             ) : form.featuredImage ? (
               <div className="relative mt-4 aspect-4/3 w-full overflow-hidden rounded-xl border border-black/5 bg-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={form.featuredImage} alt={form.title || "Template"} className="h-full w-full object-cover" />
+                <Image src={form.featuredImage} alt={form.title || "Template"} width={400}
+                  height={400} className="h-full w-full object-cover" />
               </div>
             ) : null}
 

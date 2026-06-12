@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, ArrowRight } from "lucide-react";
 import { ScrollProgressBar, BlogShareButtons } from "@/components/BlogInteractiveAddons";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -180,18 +181,23 @@ export default async function BlogDetailPage({ params }) {
         {/* Cover Image Container with Blurred Backdrop to show portrait images fully */}
         <div className="mt-8 relative w-full overflow-hidden rounded-3xl border border-black/5 bg-[#f5efe9] shadow-md flex items-center justify-center min-h-[300px] sm:min-h-[500px] max-h-[650px]">
           {/* Blurred background overlay */}
-          <img
+          <Image
             src={blog.featuredImage}
             alt=""
+            width={400}
+            height={200}
             className="absolute inset-0 h-full w-full object-cover blur-3xl opacity-35 scale-110 select-none pointer-events-none"
           />
+
           {/* Light overlay for depth */}
           <div className="absolute inset-0 bg-white/30" />
           {/* Sharp foreground image */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={blog.featuredImage}
             alt={blog.title}
+            width={400}
+            height={200}
             className="relative z-10 max-h-[650px] w-auto object-contain shadow-xs rounded-xl"
           />
         </div>
@@ -226,22 +232,29 @@ export default async function BlogDetailPage({ params }) {
                 <Link href={`/blog/${item._id}`} className="flex flex-col h-full">
                   <div className="relative aspect-16/10 w-full overflow-hidden bg-[#f5efe9] flex items-center justify-center">
                     {/* Blurred background backdrop */}
-                    <img
+                    <Image
                       src={item.featuredImage}
                       alt=""
+                      width={400}
+                      height={400}
                       className="absolute inset-0 h-full w-full object-cover blur-2xl opacity-35 scale-110 select-none pointer-events-none"
                     />
                     <div className="absolute inset-0 bg-white/20" />
-                    
+
                     {/* Sharp foreground image */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={item.featuredImage}
                       alt={item.title}
+                      width={400}
+                      height={400}
                       className="relative z-10 h-full w-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105"
                     />
+
+
+
                     {/* Absolute overlays */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15" />
                   </div>
 
                   <div className="flex flex-col flex-1 p-6 space-y-4">

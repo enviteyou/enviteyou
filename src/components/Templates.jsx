@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Eye } from "lucide-react";
+import Image from "next/image";
 
 function normalizeCategory(value) {
   return String(value || "")
@@ -39,7 +40,7 @@ function TemplateCard({ template }) {
       <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-transform duration-300 group-hover:-translate-y-1.5">
         <div className="relative w-full">
           {preview ? (
-            <img src={preview} alt={template.name} className="block h-72 w-full object-cover sm:h-80" />
+            <Image src={preview} alt={template.name} className="block h-72 w-full object-cover sm:h-80" />
           ) : (
             <div className="flex w-full items-center justify-center bg-linear-to-br from-black/5 via-black/0 to-black/10 py-16 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-black/30">
               No preview

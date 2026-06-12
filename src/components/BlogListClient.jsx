@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Search, Calendar, ArrowRight, Clock, BookOpen, X } from "lucide-react";
+import Image from "next/image";
 
 // Word count calculation helper for read times
 const getReadTime = (description = "") => {
@@ -78,18 +79,22 @@ export default function BlogListClient({ blogs = [] }) {
                 {/* Featured Image Container with Blurred Backdrop to show portrait images fully */}
                 <div className="relative aspect-16/10 w-full overflow-hidden bg-[#f5efe9] flex items-center justify-center">
                   {/* Blurred background backdrop */}
-                  <img
+                  <Image
                     src={blog.featuredImage}
                     alt=""
+                    width={400}
+                    height={400}
                     className="absolute inset-0 h-full w-full object-cover blur-2xl opacity-35 scale-110 select-none pointer-events-none"
                   />
                   <div className="absolute inset-0 bg-white/20" />
-                  
+
                   {/* Sharp foreground image */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={blog.featuredImage}
                     alt={blog.title}
+                    width={400}
+                    height={400}
                     className="relative z-10 h-full w-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                   {/* Absolute overlays */}

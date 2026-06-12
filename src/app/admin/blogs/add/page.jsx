@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import api from "@/api/axios";
 import { toast } from "sonner";
 import { ArrowLeft, Upload, AlertCircle, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 const emptyForm = {
   title: "",
@@ -200,7 +201,8 @@ export default function AdminAddBlog() {
             {filePreview && (
               <div className="relative mt-4 aspect-16/10 w-full overflow-hidden rounded-xl border border-black/5 bg-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={filePreview} alt="Blog preview" className="h-full w-full object-cover" />
+                <Image src={filePreview} alt="Blog preview" width={400}
+                  height={400} className="h-full w-full object-cover" />
               </div>
             )}
 

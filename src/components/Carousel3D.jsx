@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image';
 import React, { useEffect, useRef } from 'react';
 
 const Carousel3D = () => {
@@ -19,7 +20,7 @@ const Carousel3D = () => {
 
     if (!$items) return;
 
-    const getZindex = (array, index) => 
+    const getZindex = (array, index) =>
       array.map((_, i) => (index === i) ? array.length : array.length - Math.abs(index - i));
 
     const displayItems = (item, index, active) => {
@@ -126,7 +127,8 @@ const Carousel3D = () => {
                 <div className="title">{item.title}</div>
                 <div className="num">{item.num}</div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.img} alt={item.title} />
+                <Image src={item.img} alt={item.title} width={400}
+                  height={400} />
               </div>
             </div>
           ))}

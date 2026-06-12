@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { toast } from "sonner";
 import { Loader2, ListTodo, Mail, Calendar, BookOpen, Image as ImageIcon, Info, Music, UserCheck } from "lucide-react";
+import Image from "next/image";
 
 const tabIcons = {
   Essentials: <ListTodo className="h-3.5 w-3.5 shrink-0" />,
@@ -1161,7 +1162,8 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
                   {Array.from({ length: form.galleryLayout === 0 ? 0 : form.galleryLayout === 1 ? 1 : form.galleryLayout === 2 ? 2 : 4 }).map((_, idx) => (
                     <div key={idx} className="border border-dashed border-black/20 p-6 text-center">
                       {form.galleryImages?.[idx] ? (
-                        <img src={form.galleryImages[idx]} className="mx-auto h-40 object-cover" alt={`photo-${idx + 1}`} />
+                        <Image src={form.galleryImages[idx]} width={400}
+                          height={400} className="mx-auto h-40 object-cover" alt={`photo-${idx + 1}`} />
                       ) : (
                         <>
                           <label className="cursor-pointer text-sm text-black/60">

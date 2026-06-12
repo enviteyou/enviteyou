@@ -212,9 +212,11 @@ export default function TemplateCustomizer({ template }) {
               <div className="flex items-center gap-2 border-l border-black/10 pl-3">
                 {previewImage && (
                   <div className="h-9 w-9 rounded overflow-hidden relative border border-black/5 shrink-0 bg-gray-100">
-                    <img
+                    <Image
                       src={previewImage}
                       alt={template.name || "Template Preview"}
+                      width={400}
+                      height={400}
                       className="h-full w-full object-cover"
                     />
                   </div>
@@ -271,10 +273,12 @@ export default function TemplateCustomizer({ template }) {
             <div className="flex items-center gap-1.5 min-w-0 max-w-[120px] xs:max-w-[150px]">
               {previewImage && (
                 <div className="h-6 w-6 rounded overflow-hidden relative border border-black/5 shrink-0 bg-gray-100">
-                  <img
+                  <Image
                     src={previewImage}
                     alt={template.name || "Preview"}
                     className="h-full w-full object-cover"
+                    width={400}
+                    height={400}
                   />
                 </div>
               )}

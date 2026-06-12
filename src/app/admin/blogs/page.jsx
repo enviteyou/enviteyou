@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import api from "@/api/axios";
 import { toast } from "sonner";
 import { Plus, ArrowLeft, Edit, Trash2, Calendar, FileText, Globe } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState([]);
@@ -115,9 +116,11 @@ export default function AdminBlogsPage() {
                 {/* Blog preview thumbnail */}
                 <div className="relative aspect-16/10 w-full overflow-hidden bg-black/5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={blog.featuredImage}
                     alt={blog.title}
+                    width={400}
+                    height={400}
                     className="h-full w-full object-cover"
                   />
                 </div>

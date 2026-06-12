@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import api from "@/api/axios";
 import { Trash2, Search, Plus, Edit3 } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
+
 
 function formatCurrency(value) {
   if (value === undefined || value === null || value === "") return "Not set";
@@ -134,13 +136,16 @@ export default function AllTemplate() {
                 className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.015)] transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
               >
                 {/* Image Previews & category tag */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/[0.02] border-b border-black/5">
+                <div className="relative aspect-4/3 w-full overflow-hidden bg-black/2 border-b border-black/5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={t.featuredImage}
                     alt={t.title}
+                    width={200}
+                    height={400}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-103"
                   />
+
                   <span className="absolute top-4 left-4 rounded-lg bg-white/90 backdrop-blur-md border border-black/5 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-black shadow-sm">
                     {t.category}
                   </span>

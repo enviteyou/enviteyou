@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import api from "@/api/axios";
 import { toast } from "sonner";
 import { ArrowLeft, Upload, AlertCircle, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 const inputClass =
   "mt-2 w-full border border-black/10 bg-[#fbf9f7] rounded-xl px-4 py-3.5 text-sm text-black outline-none transition-all placeholder:text-black/30 focus:border-[#74313d] focus:bg-white focus:ring-4 focus:ring-[#74313d]/5";
@@ -220,12 +221,14 @@ export default function AdminEditBlog() {
             {filePreview ? (
               <div className="relative mt-4 aspect-16/10 w-full overflow-hidden rounded-xl border border-black/5 bg-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={filePreview} alt="Mockup preview" className="h-full w-full object-cover" />
+                <Image src={filePreview} alt="Mockup preview" className="h-full w-full object-cover " width={400}
+                  height={400} />
               </div>
             ) : form.featuredImage ? (
               <div className="relative mt-4 aspect-16/10 w-full overflow-hidden rounded-xl border border-black/5 bg-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={form.featuredImage} alt={form.title || "Blog Post"} className="h-full w-full object-cover" />
+                <Image src={form.featuredImage} alt={form.title || "Blog Post"} className="h-full w-full  object-cover" width={400}
+                  height={400} />
               </div>
             ) : null}
 

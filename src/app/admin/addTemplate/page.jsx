@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/api/axios";
 import { ArrowLeft, Upload, Check, Layout, AlertCircle } from "lucide-react";
+import Image from "next/image";
 
 const AVAILABLE_TABS = ["Essentials", "Invitation", "Events", "Story", "Gallery", "Info", "RSVP", "Music"];
 
@@ -233,8 +234,8 @@ export default function AddTemplate() {
                     <label
                       key={tab}
                       className={`group flex items-center justify-between gap-2.5 cursor-pointer border rounded-xl p-3.5 text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${isChecked
-                          ? "border-[#74313d] bg-[#74313d]/2 text-[#74313d]"
-                          : "border-black/5 bg-[#fbf9f7] text-black/60 hover:bg-black/5 hover:text-black"
+                        ? "border-[#74313d] bg-[#74313d]/2 text-[#74313d]"
+                        : "border-black/5 bg-[#fbf9f7] text-black/60 hover:bg-black/5 hover:text-black"
                         }`}
                     >
                       <span className="font-sans font-bold tracking-wide">{tab}</span>
@@ -276,7 +277,8 @@ export default function AddTemplate() {
             {filePreview ? (
               <div className="relative mt-4 aspect-4/3 w-full overflow-hidden rounded-xl border border-black/5 bg-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={filePreview} alt="Mockup preview" className="h-full w-full object-cover" />
+                <Image src={filePreview} alt="Mockup preview" className="h-full w-full object-cover" width={400}
+                  height={400} />
               </div>
             ) : null}
 

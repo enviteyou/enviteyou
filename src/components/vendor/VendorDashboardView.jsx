@@ -11,6 +11,7 @@ import TemplateDetail from "@/components/TemplateDetail";
 import TemplateForm from "@/components/TemplateForm";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Copy, ExternalLink, Eye, IndianRupee, LayoutGrid, Megaphone, MessageSquareMore, Monitor, Search, Sparkles, Users } from "lucide-react";
+import Image from "next/image";
 
 function formatCurrency(value) {
   const amount = Number(value || 0);
@@ -54,8 +55,9 @@ function TemplateGridCard({ template, selected, onSelect, onUse }) {
       className={`group overflow-hidden rounded-[1.35rem] border bg-white text-left shadow-[0_18px_50px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 ${selected ? "border-black" : "border-black/10"}`}
     >
       <div className="cursor-pointer" onClick={onSelect}>
-        <div className="aspect-[4/3] overflow-hidden bg-black/5">
-          {template?.preview ? <img src={template.preview} alt={template.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-sm text-black/45">No preview</div>}
+        <div className="aspect-4/3 overflow-hidden bg-black/5">
+          {template?.preview ? <Image src={template.preview} alt={template.name} width={400}
+            height={400} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-sm text-black/45">No preview</div>}
         </div>
         <div className="p-4 pb-0">
           <div className="flex items-start justify-between gap-2">
@@ -251,7 +253,8 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-3 rounded-2xl border border-black/10 bg-black/3 p-3">
                   <div className="h-16 w-24 overflow-hidden rounded-xl border border-black/10 bg-black/10">
-                    {selectedTemplate?.preview ? <img src={selectedTemplate.preview} alt={selectedTemplate.name} className="h-full w-full object-cover" /> : null}
+                    {selectedTemplate?.preview ? <Image src={selectedTemplate.preview} alt={selectedTemplate.name} width={400}
+                      height={400} className="h-full w-full object-cover" /> : null}
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/40">Selected Template</p>
@@ -468,7 +471,9 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
               <div className="space-y-4 text-sm text-black/65">
                 <div className="flex items-center gap-3">
                   <div className="h-14 w-14 overflow-hidden rounded-full border border-black/10 bg-black/5">
-                    {selectedInvitation.coverImage ? <img src={selectedInvitation.coverImage} alt="cover" className="h-full w-full object-cover" /> : null}
+                    {selectedInvitation.coverImage ? <Image src={selectedInvitation.coverImage} alt="cover" width={400}
+                      height={400}
+                      className="h-full w-full object-cover" /> : null}
                   </div>
                   <div>
                     <p className="text-lg font-semibold text-black">{selectedInvitation.bride} &amp; {selectedInvitation.groom}</p>
