@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLenis } from "lenis/react";
 import { MapPin, Heart, Flower2, Shirt, Building2, Hash, Gift, Utensils, Camera, ExternalLink, Check, Calendar } from "lucide-react";
 import { useAudio } from "../../hooks/useAudio";
 
@@ -201,15 +202,18 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
     const [selectedPhoto, setSelectedPhoto] = useState(null); // 3D Lightbox selected image state
     const [copiedHashtag, setCopiedHashtag] = useState(false);
 
+    const lenis = useLenis();
+
     useEffect(() => {
-        if (typeof window !== "undefined" && !embedded) {
-            ScrollTrigger.normalizeScroll(true);
-        }
-        return () => {
-            if (typeof window !== "undefined" && !embedded) {
-                ScrollTrigger.normalizeScroll(false);
-            }
-        };
+        // Disabled normalizeScroll because Lenis is handling scroll physics globally
+        // if (typeof window !== "undefined" && !embedded) {
+        //     ScrollTrigger.normalizeScroll(true);
+        // }
+        // return () => {
+        //     if (typeof window !== "undefined" && !embedded) {
+        //         ScrollTrigger.normalizeScroll(false);
+        //     }
+        // };
     }, [embedded]);
     const scrollerTarget = embedded
         ? "#preview-scroller-container"
@@ -536,12 +540,16 @@ export default function Template01({ formData = {}, template = {}, embedded = fa
 
 
     const scrollToEvents = useCallback(() => {
-        gsap.to(window, {
-            duration: 1.5,
-            scrollTo: eventsRef.current,
-            ease: "power3.inOut"
-        });
-    }, []);
+        if (lenis) {
+            lenis.scrollTo(eventsRef.current, { duration: 1.5 });
+        } else {
+            gsap.to(window, {
+                duration: 1.5,
+                scrollTo: eventsRef.current,
+                ease: "power3.inOut"
+            });
+        }
+    }, [lenis]);
 
 
 
