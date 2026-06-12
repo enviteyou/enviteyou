@@ -349,9 +349,9 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                     </p>
                     <h1 className="text-6xl font-serif text-[#4A3B2C] mb-2">{firstName}</h1>
                     <div className="flex items-center space-x-3 my-2 opacity-70">
-                        <div className="w-6 h-[1px] bg-[#8A7350]" />
+                        <div className="w-6 h-px bg-[#8A7350]" />
                         <p className="text-[10px] font-serif italic text-[#8A7350]">weds</p>
-                        <div className="w-6 h-[1px] bg-[#8A7350]" />
+                        <div className="w-6 h-px bg-[#8A7350]" />
                     </div>
                     <h1 className="text-6xl font-serif text-[#4A3B2C] mb-8">{secondName}</h1>
 
@@ -459,7 +459,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                     <h1 className="text-4xl font-serif text-[#4A3B2C]">Celebrations</h1>
                 </div>
 
-                <div ref={scene4CardsRef} className="relative z-10 w-full space-y-4 [perspective:1000px]">
+                <div ref={scene4CardsRef} className="relative z-10 w-full space-y-4 perspective-[1000px]">
                     {eventsList.map((evt, idx) => (
                         <div key={idx} className="w-full bg-[#FCFBF8]/80 backdrop-blur-sm border border-[#8A7350]/20 rounded-2xl p-4 flex items-center shadow-[0_4px_20px_rgba(138,115,80,0.05)]">
                             <div className="w-12 h-12 flex items-center justify-center border-r border-[#8A7350]/20 pr-4 mr-4 shrink-0">
@@ -550,7 +550,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                     <p className="text-[9px] font-sans tracking-[0.2em] text-[#8A7350] uppercase font-semibold mb-1">Meet The</p>
                     <h1 className="text-4xl font-serif text-[#4A3B2C] mb-8">Couple</h1>
 
-                    <div ref={coupleImgRef} className="w-[85%] aspect-[3/4] max-h-[50vh] bg-[#E5DCC5] rounded-t-full border-4 border-white shadow-xl overflow-hidden mb-6 relative">
+                    <div ref={coupleImgRef} className="w-[85%] aspect-3/4 max-h-[50vh] bg-[#E5DCC5] rounded-t-full border-4 border-white shadow-xl overflow-hidden mb-6 relative">
                         {galleryPhotos.map((src, idx) => (
                             <Image key={idx} src={src} alt={`Gallery ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={300} height={400} />
                         ))}
@@ -603,8 +603,8 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                         RSVP ON WHATSAPP
                     </a>
 
-                    <p className="text-[8px] font-sans tracking-[0.1em] text-[#4A3B2C] uppercase opacity-80 mb-1">Kindly respond by</p>
-                    <p className="text-[9px] font-sans font-bold tracking-[0.1em] text-[#8A7350] uppercase">{rsvpDeadline}</p>
+                    <p className="text-[8px] font-sans tracking-widest text-[#4A3B2C] uppercase opacity-80 mb-1">Kindly respond by</p>
+                    <p className="text-[9px] font-sans font-bold tracking-widest text-[#8A7350] uppercase">{rsvpDeadline}</p>
 
                     <div className="w-12 mt-6 mb-24">
                         <Image src="/assets/template/03/scene3/seprator.png" alt="Separator" className="w-full object-contain" width={48} height={16} />

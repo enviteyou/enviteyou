@@ -811,7 +811,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                     </div>
 
                     {/* Events List */}
-                    <div className="w-full space-y-4 [perspective:1000px]">
+                    <div className="w-full space-y-4 perspective-[1000px]">
                         {eventsList.map((event, index) => (
                             <div key={index} className="event-card flex items-center justify-between p-4 border border-[#D4AF37]/20 rounded-xl bg-[#050B14]/60 backdrop-blur-sm shadow-[0_4px_15px_rgba(0,0,0,0.3)] hover:scale-[1.02] hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/40 transition-all duration-300 cursor-pointer group">
                                 <div className="flex items-center space-x-4">
@@ -868,7 +868,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pt-10">
-                    <div className="relative w-[100%] h-[80%] flex items-center justify-center">
+                    <div className="relative w-full h-[80%] flex items-center justify-center">
                         <Image
                             src="/assets/template/04/scene5/entrancegate.png"
                             alt="Entrance Gate Frame"

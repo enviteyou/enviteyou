@@ -476,7 +476,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 {/* Gradient Overlay for text */}
-                <div className="absolute inset-0 z-25 bg-gradient-to-t from-[#4A0E17]/80 via-[#4A0E17]/40 to-transparent" />
+                <div className="absolute inset-0 z-25 bg-linear-to-t from-[#4A0E17]/80 via-[#4A0E17]/40 to-transparent" />
 
                 <div className="relative z-30 flex flex-col items-center justify-center h-full pt-16 pb-32 px-8 text-center pointer-events-none">
                     <div ref={textGroupRef} className="flex flex-col items-center justify-center w-full">
@@ -485,9 +485,9 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         </p>
                         <h1 className="text-6xl sm:text-7xl font-serif text-[#F4EBD9] mb-0 leading-none drop-shadow-lg">{firstName}</h1>
                         <div className="flex items-center space-x-4 my-2">
-                            <div className="w-8 h-[1px] bg-[#D4AF37]/50" />
+                            <div className="w-8 h-px bg-[#D4AF37]/50" />
                             <p className="text-[10px] font-serif italic text-[#D4AF37]">weds</p>
-                            <div className="w-8 h-[1px] bg-[#D4AF37]/50" />
+                            <div className="w-8 h-px bg-[#D4AF37]/50" />
                         </div>
                         <h1 className="text-6xl sm:text-7xl font-serif text-[#F4EBD9] mb-6 leading-none drop-shadow-lg">{secondName}</h1>
 
@@ -625,7 +625,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                     <Image src="/assets/template/05/scene4/fairylightv2.png" alt="Lights" className="w-full object-contain" width={400} height={100} />
                 </div>
 
-                <div className="absolute inset-0 z-15 bg-gradient-to-t from-[#2D060E] via-[#2D060E]/50 to-transparent" />
+                <div className="absolute inset-0 z-15 bg-linear-to-t from-[#2D060E] via-[#2D060E]/50 to-transparent" />
 
                 <div ref={scene4ContentRef} className="relative z-20 flex flex-col items-center text-center w-full">
                     <div className="w-24 h-24 mb-6">
@@ -681,7 +681,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                         <h1 className="text-3xl font-serif text-[#4A0E17]">Wedding Celebrations</h1>
                     </div>
 
-                    <div ref={scene5EventsRef} className="w-[95%] space-y-4 [perspective:1000px] mb-12">
+                    <div ref={scene5EventsRef} className="w-[95%] space-y-4 perspective-[1000px] mb-12">
                         {eventsList.map((event, index) => (
                             <div key={index} className="event-card flex items-center justify-between py-3 px-1 border-b border-[#4A0E17]/10 hover:bg-[#4A0E17]/5 transition-colors cursor-pointer group">
                                 <div className="flex items-center space-x-4 w-[55%]">
@@ -690,7 +690,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                                     </div>
                                     <h3 className="text-lg font-serif text-[#4A0E17] group-hover:text-[#D4AF37] transition-colors">{event.name}</h3>
                                 </div>
-                                <div className="w-[1px] h-10 bg-[#D4AF37]/40 shrink-0" />
+                                <div className="w-px h-10 bg-[#D4AF37]/40 shrink-0" />
                                 <div className="text-right w-[40%] flex flex-col justify-center pr-2">
                                     <p className="text-[8px] font-sans tracking-widest text-[#4A0E17] opacity-80 uppercase leading-none mb-1">{event.date}</p>
                                     <p className="text-[9px] font-sans font-bold text-[#4A0E17] leading-none uppercase">{event.time}</p>
@@ -810,7 +810,7 @@ export default function Template05({ formData = {}, template = {}, embedded = fa
                 </div>
 
                 {/* Solid Pink Bottom Block */}
-                <div className="relative z-30 w-full bg-[#B21C42] flex flex-col items-center justify-center py-8 px-6 mt-[-1px]">
+                <div className="relative z-30 w-full bg-[#B21C42] flex flex-col items-center justify-center py-8 px-6 -mt-px">
                     <div className="absolute inset-0 z-0  ">
                         <Image src="/assets/template/05/scene7/bottombg.png" alt="Pattern" className="w-full h-full object-cover" width={400} height={200} />
                     </div>
