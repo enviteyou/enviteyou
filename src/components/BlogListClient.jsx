@@ -98,7 +98,7 @@ export default function BlogListClient({ blogs = [] }) {
                     className="relative z-10 h-full w-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                   {/* Absolute overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15" />
                 </div>
 
                 {/* Card Content */}

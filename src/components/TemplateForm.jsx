@@ -683,7 +683,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
       className="relative bg-white pb-8"
     >
       {isSubmitting ? (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/40 backdrop-blur-md px-4 py-10">
+        <div className="fixed inset-0 z-99999 flex items-center justify-center bg-black/40 backdrop-blur-md px-4 py-10">
           <div className="w-full max-w-sm rounded-3xl border border-black/10 bg-white px-6 py-7 text-center shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-black/10 bg-black text-white">
               <Loader2 className="h-6 w-6 animate-spin" />
@@ -741,7 +741,7 @@ const TemplateForm = forwardRef(function TemplateForm({ template, onPreviewChang
       ) : null}
 
       {/* Sticky Tab Navigation Header with Icons */}
-      <div className="sticky top-0 bg-white z-[40] border-b border-black/10 px-5 py-3 shadow-xs">
+      <div className="sticky top-0 bg-white z-40 border-b border-black/10 px-5 py-3 shadow-xs">
         <div className="grid grid-cols-4 sm:flex sm:flex-wrap gap-x-1 sm:gap-x-5 gap-y-2 w-full sm:w-auto justify-items-center sm:justify-start">
           {allowedTabs.map((tab) => {
             const isActive = activeTab === tab;

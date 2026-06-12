@@ -110,7 +110,7 @@ export default function TemplateCustomizer({ template }) {
   return (
     <div className="h-screen w-full bg-[#fcfaf8] text-black font-sans relative flex flex-col select-none overflow-hidden">
       {/* Top Bar Header (Fixed, White with backdrop blur) */}
-      <header className="fixed top-0 left-0 w-full h-14 bg-white/86 backdrop-blur-xl border-b border-black/8 flex items-center justify-between px-4 sm:px-6 z-[1000] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+      <header className="fixed top-0 left-0 w-full h-14 bg-white/86 backdrop-blur-xl border-b border-black/8 flex items-center justify-between px-4 sm:px-6 z-1000 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center transition hover:opacity-90">
             <Image
@@ -198,7 +198,7 @@ export default function TemplateCustomizer({ template }) {
       </main>
 
       {/* Bottom Bar Controls (Fixed, White with backdrop blur) */}
-      <footer className="fixed bottom-0 left-0 w-full h-18 bg-white/86 backdrop-blur-xl border-t border-black/8 flex items-center justify-between px-4 sm:px-6 z-[1000] shadow-[0_-2px_12px_rgba(0,0,0,0.03)]">
+      <footer className="fixed bottom-0 left-0 w-full h-18 bg-white/86 backdrop-blur-xl border-t border-black/8 flex items-center justify-between px-4 sm:px-6 z-1000 shadow-[0_-2px_12px_rgba(0,0,0,0.03)]">
         {/* Desktop View Bottom Bar (Original Theme Info & Direct Publish Button) */}
         <div className="hidden lg:flex w-full items-center justify-between">
           <div className="flex items-center gap-3">
@@ -330,7 +330,7 @@ export default function TemplateCustomizer({ template }) {
 
       {/* Fullscreen Mobile Preview Modal */}
       {showPreviewModal && (
-        <div id="preview-scroller-container" className="fixed inset-0 z-[5000] bg-[#faf7f3] overflow-y-auto flex flex-col">
+        <div id="preview-scroller-container" className="fixed inset-0 z-5000 bg-[#faf7f3] overflow-y-auto flex flex-col">
           <div className="sticky top-0 bg-white border-b border-black/10 px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between z-50 shadow-sm">
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#74313d] bg-[#74313d]/10 px-2.5 py-1 rounded">Live Preview</span>
