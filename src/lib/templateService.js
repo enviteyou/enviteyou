@@ -51,7 +51,10 @@ export async function getTemplates() {
       "Content-Type": "application/json",
     },
     credentials:"include",
-    next: { revalidate: 3600 }, // Revalidate every 60 seconds
+    next: { 
+      revalidate: 3600, 
+      tags: ["templates"] 
+    },
   });
 
   let rawTemplates = [];
