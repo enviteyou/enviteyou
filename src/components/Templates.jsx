@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Eye } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function normalizeCategory(value) {
   return String(value || "")
@@ -31,6 +32,7 @@ function getCategoryLabel(template) {
 }
 
 function TemplateCard({ template }) {
+  const router = useRouter();
   const preview = template.featuredImage || template.preview;
   const priceLabel = getPriceLabel(template);
   const categoryLabel = getCategoryLabel(template);
@@ -49,9 +51,18 @@ function TemplateCard({ template }) {
             </div>
           )}
 
-          <div className="absolute right-3.5 top-3.5 flex size-8 items-center justify-center rounded-full border border-black/10 bg-white text-black shadow-[0_8px_18px_rgba(107,45,52,0.18)] sm:right-4 sm:top-4">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/preview?id=${template.templateId || template.id}`);
+            }}
+            className="absolute right-3.5 top-3.5 flex size-8 items-center justify-center rounded-full border border-black/10 bg-white text-black shadow-[0_8px_18px_rgba(107,45,52,0.18)] sm:right-4 sm:top-4 hover:bg-black hover:text-white transition duration-200 cursor-pointer"
+            title="Preview Template"
+          >
             <Eye className="size-4" />
-          </div>
+          </button>
         </div>
 
         <div className="mt-auto border-t border-black/8 bg-white p-4 md:p-5">

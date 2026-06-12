@@ -78,7 +78,22 @@ export default function InviteBySlugPage() {
 		<main className="w-full px-0 py-0 sm:px-6 sm:py-4 lg:px-0 lg:py-0">
 			{loading ? (
 				<div className="mx-auto flex min-h-dvh w-full max-w-3xl items-center justify-center px-4 text-center text-black/60 sm:px-0">
-					Loading invitation...
+					<div
+						className="relative w-full min-h-screen bg-[#faf7f3] flex flex-col items-center justify-center p-6 animate-pulse"
+						aria-busy="true"
+						aria-live="polite"
+					>
+						<div className="size-24 rounded-full border border-[#7d2432]/20 bg-[#7d2432]/5 flex items-center justify-center mb-6">
+							<div className="size-16 rounded-full border border-dashed border-[#7d2432]/30 animate-spin-slow" style={{ animationDuration: "8s" }} />
+						</div>
+						<div className="h-4 w-48 bg-[#7d2432]/10 rounded mb-4" />
+						<div className="h-8 w-64 bg-[#7d2432]/15 rounded mb-4" />
+						<div className="h-4 w-36 bg-[#7d2432]/10 rounded" />
+						<div className="mt-4">
+							Opening Invitation...
+						</div>
+						<span className="sr-only">Loading wedding invitation template...</span>
+					</div>
 				</div>
 			) : error ? (
 				<div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-black/10 p-6 text-center shadow-[0_24px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm">

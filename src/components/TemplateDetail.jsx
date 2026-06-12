@@ -2,10 +2,30 @@
 
 import dynamic from "next/dynamic";
 
-const Template01 = dynamic(() => import("./templates/Template01"), { ssr: false });
-const Template04 = dynamic(() => import("./templates/Template04"), { ssr: false });
-const Template05 = dynamic(() => import("./templates/Template05"), { ssr: false });
-const Template03 = dynamic(() => import("./templates/Template03"), { ssr: false });
+const TemplateSkeleton = () => (
+  <div
+    className="relative w-full min-h-screen bg-[#faf7f3] flex flex-col items-center justify-center p-6 animate-pulse"
+    aria-busy="true"
+    aria-live="polite"
+  >
+    <div className="size-24 rounded-full border border-[#7d2432]/20 bg-[#7d2432]/5 flex items-center justify-center mb-6">
+      <div className="size-16 rounded-full border border-dashed border-[#7d2432]/30 animate-spin-slow" style={{ animationDuration: "8s" }} />
+    </div>
+    <div className="h-4 w-48 bg-[#7d2432]/10 rounded mb-4" />
+    <div className="h-8 w-64 bg-[#7d2432]/15 rounded mb-4" />
+    <div className="h-4 w-36 bg-[#7d2432]/10 rounded" />
+    <div className="mt-4">
+      Lets go...
+    </div>
+    <span className="sr-only">Loading wedding invitation template...</span>
+  </div>
+);
+
+const Template01 = dynamic(() => import("./templates/Template01"), { ssr: false, loading: TemplateSkeleton });
+const Template04 = dynamic(() => import("./templates/Template04"), { ssr: false, loading: TemplateSkeleton });
+const Template05 = dynamic(() => import("./templates/Template05"), { ssr: false, loading: TemplateSkeleton });
+const Template03 = dynamic(() => import("./templates/Template03"), { ssr: false, loading: TemplateSkeleton });
+
 const templateComponentMap = {
   "1": Template01,
   "01": Template01,
@@ -26,17 +46,6 @@ const templateComponentMap = {
 };
 
 export default function TemplateDetail({ template, formData, fullscreen = false, embedded = false }) {
-  if (!template) {
-    return (
-      <div className="rounded-3xl border border-black/10 bg-white p-8 text-black shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-black/45">Template not found</p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight">Choose a design from the gallery.</h2>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-black/60">
-          This invitation is not available right now. Please contact the host and ask them to resend the link.
-        </p>
-      </div>
-    );
-  }
 
   const normalizedTemplateId = String(
     template?.templateId || template?.id || template?.slug || template?.previewComponent || template?.name || "default"
@@ -48,23 +57,27 @@ export default function TemplateDetail({ template, formData, fullscreen = false,
 
   if (fullscreen) {
     return (
-      <div className="w-full bg-[#faf7f3]">
-        <section className="relative w-full bg-black">
+      <article className="w-full bg-[#faf7f3]" aria-label="Wedding Invitation Website">
+        <div className="relative w-full bg-black">
           <SelectedTemplate formData={formData} template={template} embedded={embedded} fullscreen />
-        </section>
-      </div>
+        </div>
+      </article>
     );
   }
 
   return (
-    <article className="min-h-[calc(100dvh-15rem)] overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
+    <article
+      className=" overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.08)]"
+      aria-label="Wedding Invitation Preview Card"
+    >
       <div className="bg-[#faf7f3] px-3 py-3 sm:px-5 sm:py-5">
         <div className="mx-auto w-full max-w-[390px] overflow-visible rounded-[24px] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.14)]">
-          <section className="relative bg-black">
+          <div className="relative bg-black" role="region" aria-label="Phone Preview Frame">
             <SelectedTemplate formData={formData} template={template} embedded={embedded} />
-          </section>
+          </div>
         </div>
       </div>
     </article>
   );
 }
+
