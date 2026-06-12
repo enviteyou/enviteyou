@@ -60,16 +60,10 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
 
     // Force ScrollTrigger refresh on layout changes (e.g. lazy loaded images)
     useEffect(() => {
-        const resizeObserver = new ResizeObserver(() => {
-            ScrollTrigger.refresh();
-        });
-        resizeObserver.observe(document.body);
-
-        // Also refresh after a small delay to catch initial render shifts
+        // Refresh after a small delay to catch initial render shifts
         const timeout = setTimeout(() => ScrollTrigger.refresh(), 500);
 
         return () => {
-            resizeObserver.disconnect();
             clearTimeout(timeout);
         };
     }, []);
@@ -272,6 +266,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                 end: '+=100%', // Reduced distance so it feels faster
                 scrub: 0.5, // Lower scrub for smoother/snappier response
                 pin: true,
+                anticipatePin: 1,
             }
         });
 
@@ -441,6 +436,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                     end: '+=400%',
                     scrub: 1,
                     pin: true,
+                    anticipatePin: 1,
                 }
             });
 
@@ -466,6 +462,7 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
                     end: '+=300%',
                     scrub: 1,
                     pin: true,
+                    anticipatePin: 1,
                 }
             });
 

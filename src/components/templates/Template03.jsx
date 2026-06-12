@@ -53,15 +53,9 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
 
     // Force ScrollTrigger refresh on layout changes
     useEffect(() => {
-        const resizeObserver = new ResizeObserver(() => {
-            ScrollTrigger.refresh();
-        });
-        resizeObserver.observe(document.body);
-
         const timeout = setTimeout(() => ScrollTrigger.refresh(), 500);
 
         return () => {
-            resizeObserver.disconnect();
             clearTimeout(timeout);
         };
     }, []);
@@ -201,6 +195,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                 end: '+=150%',
                 scrub: 1,
                 pin: true,
+                anticipatePin: 1,
             }
         });
 
@@ -263,6 +258,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                     end: '+=400%',
                     scrub: 1,
                     pin: true,
+                    anticipatePin: 1,
                 }
             });
 
@@ -300,6 +296,7 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
                     end: '+=200%',
                     scrub: 1,
                     pin: true,
+                    anticipatePin: 1,
                 }
             });
 

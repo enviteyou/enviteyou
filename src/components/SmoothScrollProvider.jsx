@@ -15,6 +15,9 @@ function SmoothScrollUpdate() {
   useEffect(() => {
     if (!lenis) return;
 
+    // Disable lagSmoothing so GSAP ticker updates scroll and animations in the exact same frame
+    gsap.ticker.lagSmoothing(0);
+
     // 1. Sync ScrollTrigger updates on scroll events
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -27,6 +30,8 @@ function SmoothScrollUpdate() {
     return () => {
       gsap.ticker.remove(update);
       lenis.off("scroll", ScrollTrigger.update);
+      // Restore default lag smoothing on unmount
+      gsap.ticker.lagSmoothing(500, 33);
     };
   }, [lenis]);
 
