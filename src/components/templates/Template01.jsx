@@ -135,7 +135,7 @@ const AnimatedBird = ({ top, delay = 0 }) => {
 const defaultGalleryPhotos = [
     {
         id: 1,
-        src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&q=80&w=800",
+        src: "/assets/couples/modern-couples1.jpg",
         caption: "The First Glimpse",
         date: "30 JUN 2026",
         desc: "A moment suspended in time, where two paths converge into a single beautiful journey.",
@@ -148,7 +148,7 @@ const defaultGalleryPhotos = [
     },
     {
         id: 2,
-        src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&q=80&w=800",
+        src: "/assets/couples/modern-couples2.jpg",
         caption: "A Thousand Promises",
         date: "1 JUL 2026",
         desc: "Under the golden sky, whispers of forever are woven into the breeze.",
@@ -161,7 +161,7 @@ const defaultGalleryPhotos = [
     },
     {
         id: 3,
-        src: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800",
+        src: "/assets/couples/modern-couples3.jpg",
         caption: "Hand in Hand",
         date: "2 JUL 2026",
         desc: "Tracing paths of warmth, taking steps towards our forever home.",
@@ -174,16 +174,16 @@ const defaultGalleryPhotos = [
     },
     {
         id: 4,
-        src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800",
+        src: "/assets/couples/modern-couples4.jpg",
         caption: "Forever & Always",
         date: "3 JUL 2026",
         desc: "The beginning of a beautiful forever, written in the stars.",
-        align: "center",
-        width: "w-[80%]",
-        aspect: "aspect-16/10",
+        align: "end",
+        width: "w-[65%]",
+        aspect: "aspect-3/4",
         hangType: "triangle",
         hangHeight: "h-16",
-        rotate: "0.5deg"
+        rotate: "1deg"
     }
 ];
 

@@ -130,10 +130,10 @@ export default function Template04({ formData = {}, template = {}, embedded = fa
     const galleryPhotos = Array.isArray(formData?.galleryImages) && formData.galleryImages.filter(Boolean).length > 0
         ? formData.galleryImages.filter(Boolean)
         : [
-            '/assets/template/04/scene6/window.png',
-            '/assets/template/04/scene6/window2.png',
-            '/assets/template/04/scene6/window.png',
-            '/assets/template/04/scene6/window2.png'
+            '/assets/couples/modern-couples1.jpg',
+            '/assets/couples/modern-couples2.jpg',
+            '/assets/couples/modern-couples3.jpg',
+            '/assets/couples/modern-couples4.jpg'
         ];
 
     const storyText = formData?.story || "Two souls, two journeys, one beautiful beginning. From laughter to dreams, from friendship to forever, our hearts chose each other.";

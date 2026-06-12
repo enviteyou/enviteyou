@@ -122,9 +122,9 @@ export default function Template03({ formData = {}, template = {}, embedded = fa
     const galleryPhotos = Array.isArray(formData?.galleryImages) && formData.galleryImages.filter(Boolean).length > 0
         ? formData.galleryImages.filter(Boolean)
         : [
-            '/assets/template/03/sample-gallery1.jpeg',
-            '/assets/template/03/sample-gallery2.jpg',
-            '/assets/template/03/sample-gallery3.jpeg'
+            '/assets/couples/indian-couples1.jpg',
+            '/assets/couples/indian-couples2.jpg',
+            '/assets/couples/indian-couples3.jpg'
         ];
 
     const storyText = formData?.story || "Two souls, best friends, and now life partners. We met, we laughed, we dreamt — and now we promise forever.";
