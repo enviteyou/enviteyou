@@ -135,6 +135,10 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
         return () => clearTimeout(t);
     }, []);
 
+    const scrollerTarget = embedded
+        ? "#preview-scroller-container"
+        : window;
+
     // ═══════════════════════════════════════════════════════════════════
     //  REFS
     // ═══════════════════════════════════════════════════════════════════
@@ -208,6 +212,9 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
     //  ANIMATIONS
     // ═══════════════════════════════════════════════════════════════════
     useGSAP(() => {
+        const scrollerTarget = embedded
+            ? '#preview-scroller-container'
+            : window;
 
         // ── SCENE 1: entrance ─────────────────────────────────────────
         const tl1 = gsap.timeline();
@@ -242,6 +249,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
                 scrub: 0.5,
                 pin: true,
                 anticipatePin: 1,
+                scroller: scrollerTarget,
             }
         });
         sc1
@@ -258,7 +266,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
             .fromTo(s1BelBgRef.current, { y: 0, opacity: 1 }, { y: 60, opacity: 0, duration: 1 }, 1.8);
 
         // ── SCENE 2: Ganesh blessings ─────────────────────────────────
-        const s2ST = { trigger: s2Ref.current, start: 'top 65%', toggleActions: 'play none none reverse' };
+        const s2ST = { trigger: s2Ref.current, start: 'top 65%', toggleActions: 'play none none reverse', scroller: scrollerTarget };
         gsap.fromTo(s2CirRef.current, { scale: 0, rotation: -120, opacity: 0 }, { scrollTrigger: s2ST, scale: 1, rotation: 0, opacity: 1, duration: 1.4, ease: 'back.out(1.3)' });
         gsap.fromTo(s2GanRef.current, { scale: 0.6, opacity: 0 }, { scrollTrigger: { ...s2ST, start: 'top 58%' }, scale: 1, opacity: 1, duration: 1.2, ease: 'power3.out', delay: 0.25 });
         gsap.fromTo(s2LotRef.current, { y: 30, opacity: 0, scale: 0.85 }, { scrollTrigger: { ...s2ST, start: 'top 52%' }, y: 0, opacity: 1, scale: 1, duration: 1, ease: 'power2.out', delay: 0.4 });
@@ -267,15 +275,15 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
         gsap.fromTo(s2TxtRef.current.children, { y: 20, opacity: 0 }, { scrollTrigger: { ...s2ST, start: 'top 50%' }, y: 0, opacity: 1, duration: 0.9, stagger: 0.14, ease: 'power2.out', delay: 0.3 });
 
         // BG floral parallax
-        gsap.to(s2BgLRef.current, { scrollTrigger: { trigger: s2Ref.current, start: 'top bottom', end: 'bottom top', scrub: 1 }, y: -25, ease: 'none' });
-        gsap.to(s2BgRRef.current, { scrollTrigger: { trigger: s2Ref.current, start: 'top bottom', end: 'bottom top', scrub: 1 }, y: -25, ease: 'none' });
+        gsap.to(s2BgLRef.current, { scrollTrigger: { trigger: s2Ref.current, start: 'top bottom', end: 'bottom top', scrub: 1, scroller: scrollerTarget }, y: -25, ease: 'none' });
+        gsap.to(s2BgRRef.current, { scrollTrigger: { trigger: s2Ref.current, start: 'top bottom', end: 'bottom top', scrub: 1, scroller: scrollerTarget }, y: -25, ease: 'none' });
 
         // Idle: Ganesh glow pulse + lotus float
         gsap.to(s2GanRef.current, { filter: 'brightness(1.12)', duration: 2.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
         gsap.to(s2LotRef.current, { y: '-=7', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
         // ── SCENE 3: Invitation card ──────────────────────────────────
-        const s3ST = { trigger: s3Ref.current, start: 'top 72%', toggleActions: 'play none none reverse' };
+        const s3ST = { trigger: s3Ref.current, start: 'top 72%', toggleActions: 'play none none reverse', scroller: scrollerTarget };
         gsap.fromTo(s3FrmRef.current, { y: 70, opacity: 0, scale: 0.94 }, { scrollTrigger: s3ST, y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' });
         gsap.fromTo(s3FlwLRef.current, { x: -45, opacity: 0 }, { scrollTrigger: { ...s3ST, start: 'top 65%' }, x: 0, opacity: 1, duration: 1, ease: 'power2.out', delay: 0.3 });
         gsap.fromTo(s3FlwRRef.current, { x: 45, opacity: 0 }, { scrollTrigger: { ...s3ST, start: 'top 65%' }, x: 0, opacity: 1, duration: 1, ease: 'power2.out', delay: 0.3 });
@@ -286,7 +294,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
         gsap.to(s3FlwRRef.current, { rotation: -2, transformOrigin: 'bottom center', duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
         // ── SCENE 4: Wedding celebrations list ────────────────────────
-        const s4ST = { trigger: s4Ref.current, start: 'top 70%', toggleActions: 'play none none reverse' };
+        const s4ST = { trigger: s4Ref.current, start: 'top 70%', toggleActions: 'play none none reverse', scroller: scrollerTarget };
         gsap.fromTo(s4FlwLRef.current, { x: -45, opacity: 0 }, { scrollTrigger: s4ST, x: 0, opacity: 1, duration: 1, ease: 'power2.out' });
         gsap.fromTo(s4FlwRRef.current, { x: 45, opacity: 0 }, { scrollTrigger: s4ST, x: 0, opacity: 1, duration: 1, ease: 'power2.out' });
         gsap.fromTo(s4TxtRef.current.children, { y: 25, opacity: 0 }, { scrollTrigger: { ...s4ST, start: 'top 65%' }, y: 0, opacity: 1, duration: 0.9, stagger: 0.1, ease: 'power2.out' });
@@ -303,6 +311,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
                     start: 'top 95%',
                     end: 'bottom 15%',
                     scrub: 1,
+                    scroller: scrollerTarget,
                 }
             });
             tl.fromTo(inner,
@@ -319,7 +328,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
         gsap.to(s4FlwRRef.current, { rotation: -2.5, transformOrigin: 'bottom right', duration: 3.7, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
         // ── SCENE 5: Wedding ceremony (pinned slideshow) ──────────────
-        const s5ST = { trigger: s5Ref.current, start: 'top 70%', toggleActions: 'play none none reverse' };
+        const s5ST = { trigger: s5Ref.current, start: 'top 70%', toggleActions: 'play none none reverse', scroller: scrollerTarget };
         gsap.fromTo(s5FrmRef.current, { y: 50, opacity: 0, scale: 0.95 }, { scrollTrigger: s5ST, y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' });
         gsap.fromTo(s5PanRef.current, { rotation: -18, scale: 0.7, opacity: 0 }, { scrollTrigger: { ...s5ST, start: 'top 62%' }, rotation: 0, scale: 1, opacity: 1, duration: 1.3, ease: 'back.out(1.5)' });
         gsap.fromTo(s5FlwLRef.current, { x: -55, opacity: 0 }, { scrollTrigger: s5ST, x: 0, opacity: 1, duration: 1.2, ease: 'power2.out' });
@@ -336,6 +345,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
                     scrub: 1,
                     pin: true,
                     anticipatePin: 1,
+                    scroller: scrollerTarget,
                 }
             });
 
@@ -401,7 +411,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
         gsap.to(s5FlwRRef.current, { rotation: -2, transformOrigin: 'bottom center', duration: 3.8, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
         // ── SCENE 6: Meet the couple (pinned gallery slideshow) ───────
-        const s6ST = { trigger: s6Ref.current, start: 'top 72%', toggleActions: 'play none none reverse' };
+        const s6ST = { trigger: s6Ref.current, start: 'top 72%', toggleActions: 'play none none reverse', scroller: scrollerTarget };
         gsap.fromTo(s6BoxRef.current, { y: 55, opacity: 0, scale: 0.94 }, { scrollTrigger: s6ST, y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' });
         gsap.fromTo(s6FlwLRef.current, { x: -40, opacity: 0 }, { scrollTrigger: { ...s6ST, start: 'top 65%' }, x: 0, opacity: 1, duration: 1, ease: 'power2.out', delay: 0.25 });
         gsap.fromTo(s6FlwRRef.current, { x: 40, opacity: 0 }, { scrollTrigger: { ...s6ST, start: 'top 65%' }, x: 0, opacity: 1, duration: 1, ease: 'power2.out', delay: 0.25 });
@@ -418,6 +428,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
                     scrub: 1,
                     pin: true,
                     anticipatePin: 1,
+                    scroller: scrollerTarget,
                 }
             });
 
@@ -466,7 +477,7 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
         gsap.to(s6FlwRRef.current, { rotation: -1.8, transformOrigin: 'bottom right', duration: 3.9, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
         // ── SCENE 7: RSVP ─────────────────────────────────────────────
-        const s7ST = { trigger: s7Ref.current, start: 'top 68%', toggleActions: 'play none none reverse' };
+        const s7ST = { trigger: s7Ref.current, start: 'top 68%', toggleActions: 'play none none reverse', scroller: scrollerTarget };
         gsap.fromTo(s7LtLRef.current, { y: -35, opacity: 0 }, { scrollTrigger: { ...s7ST, start: 'top 72%' }, y: 0, opacity: 1, duration: 1, ease: 'power2.out' });
         gsap.fromTo(s7LtRRef.current, { y: -35, opacity: 0 }, { scrollTrigger: { ...s7ST, start: 'top 72%' }, y: 0, opacity: 1, duration: 1, ease: 'power2.out', delay: 0.15 });
         gsap.fromTo(s7PeaLRef.current, { x: -60, opacity: 0 }, { scrollTrigger: s7ST, x: 0, opacity: 1, duration: 1.3, ease: 'back.out(1.2)' });
