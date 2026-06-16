@@ -25,6 +25,7 @@ const Template01 = dynamic(() => import("./templates/Template01"), { ssr: false,
 const Template04 = dynamic(() => import("./templates/Template04"), { ssr: false, loading: TemplateSkeleton });
 const Template05 = dynamic(() => import("./templates/Template05"), { ssr: false, loading: TemplateSkeleton });
 const Template03 = dynamic(() => import("./templates/Template03"), { ssr: false, loading: TemplateSkeleton });
+const Template06 = dynamic(() => import("./templates/Template06"), { ssr: false, loading: TemplateSkeleton });
 
 const templateComponentMap = {
   "1": Template01,
@@ -42,6 +43,10 @@ const templateComponentMap = {
   "5": Template05,
   "05": Template05,
   template05: Template05,
+  "6": Template06,
+  "06": Template06,
+  template06: Template06,
+  template6: Template06,
   default: Template01,
 };
 

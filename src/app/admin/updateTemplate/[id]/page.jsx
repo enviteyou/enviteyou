@@ -149,6 +149,7 @@ export default function UpdateTemplate() {
                 <option value="3">Template 03 (Elegant Pink Pastel Theme)</option>
                 <option value="4">Template 04 (Golden Arch Motif Theme)</option>
                 <option value="5">Template 05 (Festive Floral / Diya Theme)</option>
+                <option value="6">Template 06 (Mewar Palace Udaipur Theme)</option>
               </select>
             </label>
 
