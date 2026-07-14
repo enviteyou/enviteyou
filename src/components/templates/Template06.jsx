@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
 
 // ─── Asset base paths ─────────────────────────────────────────────────────────
 const B = '/assets/template/06';
-const S1 = `${B}/Scene 1 `;   // note trailing space
+const S1 = `${B}/Scene 1`;
 const S2 = `${B}/Scene 2`;
 const S3 = `${B}/Scene 3`;
 const S4 = `${B}/scene 4`;
@@ -212,8 +212,26 @@ export default function Template06({ formData = {}, template = {}, embedded = fa
     //  ANIMATIONS
     // ═══════════════════════════════════════════════════════════════════
     useGSAP(() => {
+        if (
+            !wrapRef.current ||
+            !s1Ref.current ||
+            !s1BgRef.current ||
+            !s1ArcRef.current ||
+            !s1UpFlwRef.current ||
+            !s1BelBgRef.current ||
+            !s1FlwLRef.current ||
+            !s1FlwRRef.current ||
+            !s1PeaLRef.current ||
+            !s1PeaRRef.current ||
+            !s1DivRef.current ||
+            !s1TxtRef.current ||
+            !s1ScrRef.current
+        ) {
+            return;
+        }
+
         const scrollerTarget = embedded
-            ? '#preview-scroller-container'
+            ? (wrapRef.current.closest('#preview-scroller-container') || window)
             : window;
 
         // ── SCENE 1: entrance ─────────────────────────────────────────
