@@ -163,7 +163,10 @@ export default function TemplateCustomizer({ template }) {
       {/* Main Split Pane Workspace */}
       <main className="absolute top-14 bottom-18 left-0 right-0 flex flex-col lg:flex-row overflow-hidden bg-[#fcfaf8]">
         {/* Left Column: Fixed/Scrollable Form Panel */}
-        <section className="w-full lg:w-[480px] xl:w-[540px] h-full bg-white lg:border-r border-black/10 z-30 overflow-y-auto hide-scrollbar ">
+        <section
+          data-lenis-prevent
+          className="w-full lg:w-[480px] xl:w-[540px] h-full bg-white lg:border-r border-black/10 z-30 overflow-y-auto hide-scrollbar "
+        >
           <TemplateForm
             ref={formRef}
             key={templateKey || "template-form"}
@@ -179,6 +182,7 @@ export default function TemplateCustomizer({ template }) {
         {/* Right Column: Live Preview Page Flow (Scrolls independently within its viewport boundary, hidden on mobile) */}
         <section
           id="preview-scroller-container"
+          data-lenis-prevent
           className="hidden lg:flex flex-1 h-full bg-[#f6f3ef] overflow-y-auto px-6 py-8 flex-col items-center relative select-none"
         >
           <div className="w-full max-w-[375px] mb-4 flex justify-between items-center text-black/45 px-2 shrink-0">
@@ -330,7 +334,11 @@ export default function TemplateCustomizer({ template }) {
 
       {/* Fullscreen Mobile Preview Modal */}
       {showPreviewModal && (
-        <div id="preview-scroller-container" className="fixed inset-0 z-5000 bg-[#faf7f3] overflow-y-auto flex flex-col">
+        <div
+          id="preview-scroller-container"
+          data-lenis-prevent
+          className="fixed inset-0 z-5000 bg-[#faf7f3] overflow-y-auto flex flex-col"
+        >
           <div className="sticky top-0 bg-white border-b border-black/10 px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between z-50 shadow-sm">
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#74313d] bg-[#74313d]/10 px-2.5 py-1 rounded">Live Preview</span>

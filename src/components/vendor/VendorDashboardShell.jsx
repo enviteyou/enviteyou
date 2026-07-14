@@ -182,7 +182,10 @@ export default function VendorDashboardShell({ children }) {
             </button>
           </div>
 
-          <nav className="mt-6 space-y-2 overflow-y-auto pr-1">
+          <nav
+            data-lenis-prevent
+            className="mt-6 space-y-2 overflow-y-auto pr-1"
+          >
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href || (item.href !== "/vendor/dashboard" && pathname?.startsWith(item.href));
               const Icon = item.icon;
