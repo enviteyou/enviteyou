@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Bell, CalendarPlus, CreditCard, LifeBuoy, LayoutGrid, Menu, Monitor, Plus, Users, Home, X, LogOut, Camera } from "lucide-react";
 import { getVendorSession } from "@/lib/vendorAuth";
 import api from "@/api/axios";
+import { useLenis } from "lenis/react";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
 export default function VendorDashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
+  const lenis = useLenis();
   const [workspace, setWorkspace] = useState("Business name");
   const [vendorName, setVendorName] = useState("");
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -77,6 +79,20 @@ export default function VendorDashboardShell({ children }) {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      lenis?.stop();
+      document.body.style.overflow = "hidden";
+    } else {
+      lenis?.start();
+      document.body.style.overflow = "";
+    }
+    return () => {
+      lenis?.start();
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen, lenis]);
+
   if (checkingAuth) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f6f3ee] text-black">
@@ -94,7 +110,7 @@ export default function VendorDashboardShell({ children }) {
   return (
     <div className="min-h-screen bg-[#f6f3ee] text-black">
       <div className="flex min-h-screen">
-        <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white lg:block">
+        <aside className="sticky top-0 hidden  w-72 shrink-0 border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white lg:block">
           <Link href="/vendor/dashboard" className="flex items-center gap-3 border-b border-white/8 pb-6">
             <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#b89143]/35 bg-[#151515] text-[#c8a24c]">
               <span className="text-lg font-semibold">E</span>
@@ -105,7 +121,7 @@ export default function VendorDashboardShell({ children }) {
             </div>
           </Link>
 
-          <nav className="mt-6 space-y-2">
+          <nav className="mt-6 space-y-1.5">
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href || (item.href !== "/vendor/dashboard" && pathname?.startsWith(item.href));
               const Icon = item.icon;
@@ -126,7 +142,7 @@ export default function VendorDashboardShell({ children }) {
             })}
           </nav>
 
-          <div className="mt-auto pt-6">
+          <div className="mt-auto pt-4">
             <div className="rounded-[1.5rem] border border-[#c8a24c]/40 bg-[linear-gradient(180deg,rgba(20,20,20,0.98),rgba(10,10,10,1))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c8a24c]/30 bg-[#0f0f0f] text-[#c8a24c]">
@@ -141,7 +157,7 @@ export default function VendorDashboardShell({ children }) {
                 type="button"
                 variant="outline"
                 className="mt-4 h-11 w-full justify-start border-[#c8a24c]/45 bg-transparent text-white hover:bg-white/10"
-                onClick={() => window.open("https://wa.me/919999999999", "_blank")}
+                onClick={() => window.open("https://wa.me/918828287278", "_blank")}
               >
                 <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-current">◎</span>
                 Chat on WhatsApp
@@ -160,7 +176,8 @@ export default function VendorDashboardShell({ children }) {
         <div className={`fixed inset-0 z-40 bg-black/45 transition-opacity lg:hidden ${isMobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"}`} onClick={() => setIsMobileMenuOpen(false)} aria-hidden="true" />
 
         <aside
-          className={`fixed inset-y-0 left-0 z-50 w-[84vw] max-w-[320px] transform border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white transition-transform duration-300 lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+          data-lenis-prevent
+          className={`fixed inset-y-0 left-0 z-50 w-[84vw] max-w-[320px] transform border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white transition-transform duration-300 lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} flex flex-col overflow-y-auto`}
           aria-hidden={!isMobileMenuOpen}
         >
           <div className="flex items-center justify-between border-b border-white/8 pb-5">
@@ -184,8 +201,7 @@ export default function VendorDashboardShell({ children }) {
           </div>
 
           <nav
-            data-lenis-prevent
-            className="mt-6 space-y-2 overflow-y-auto pr-1"
+            className="mt-6 space-y-2 pr-1"
           >
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href || (item.href !== "/vendor/dashboard" && pathname?.startsWith(item.href));

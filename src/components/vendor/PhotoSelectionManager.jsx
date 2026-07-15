@@ -145,9 +145,8 @@ export default function PhotoSelectionManager() {
             return (
               <div
                 key={project._id}
-                className={`group overflow-hidden rounded-[1.35rem] border bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 flex flex-col justify-between ${
-                  isCompleted ? "border-emerald-500/30" : "border-black/10"
-                }`}
+                className={`group overflow-hidden rounded-[1.35rem] border bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 flex flex-col justify-between ${isCompleted ? "border-emerald-500/30" : "border-black/10"
+                  }`}
               >
                 <div>
                   <div className="flex items-start justify-between gap-4">
@@ -158,11 +157,10 @@ export default function PhotoSelectionManager() {
                       </p>
                     </div>
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
-                        isCompleted
+                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${isCompleted
                           ? "bg-emerald-50 border-emerald-200 text-emerald-700"
                           : "bg-amber-50 border-amber-200 text-amber-700"
-                      }`}
+                        }`}
                     >
                       {isCompleted ? "Completed" : "Active"}
                     </span>
