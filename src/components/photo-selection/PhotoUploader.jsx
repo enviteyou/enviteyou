@@ -3,6 +3,7 @@ import axios from "axios";
 import api from "@/api/axios";
 import { toast } from "sonner";
 import { Upload, AlertCircle, CheckCircle, RefreshCw, Loader2 } from "lucide-react";
+import { compressImageToMax20KB } from "@/lib/imageCompression";
 
 export default function PhotoUploader({ projectId, onUploadComplete }) {
   const [uploading, setUploading] = useState(false);
@@ -27,8 +28,12 @@ export default function PhotoUploader({ projectId, onUploadComplete }) {
 
   const uploadFileDirect = async (file, signatureData) => {
     const { signature, timestamp, apiKey, cloudName, folder } = signatureData;
+    
+    // Compress the photo to max 20kb client-side before upload
+    const compressedFile = await compressImageToMax20KB(file);
+
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", compressedFile);
     formData.append("api_key", apiKey);
     formData.append("timestamp", timestamp);
     formData.append("signature", signature);
