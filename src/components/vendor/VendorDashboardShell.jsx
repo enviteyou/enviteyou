@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Bell, CalendarPlus, CreditCard, LifeBuoy, LayoutGrid, Menu, Monitor, Plus, Users, Home, X, LogOut } from "lucide-react";
+import { Bell, CalendarPlus, CreditCard, LifeBuoy, LayoutGrid, Menu, Monitor, Plus, Users, Home, X, LogOut, Camera } from "lucide-react";
 import { getVendorSession } from "@/lib/vendorAuth";
 import api from "@/api/axios";
 
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { label: "Create New Invitation", href: "/vendor/dashboard/create-new-template", icon: CalendarPlus },
   { label: "Template Library", href: "/vendor/dashboard/template-library", icon: LayoutGrid },
   { label: "My Invitations", href: "/vendor/dashboard/my-templates", icon: Monitor },
+  { label: "Photo Selections", href: "/vendor/dashboard/photo-selections", icon: Camera },
   { label: "Payments", href: "/vendor/dashboard/payments", icon: CreditCard },
   { label: "Clients", href: "/vendor/dashboard/clients", icon: Users },
   { label: "Support & Help", href: "/vendor/dashboard/support-help", icon: LifeBuoy },

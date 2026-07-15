@@ -9,6 +9,7 @@ import { normalizeTemplates } from "@/lib/templateService";
 import TemplateCustomizer from "@/components/TemplateCustomizer";
 import TemplateDetail from "@/components/TemplateDetail";
 import TemplateForm from "@/components/TemplateForm";
+import PhotoSelectionManager from "./PhotoSelectionManager";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Copy, ExternalLink, Eye, IndianRupee, LayoutGrid, Megaphone, MessageSquareMore, Monitor, Search, Sparkles, Users } from "lucide-react";
 import Image from "next/image";
@@ -564,6 +565,10 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         </div>
       </div>
     );
+  }
+
+  if (activeTab === "photo-selections") {
+    return <PhotoSelectionManager />;
   }
 
   if (activeTab === "support-help") {
