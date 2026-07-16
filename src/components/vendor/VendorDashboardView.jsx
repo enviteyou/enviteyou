@@ -11,7 +11,7 @@ import TemplateDetail from "@/components/TemplateDetail";
 import TemplateForm from "@/components/TemplateForm";
 import PhotoSelectionManager from "./PhotoSelectionManager";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Copy, ExternalLink, Eye, IndianRupee, LayoutGrid, Megaphone, MessageSquareMore, Monitor, Search, Sparkles, Users } from "lucide-react";
+import { CalendarDays, Copy, ExternalLink, Eye, IndianRupee, LayoutGrid, Megaphone, MessageSquareMore, Monitor, Search, Sparkles, Users, Download, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 
 function formatCurrency(value) {
@@ -89,48 +89,159 @@ function TemplateGridCard({ template, selected, onSelect, onUse }) {
   );
 }
 
-function InvitationTable({ invitations, onSelect, selectedId, onDownload }) {
+
+
+function InvitationTable({
+  invitations,
+  onSelect,
+  selectedId,
+  onDownload,
+}) {
   return (
-    <div className="overflow-hidden rounded-[1.35rem] border border-black/10 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
-      <div className="border-b border-black/8 px-5 py-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/40">Payment History</p>
+    <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">
+            Payment History
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            All successful invitation purchases
+          </p>
+        </div>
+
+        <span className="rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
+          {invitations.length} Payments
+        </span>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[780px] text-left text-sm">
-          <thead className="bg-black/2 text-black/50">
-            <tr>
-              <th className="px-5 py-4 font-medium">Date</th>
-              <th className="px-5 py-4 font-medium">Couple Name</th>
-              <th className="px-5 py-4 font-medium">Invitation Link</th>
-              <th className="px-8 py-4 font-medium">Amount</th>
-              <th className="px-5 py-4 font-medium">Status</th>
-              <th className="px-5 py-4 font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {invitations.map((item) => {
-              const selected = selectedId === item._id;
-              const slug = item.slug || `${String(item.bride || "invite").toLowerCase()}-${String(item.groom || "weds").toLowerCase()}`;
-              return (
-                <tr key={item._id} className={`border-t border-black/8 ${selected ? "bg-[#f6efdf]" : "hover:bg-black/3"}`} onClick={() => onSelect(item)}>
-                  <td className="px-5 py-4 whitespace-nowrap text-black/70">{formatDate(item.createdAt)}</td>
-                  <td className="px-5 py-4 font-medium text-black">{item.bride} &amp; {item.groom}</td>
-                  <td className="px-5 py-4 text-black/60">
-                    <span className="break-all">enviteyou.com/invitations/{slug}</span>
-                  </td>
-                  <td className="px-5 py-4 font-medium text-black">{formatCurrency(item.amountPaid ? item.amountPaid / 100 : 400)}</td>
-                  <td className="px-5 py-4"><span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Paid</span></td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3 text-black/65">
-                      <button type="button" className="inline-flex items-center gap-1 hover:text-black"><Eye className="h-4 w-4" /> View Details</button>
-                      <button type="button" onClick={(e) => { e.stopPropagation(); onDownload?.(item._id); }} className="inline-flex items-center gap-1 hover:text-black"><ExternalLink className="h-4 w-4" /> Download</button>
+
+      <div className="divide-y divide-gray-200">
+        {invitations.map((item) => {
+          const selected = selectedId === item._id;
+
+          const slug =
+            item.slug ||
+            `${String(item.bride || "invite").toLowerCase()}-${String(
+              item.groom || "weds"
+            ).toLowerCase()}`;
+
+          const inviteLink = `https://enviteyou.com/invitations/${slug}`;
+
+          return (
+            <div
+              key={item._id}
+              onClick={() => onSelect(item._id)}
+              className={`cursor-pointer transition-all duration-200 ${selected
+                ? "bg-amber-50"
+                : "hover:bg-gray-50"
+                }`}
+            >
+              <div className="p-6">
+
+                {/* Top Row */}
+                <div className="flex flex-wrap items-start justify-between gap-5">
+
+                  {/* Left */}
+                  <div className="min-w-0 flex-1">
+
+                    <div className="flex flex-wrap items-center gap-3">
+
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {item.bride} & {item.groom}
+                      </h3>
+
+                      <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                        Paid
+                      </span>
+
                     </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+
+                    <p className="mt-1 text-sm text-gray-500">
+                      Wedding Invitation
+                    </p>
+
+                  </div>
+
+                  {/* Right */}
+                  <div className="text-right">
+
+                    <p className="text-2xl font-bold text-gray-900">
+                      {formatCurrency(
+                        item.amountPaid
+                          ? item.amountPaid / 100
+                          : 499
+                      )}
+                    </p>
+
+                    <p className="mt-1 text-sm text-gray-500">
+                      {formatDate(item.createdAt)}
+                    </p>
+
+                  </div>
+
+                </div>
+
+                {/* Link */}
+                <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
+
+                  <p className="truncate text-sm text-gray-700">
+                    {inviteLink}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(inviteLink);
+                    }}
+                    className="mt-3 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-amber-700 shadow-sm hover:bg-amber-50"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Copy Link
+                  </button>
+
+                </div>
+
+                {/* Footer */}
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
+
+                  <div className="text-sm text-gray-500">
+                    Transaction ID :
+                    <span className="ml-2 font-medium text-gray-800">
+                      EVY-{String(item._id).slice(-8).toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3">
+
+                    {/* <button
+                      type="button"
+                      className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+                    >
+                      <Eye className="h-4 w-4" />
+                      View
+                    </button> */}
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDownload?.(item._id);
+                      }}
+                      className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download Receipt
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -143,6 +254,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [invitations, setInvitations] = useState([]);
   const [selectedInvitationId, setSelectedInvitationId] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState(null);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
   const [loadingInvitations, setLoadingInvitations] = useState(false);
   const [query, setQuery] = useState("");
@@ -491,13 +603,13 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Amount</p><p className="mt-1 text-black">{formatCurrency(selectedInvitation.amountPaid ? selectedInvitation.amountPaid / 100 : 400)}</p></div>
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Status</p><p className="mt-1 text-black">Paid</p></div>
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Payment Date</p><p className="mt-1 text-black">{formatDate(selectedInvitation.createdAt)}</p></div>
-                  <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Template Link</p><p className="mt-1 break-all text-black">enviteyou.com/invitations/{selectedInvitation.slug}</p></div>
+                  <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Template Link</p><p className="mt-1 break-all text-black">enviteyou.com/invite/{selectedInvitation.slug}</p></div>
                   <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Transaction ID</p><p className="mt-1 text-black">EVY-{String(selectedInvitation._id).slice(-8).toUpperCase()}</p></div>
                 </div>
 
                 <div className="grid gap-3">
                   <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => handleDownloadInvoice(selectedInvitation._id)}>Download Receipt</Button>
-                  <Button variant="outline" className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => window.open(`/invitations/${selectedInvitation.slug}`, "_blank")}>Open Template</Button>
+                  <Button variant="outline" className="h-11 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={() => window.open(`/invite/${selectedInvitation.slug}`, "_blank")}>Open Invitation</Button>
                 </div>
               </div>
             ) : null}
@@ -515,6 +627,8 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
       date: formatDate(invitation.date || invitation.createdAt),
       events: Array.isArray(invitation.selectedEvents) ? invitation.selectedEvents.length : 0,
     }));
+
+    const activeClient = clientRows.find((client) => client.id === selectedClientId) || clientRows[0] || null;
 
     return (
       <div className="space-y-6">
@@ -534,32 +648,43 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
           <SectionCard title="Recent Clients">
             <div className="space-y-3">
-              {clientRows.length ? clientRows.map((client) => (
-                <div key={client.id} className="rounded-2xl border border-black/10 bg-black/2 p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-lg font-semibold text-black">{client.name}</p>
-                      <p className="text-sm text-black/55">{client.venue}</p>
+              {clientRows.length ? clientRows.map((client) => {
+                const isSelected = activeClient?.id === client.id;
+                return (
+                  <div
+                    key={client.id}
+                    onClick={() => setSelectedClientId(client.id)}
+                    className={`cursor-pointer rounded-2xl border p-4 transition-all duration-200 ${
+                      isSelected
+                        ? "border-[#c8a24c]/45 bg-[#fcf8ee]"
+                        : "border-black/10 bg-black/2 hover:bg-black/[0.04]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-lg font-semibold text-black">{client.name}</p>
+                        <p className="text-sm text-black/55">{client.venue}</p>
+                      </div>
+                      <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-black/55 shadow-sm border border-black/5">{client.date}</span>
                     </div>
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-black/55">{client.date}</span>
                   </div>
-                </div>
-              )) : <p className="text-sm text-black/60">No clients found.</p>}
+                );
+              }) : <p className="text-sm text-black/60">No clients found.</p>}
             </div>
           </SectionCard>
 
           <SectionCard title="Client Detail">
-            {clientRows[0] ? (
+            {activeClient ? (
               <div className="space-y-4 text-sm text-black/65">
-                <p className="text-2xl font-semibold text-black">{clientRows[0].name}</p>
-                <p>{clientRows[0].venue}</p>
+                <p className="text-2xl font-semibold text-black">{activeClient.name}</p>
+                <p className="text-black/55">{activeClient.venue}</p>
                 <div className="rounded-2xl border border-black/10 bg-white p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Invitation Status</p>
-                  <p className="mt-2 text-black">Active</p>
+                  <p className="mt-2 text-black font-semibold">Active</p>
                 </div>
                 <div className="rounded-2xl border border-black/10 bg-white p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Events</p>
-                  <p className="mt-2 text-black">{clientRows[0].events}</p>
+                  <p className="mt-2 text-black font-semibold">{activeClient.events} {activeClient.events === 1 ? "Event" : "Events"}</p>
                 </div>
               </div>
             ) : (
