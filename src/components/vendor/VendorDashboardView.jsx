@@ -28,8 +28,8 @@ function formatDate(value) {
 
 function SectionCard({ title, children, className = "" }) {
   return (
-    <section className={`rounded-[1.5rem] border border-black/10 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.05)] ${className}`}>
-      {title ? <div className="border-b border-black/8 px-5 py-4"><h2 className="text-xl font-semibold tracking-tight text-black">{title}</h2></div> : null}
+    <section className={`rounded border border-black/10 bg-white  ${className}`}>
+      {title ? <div className="border-b border-black/8 px-5 py-4"><h2 className="text-xl font-semibold font-sans tracking-tight text-black">{title}</h2></div> : null}
       <div className="p-5">{children}</div>
     </section>
   );
@@ -53,7 +53,7 @@ function Metric({ label, value, icon: Icon, hint }) {
 function TemplateGridCard({ template, selected, onSelect, onUse }) {
   return (
     <div
-      className={`group overflow-hidden rounded-[1.35rem] border bg-white text-left shadow-[0_18px_50px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 ${selected ? "border-black" : "border-black/10"}`}
+      className={`group overflow-hidden rounded border bg-white text-left shadow-[0_18px_50px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 ${selected ? "border-black" : "border-black/10"}`}
     >
       <div className="cursor-pointer" onClick={onSelect}>
         <div className="aspect-4/3 overflow-hidden bg-black/5">
@@ -66,20 +66,20 @@ function TemplateGridCard({ template, selected, onSelect, onUse }) {
               <h3 className="text-lg font-semibold text-black">{template.name}</h3>
               <p className="text-sm text-black/55">{template.tag}</p>
             </div>
-            <span className="rounded-full border border-black/10 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-black/50">{template.category}</span>
+            <span className="rounded border border-black/10 px-2 py-1 text-[10px] font-semibold uppercase text-black/50">{template.category}</span>
           </div>
         </div>
       </div>
       <div className="p-4 pt-2">
-        <div className="mt-4 flex items-center justify-between gap-3 text-sm">
-          <span className="rounded-full border border-black/10 px-3 py-1.5 font-medium text-black/70">Vendor Price {formatCurrency(template.vendorPrice || template.sellPrice)}</span>
+        <div className="mt-4 flex items-center justify-between gap-3 text-[10px]">
+          <span className="rounded border border-black/10 px-3 py-3 font-medium text-black/70">Vendor Price {formatCurrency(template.vendorPrice || template.sellPrice)}</span>
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               onUse?.(template);
             }}
-            className="rounded-full bg-black px-3 py-1.5 font-medium text-white hover:bg-black/90 cursor-pointer"
+            className="rounded bg-black px-2 py-2 font-medium text-white hover:bg-black/90 cursor-pointer"
           >
             Use Template
           </button>
@@ -102,7 +102,7 @@ function InvitationTable({ invitations, onSelect, selectedId, onDownload }) {
               <th className="px-5 py-4 font-medium">Date</th>
               <th className="px-5 py-4 font-medium">Couple Name</th>
               <th className="px-5 py-4 font-medium">Invitation Link</th>
-              <th className="px-5 py-4 font-medium">Amount</th>
+              <th className="px-8 py-4 font-medium">Amount</th>
               <th className="px-5 py-4 font-medium">Status</th>
               <th className="px-5 py-4 font-medium">Actions</th>
             </tr>
@@ -244,22 +244,22 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
       <div className="space-y-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Overview</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Create New Template</h1>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Create New Invitation</h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-black/60">Fill wedding details and generate a premium invitation template in minutes.</p>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_460px]">
           <div className="space-y-6">
-            <div className="rounded-[1.5rem] border border-black/10 bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+            <div className="rounded border border-black/10 bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
               <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-3 rounded-2xl border border-black/10 bg-black/3 p-3">
-                  <div className="h-16 w-24 overflow-hidden rounded-xl border border-black/10 bg-black/10">
+                <div className="flex items-center gap-3 rounded border border-black/10 bg-black/3 p-3">
+                  <div className="h-16 w-24 overflow-hidden rounded border border-black/10 bg-black/10">
                     {selectedTemplate?.preview ? <Image src={selectedTemplate.preview} alt={selectedTemplate.name} width={400}
                       height={400} className="h-full w-full object-cover" /> : null}
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/40">Selected Template</p>
-                    <h2 className="mt-1 text-2xl font-semibold tracking-tight text-black">{selectedTemplate?.name || "Royal Ivory Palace"}</h2>
+                    <h2 className="mt-1 text-2xl font-semibold font-sans tracking-tight text-black">{selectedTemplate?.name || "Royal Ivory Palace"}</h2>
                     <p className="text-sm text-black/55">{selectedTemplate?.category || "Hindu Wedding"}</p>
                   </div>
                 </div>
@@ -293,7 +293,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
 
           <div className="space-y-6">
             <SectionCard title="Live Preview">
-              <div className="rounded-[1.35rem] border border-black/10 bg-[#faf7f3] p-4">
+              <div className=" p-4">
                 {selectedTemplate ? <TemplateDetail template={selectedTemplate} formData={formData} fullscreen={true} /> : <div className="rounded-[1.35rem] border border-black/10 bg-white p-6 text-sm text-black/55">Select a template to preview it here.</div>}
               </div>
               <p className="mt-4 text-center text-sm text-black/45">Live preview updates as you fill the form.</p>
@@ -321,61 +321,65 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
 
   if (activeTab === "template-library") {
     return (
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Catalog</p>
-              <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Template Library</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Browse premium wedding templates for your clients.</p>
-            </div>
-            <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => router.push("/vendor/dashboard/create-new-template")}>+ Create New Template</Button>
+      <>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Catalog</p>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">Template Library</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">Browse premium wedding templates for your clients.</p>
           </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <label className="flex h-11 w-full items-center gap-2 rounded-2xl border border-black/10 bg-white px-4 text-sm text-black/45 shadow-[0_10px_24px_rgba(0,0,0,0.04)] sm:max-w-sm">
-              <Search className="h-4 w-4" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search templates..." className="w-full bg-transparent text-sm text-black outline-none placeholder:text-black/30" />
-            </label>
-            <div className="flex flex-wrap gap-2 text-xs font-semibold text-black/60">
-              {["All", "New", "Popular", "Hindu", "Muslim", "Sikh", "Christian", "South Indian", "Minimal", "Royal"].map((tag) => (
-                <span key={tag} className={`rounded-full border px-3 py-1.5 ${tag === "All" ? "border-[#c8a24c]/45 bg-[#f7eecf] text-black" : "border-black/10 bg-white"}`}>{tag}</span>
-              ))}
-            </div>
-          </div>
-
-          {loadingTemplates ? (
-            <SectionCard title="Templates"><p className="text-sm text-black/60">Loading templates...</p></SectionCard>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-              {filteredTemplates.map((template) => (
-                <TemplateGridCard key={template.templateId || template.id} template={template} selected={String(selectedTemplateId) === String(template.templateId || template.id)} onSelect={() => setSelectedTemplateId(String(template.templateId || template.id))} onUse={(t) => router.push(`/vendor/dashboard/create-new-template?template=${t.templateId || t.id}`)} />
-              ))}
-            </div>
-          )}
+          <Button className="h-11 bg-black text-white hover:bg-black/90" onClick={() => router.push("/vendor/dashboard/create-new-template")}>+ Create New Template</Button>
         </div>
 
-        <div className="space-y-6">
-          <SectionCard title={selectedTemplate?.name || "Template Preview"}>
-            {selectedTemplate ? (
-              <TemplateDetail template={selectedTemplate} formData={{}} />
+        <div className="flex flex-col my-10 gap-3 sm:flex-row sm:items-center">
+          <label className="flex h-11 w-full items-center gap-2 rounded-2xl border border-black/10 bg-white px-4 text-sm text-black/45 shadow-[0_10px_24px_rgba(0,0,0,0.04)] sm:max-w-sm">
+            <Search className="h-4 w-4" />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search templates..." className="w-full bg-transparent text-sm text-black outline-none placeholder:text-black/30" />
+          </label>
+          <div className="flex flex-wrap gap-2 text-xs font-semibold text-black/60">
+            {["All", "New", "Popular", "Hindu", "Muslim", "Sikh", "Christian", "South Indian", "Minimal", "Royal"].map((tag) => (
+              <span key={tag} className={`rounded-full border px-3 py-1.5 ${tag === "All" ? "border-[#c8a24c]/45 bg-[#f7eecf] text-black" : "border-black/10 bg-white"}`}>{tag}</span>
+            ))}
+          </div>
+        </div>
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_480px]">
+          <div className="space-y-6">
+
+
+            {loadingTemplates ? (
+              <SectionCard title="Templates"><p className="text-sm text-black/60">Loading templates...</p></SectionCard>
             ) : (
-              <div className="rounded-[1.35rem] border border-black/10 bg-[#faf7f3] p-6 text-sm text-black/55">Pick a template to see the full mobile preview.</div>
+              <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-2">
+                {filteredTemplates.map((template) => (
+                  <TemplateGridCard key={template.templateId || template.id} template={template} selected={String(selectedTemplateId) === String(template.templateId || template.id)} onSelect={() => setSelectedTemplateId(String(template.templateId || template.id))} onUse={(t) => router.push(`/vendor/dashboard/create-new-template?template=${t.templateId || t.id}`)} />
+                ))}
+              </div>
             )}
-          </SectionCard>
+          </div>
 
-          <SectionCard title="Best for">
-            <div className="space-y-3 text-sm text-black/70">
-              <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Hindu Wedding</div>
-              <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Royal Theme</div>
-              <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Luxury Invite</div>
-            </div>
-            <Button className="mt-5 h-11 w-full bg-black text-white hover:bg-black/90" onClick={() => router.push(`/vendor/dashboard/create-new-template?template=${selectedTemplate?.templateId || selectedTemplate?.id || "1"}`)}>
-              Use This Template
-            </Button>
-          </SectionCard>
+          <div className="space-y-6">
+            <SectionCard title={selectedTemplate?.name || "Template Preview"}>
+              {selectedTemplate ? (
+                <TemplateDetail template={selectedTemplate} formData={{}} />
+              ) : (
+                <div className="rounded-[1.35rem] border border-black/10 bg-[#faf7f3] p-6 text-sm text-black/55">Pick a template to see the full mobile preview.</div>
+              )}
+            </SectionCard>
+
+            <SectionCard title="Best for">
+              <div className="space-y-3 text-sm text-black/70">
+                <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Hindu Wedding</div>
+                <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Royal Theme</div>
+                <div className="flex items-center gap-3"><span className="text-[#b7882f]">◌</span> Luxury Invite</div>
+              </div>
+              <Button className="mt-5 h-11 w-full bg-black text-white hover:bg-black/90" onClick={() => router.push(`/vendor/dashboard/create-new-template?template=${selectedTemplate?.templateId || selectedTemplate?.id || "1"}`)}>
+                Use This Template
+              </Button>
+            </SectionCard>
+          </div>
         </div>
-      </div>
+      </>
+
     );
   }
 
@@ -405,7 +409,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
                       <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Published</span>
                     </div>
                     <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-medium text-black/60">
-                      <span className="rounded-full border border-black/10 px-3 py-1.5">enviteyou.com/invitations/{slug}</span>
+                      <span className="rounded-full border border-black/10 px-3 py-1.5">enviteyou.com/invite/{slug}</span>
                       <span className="rounded-full border border-black/10 px-3 py-1.5">Template {invitation.templateId || "1"}</span>
                       <span className="rounded-full border border-black/10 px-3 py-1.5">Events {Array.isArray(invitation.selectedEvents) ? invitation.selectedEvents.length : 0}</span>
                     </div>
@@ -429,9 +433,9 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
                     <div className="rounded-2xl border border-black/10 bg-black/2 p-4"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">Events</p><p className="mt-2 text-black">{Array.isArray(selectedInvitation.selectedEvents) ? selectedInvitation.selectedEvents.join(", ") : "—"}</p></div>
                   </div>
                   <div className="flex flex-col gap-3 sm:flex-row">
-                    <Button className="h-11 flex-1 bg-black text-white hover:bg-black/90" onClick={() => window.open(`/invitations/${selectedInvitation.slug}`, "_blank")}>Open Template</Button>
+                    <Button className="h-11 flex-1 bg-black text-white hover:bg-black/90 cursor-pointer" onClick={() => window.open(`/invite/${selectedInvitation.slug}`, "_blank")}>Open Invitation</Button>
                     <Button variant="outline" className="h-11 flex-1 border-black/10 bg-white text-black hover:bg-black hover:text-white" onClick={async () => {
-                      await navigator.clipboard.writeText(`${window.location.origin}/invitations/${selectedInvitation.slug}`);
+                      await navigator.clipboard.writeText(`${window.location.origin}/invite/${selectedInvitation.slug}`);
                       toast.success("Template link copied");
                     }}>
                       <Copy className="mr-2 h-4 w-4" /> Copy Link

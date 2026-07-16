@@ -10,7 +10,7 @@ import { Bell, CalendarPlus, CreditCard, LifeBuoy, LayoutGrid, Menu, Monitor, Pl
 import { getVendorSession } from "@/lib/vendorAuth";
 import api from "@/api/axios";
 import { useLenis } from "lenis/react";
-
+import Image from "next/image";
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
   { label: "Create New Invitation", href: "/vendor/dashboard/create-new-template", icon: CalendarPlus },
@@ -19,7 +19,6 @@ const NAV_ITEMS = [
   { label: "Photo Selections", href: "/vendor/dashboard/photo-selections", icon: Camera },
   { label: "Payments", href: "/vendor/dashboard/payments", icon: CreditCard },
   { label: "Clients", href: "/vendor/dashboard/clients", icon: Users },
-  { label: "Support & Help", href: "/vendor/dashboard/support-help", icon: LifeBuoy },
 ];
 
 export default function VendorDashboardShell({ children }) {
@@ -97,7 +96,7 @@ export default function VendorDashboardShell({ children }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f6f3ee] text-black">
         <div className="rounded-[1.5rem] border border-black/10 bg-white px-6 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
-          <p className="text-sm text-black/65">Checking vendor authentication...</p>
+          <p className="text-sm text-black/65">Loading....</p>
         </div>
       </div>
     );
@@ -110,18 +109,20 @@ export default function VendorDashboardShell({ children }) {
   return (
     <div className="min-h-screen bg-[#f6f3ee] text-black">
       <div className="flex min-h-screen">
-        <aside className="sticky top-0 hidden  w-72 shrink-0 border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white lg:block">
+        <aside data-lenis-prevent className="sticky top-0 hidden h-screen overflow-y-auto hide-scrollbar flex flex-col w-72 shrink-0 border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white lg:block">
           <Link href="/vendor/dashboard" className="flex items-center gap-3 border-b border-white/8 pb-6">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#b89143]/35 bg-[#151515] text-[#c8a24c]">
-              <span className="text-lg font-semibold">E</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#b89143]/35 bg-[#151515] text-[#c8a24c]">
+              <Image src="/icon.png" alt="Logo" width={50} height={50} />
             </div>
             <div>
-              <p className="text-xl font-semibold tracking-tight">EnviteYou</p>
+              <div className="relative h-8 mb-2 w-25">
+                <Image src="/logo_white_.png" alt="Logo" height={150} width={150} />
+              </div>
               <p className="text-xs uppercase tracking-[0.28em] text-[#c8a24c]">Partner Studio</p>
             </div>
           </Link>
 
-          <nav className="mt-6 space-y-1.5">
+          <nav className="mt-6 space-y-3">
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href || (item.href !== "/vendor/dashboard" && pathname?.startsWith(item.href));
               const Icon = item.icon;

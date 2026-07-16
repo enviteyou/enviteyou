@@ -34,7 +34,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-black/5 bg-white/80 backdrop-blur-md px-6 py-8 flex-col lg:flex shadow-[4px_0_24px_rgba(0,0,0,0.01)]">
+    <aside data-lenis-prevent className="sticky top-0 hidden h-screen overflow-y-auto hide-scrollbar w-72 shrink-0 border-r border-black/5 bg-white/80 backdrop-blur-md px-6 py-8 flex-col lg:flex shadow-[4px_0_24px_rgba(0,0,0,0.01)]">
       {/* Brand Logo Header */}
       <Link href="/admin" className="block group">
         <div className="flex items-center gap-2.5">
