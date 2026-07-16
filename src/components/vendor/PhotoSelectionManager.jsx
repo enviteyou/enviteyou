@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import api from "@/api/axios";
 import { toast } from "sonner";
-import { Camera, Plus, Copy, Check, Upload, FolderSync, ExternalLink, Loader2, Sparkles } from "lucide-react";
+import { Camera, Plus, Copy, Check, Upload, FolderSync, ExternalLink, Loader2, Sparkles, Trash2 } from "lucide-react";
 import PhotoUploader from "../photo-selection/PhotoUploader";
 import LocalCopyModal from "../photo-selection/LocalCopyModal";
 
@@ -75,6 +75,23 @@ export default function PhotoSelectionManager() {
     }
   };
 
+  const handleDeleteProject = async (projectId) => {
+    if (!window.confirm("Are you sure you want to delete this project? This will permanently delete all uploaded photos from the server and database.")) {
+      return;
+    }
+
+    try {
+      const res = await api.delete(`/photo-selection/projects/${projectId}`);
+      if (res.data?.success) {
+        toast.success("Project and all associated photos deleted successfully!");
+        fetchProjects();
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || "Failed to delete project.");
+    }
+  };
+
   const handleCopyLink = (token) => {
     const link = `${window.location.origin}/select/${token}`;
     navigator.clipboard.writeText(link);
@@ -139,7 +156,7 @@ export default function PhotoSelectionManager() {
           <p className="text-xs text-black/55 mt-1">Create your first client album list to upload photos.</p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => {
             const isCompleted = project.status === "completed";
             return (
@@ -156,14 +173,24 @@ export default function PhotoSelectionManager() {
                         Client: {project.clientName}
                       </p>
                     </div>
-                    <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${isCompleted
+                    <div className="flex flex-col items-end gap-2">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${isCompleted
                           ? "bg-emerald-50 border-emerald-200 text-emerald-700"
                           : "bg-amber-50 border-amber-200 text-amber-700"
-                        }`}
-                    >
-                      {isCompleted ? "Completed" : "Active"}
-                    </span>
+                          }`}
+                      >
+                        {isCompleted ? "Completed" : "Active"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteProject(project._id)}
+                        className="p-1.5 text-black/40 hover:text-red-600 rounded-lg hover:bg-red-50 border border-transparent hover:border-red-200 transition cursor-pointer"
+                        title="Delete Project"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="mt-5 grid grid-cols-2 gap-4 rounded-xl border border-black/5 bg-black/2 p-3 text-center">

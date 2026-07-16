@@ -5,6 +5,8 @@ import api from "@/api/axios";
 import { FolderOpen, X, AlertTriangle, Check, Loader2, Download, Copy } from "lucide-react";
 import { toast as toastSonner } from "sonner";
 
+const rawExtensions = [".cr3", ".cr2", ".nef", ".arw", ".dng", ".raf"];
+
 export default function LocalCopyModal({ projectId, onClose }) {
   const [browserSupported] = useState(() => typeof window !== "undefined" && "showDirectoryPicker" in window);
   const [copyState, setCopyState] = useState("idle"); // "idle" | "indexing" | "copying" | "done"
@@ -32,6 +34,7 @@ export default function LocalCopyModal({ projectId, onClose }) {
         throw new Error("Failed to load project selection details from server");
       }
       const selectedPhotos = dbRes.data.selectedPhotos;
+      const project = dbRes.data.project;
       if (selectedPhotos.length === 0) {
         toastSonner.error("No photos have been selected/submitted for this project yet.");
         setCopyState("idle");
@@ -39,6 +42,23 @@ export default function LocalCopyModal({ projectId, onClose }) {
       }
 
       setStats((prev) => ({ ...prev, totalSelected: selectedPhotos.length }));
+
+      // Generate unique target folder name based on project name and date
+      let targetFolderName = "Selected Album Photos";
+      if (project) {
+        let formattedDate = "";
+        try {
+          const dateObj = new Date(project.createdAt);
+          const day = String(dateObj.getDate()).padStart(2, "0");
+          const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+          const year = dateObj.getFullYear();
+          formattedDate = ` (${day}-${month}-${year})`;
+        } catch (e) {
+          // ignore date format error
+        }
+        const safeName = (project.projectName || "Selected Album").replace(/[\\/:*?"<>|]/g, "_");
+        targetFolderName = `${safeName}${formattedDate}`;
+      }
 
       // 2. Open directory picker
       const directoryHandle = await window.showDirectoryPicker({
@@ -48,8 +68,6 @@ export default function LocalCopyModal({ projectId, onClose }) {
       // 3. Scan & Index files case-insensitively by base name
       const filesMap = new Map(); // key: baseName.toLowerCase(), value: FileSystemFileHandle
       const duplicates = [];
-
-      const rawExtensions = [".cr3", ".cr2", ".nef", ".arw", ".dng", ".raf"];
 
       async function scanDir(dirHandle) {
         for await (const entry of dirHandle.values()) {
@@ -78,7 +96,7 @@ export default function LocalCopyModal({ projectId, onClose }) {
             }
           } else if (entry.kind === "directory") {
             // Avoid scanning our created target folder to prevent infinite loop
-            if (entry.name !== "Selected Album Photos") {
+            if (entry.name !== targetFolderName) {
               await scanDir(entry);
             }
           }
@@ -88,8 +106,8 @@ export default function LocalCopyModal({ projectId, onClose }) {
       await scanDir(directoryHandle);
       setDuplicateList(duplicates);
 
-      // 4. Create target subdirectory "Selected Album Photos"
-      const targetDirHandle = await directoryHandle.getDirectoryHandle("Selected Album Photos", {
+      // 4. Create target subdirectory with the unique folder name
+      const targetDirHandle = await directoryHandle.getDirectoryHandle(targetFolderName, {
         create: true,
       });
 
