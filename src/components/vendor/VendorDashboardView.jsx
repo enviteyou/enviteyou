@@ -37,7 +37,7 @@ function SectionCard({ title, children, className = "" }) {
 
 function Metric({ label, value, icon: Icon, hint }) {
   return (
-    <div className="rounded-[1.35rem] border border-black/10 bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+    <div className="rounded border border-black/10 bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/40">{label}</p>
@@ -654,11 +654,10 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
                   <div
                     key={client.id}
                     onClick={() => setSelectedClientId(client.id)}
-                    className={`cursor-pointer rounded-2xl border p-4 transition-all duration-200 ${
-                      isSelected
-                        ? "border-[#c8a24c]/45 bg-[#fcf8ee]"
-                        : "border-black/10 bg-black/2 hover:bg-black/[0.04]"
-                    }`}
+                    className={`cursor-pointer rounded-2xl border p-4 transition-all duration-200 ${isSelected
+                      ? "border-[#c8a24c]/45 bg-[#fcf8ee]"
+                      : "border-black/10 bg-black/2 hover:bg-black/[0.04]"
+                      }`}
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div>
@@ -742,7 +741,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
               { label: "My Templates", href: "/vendor/dashboard/my-templates" },
               { label: "Payments", href: "/vendor/dashboard/payments" },
             ].map((item) => (
-              <Link key={item.href} href={item.href} className="rounded-2xl border border-black/10 bg-black/2 px-4 py-5 text-sm font-semibold text-black transition hover:bg-black hover:text-white">
+              <Link key={item.href} href={item.href} className="rounded border border-black/10 bg-black/2 px-4 py-5 text-sm font-semibold text-black transition hover:bg-black hover:text-white">
                 {item.label}
               </Link>
             ))}
