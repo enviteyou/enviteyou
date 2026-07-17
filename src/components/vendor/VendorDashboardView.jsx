@@ -444,7 +444,7 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         </div>
 
         <div className="flex flex-col my-10 gap-3 sm:flex-row sm:items-center">
-          <label className="flex h-11 w-full items-center gap-2 rounded-2xl border border-black/10 bg-white px-4 text-sm text-black/45 shadow-[0_10px_24px_rgba(0,0,0,0.04)] sm:max-w-sm">
+          <label className="flex h-11 w-full items-start gap-2 rounded-2xl border border-black/10 bg-white px-4 text-sm text-black/45 shadow-[0_10px_24px_rgba(0,0,0,0.04)] sm:max-w-sm">
             <Search className="h-4 w-4" />
             <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search templates..." className="w-full bg-transparent text-sm text-black outline-none placeholder:text-black/30" />
           </label>
