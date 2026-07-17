@@ -111,7 +111,7 @@ export default function VendorDashboardShell({ children }) {
       <div className="flex min-h-screen">
         <aside data-lenis-prevent className="sticky top-0 hidden h-screen overflow-y-auto hide-scrollbar flex flex-col w-72 shrink-0 border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white lg:block">
           <Link href="/vendor/dashboard" className="flex items-center gap-3 border-b border-white/8 pb-6">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#b89143]/35 bg-[#151515] text-[#c8a24c]">
+            <div className="flex h-9 w-9 items-center justify-center text-[#c8a24c]">
               <Image src="/icon.png" alt="Logo" width={50} height={50} />
             </div>
             <div>
@@ -144,7 +144,7 @@ export default function VendorDashboardShell({ children }) {
           </nav>
 
           <div className="mt-auto pt-4">
-            <div className="rounded-[1.5rem] border border-[#c8a24c]/40 bg-[linear-gradient(180deg,rgba(20,20,20,0.98),rgba(10,10,10,1))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+            <div className="rounded border border-[#c8a24c]/40 bg-[linear-gradient(180deg,rgba(20,20,20,0.98),rgba(10,10,10,1))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c8a24c]/30 bg-[#0f0f0f] text-[#c8a24c]">
                   <LifeBuoy className="h-5 w-5" />
@@ -183,11 +183,13 @@ export default function VendorDashboardShell({ children }) {
         >
           <div className="flex items-center justify-between border-b border-white/8 pb-5">
             <Link href="/vendor/dashboard" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#b89143]/35 bg-[#151515] text-[#c8a24c]">
-                <span className="text-lg font-semibold">E</span>
+              <div className="flex h-9 w-9 items-center justify-center text-[#c8a24c]">
+                <Image src="/icon.png" alt="Logo" width={50} height={50} />
               </div>
               <div>
-                <p className="text-lg font-semibold tracking-tight">EnviteYou</p>
+                <div className="relative h-8 mb-2 w-25">
+                  <Image src="/logo_white_.png" alt="Logo" height={150} width={150} />
+                </div>
                 <p className="text-[10px] uppercase tracking-[0.28em] text-[#c8a24c]">Partner Studio</p>
               </div>
             </Link>

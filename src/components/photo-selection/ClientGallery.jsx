@@ -238,11 +238,10 @@ export default function ClientGallery({ token }) {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setViewSelectedOnly(!viewSelectedOnly)}
-              className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition ${
-                viewSelectedOnly
-                  ? "bg-[#c8a24c] text-white"
-                  : "bg-black/5 hover:bg-black/10 text-black/75"
-              } cursor-pointer`}
+              className={`rounded px-4 py-2 text-xs font-bold uppercase tracking-wider transition ${viewSelectedOnly
+                ? "bg-[#c8a24c] text-white"
+                : "bg-black/5 hover:bg-black/10 text-black/75"
+                } cursor-pointer`}
             >
               {viewSelectedOnly ? "Show All Photos" : `Show Selected (${selectedIds.length})`}
             </button>
@@ -256,7 +255,7 @@ export default function ClientGallery({ token }) {
             <button
               onClick={() => setShowConfirmModal(true)}
               disabled={selectedIds.length === 0}
-              className="rounded-full bg-black hover:bg-black/90 disabled:bg-black/10 text-white disabled:text-black/30 px-6 py-2.5 text-xs font-bold uppercase tracking-widest transition duration-300 shadow-md cursor-pointer"
+              className="rounded bg-black hover:bg-black/90 disabled:bg-black/10 text-white disabled:text-black/30 px-6 py-2.5 text-xs font-bold uppercase tracking-widest transition duration-300 shadow-md cursor-pointer"
             >
               Submit Selection
             </button>
@@ -265,14 +264,14 @@ export default function ClientGallery({ token }) {
 
         {/* Welcome Section */}
         <div className="max-w-7xl w-full mx-auto px-6 mt-8">
-          <div className="rounded-3xl border border-black/10 bg-linear-to-r from-white to-[#fdf9ef]/70 p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[0_15px_40px_rgba(0,0,0,0.02)]">
+          <div className="rounded border border-black/10 bg-linear-to-r from-white to-[#fdf9ef]/70 p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[0_15px_40px_rgba(0,0,0,0.02)]">
             <div className="space-y-2">
               <h2 className="text-2xl sm:text-3xl font-serif text-black italic">Hello, {project.clientName}</h2>
               <p className="text-sm text-black/60 max-w-2xl leading-relaxed">
                 Welcome to your invitation album workspace. Please select up to <span className="font-bold text-black">{project.selectionLimit}</span> of your favorite photos for your wedding album. Choose an event folder below to start selecting photos.
               </p>
             </div>
-            <div className="flex flex-col gap-1 w-full md:w-auto shrink-0 bg-white border border-black/10 rounded-2xl p-4 shadow-sm min-w-[220px]">
+            <div className="flex flex-col gap-1 w-full md:w-auto shrink-0 bg-white border border-black/10 rounded p-4 shadow-sm min-w-[220px]">
               <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-black/60">
                 <span>Selected</span>
                 <span>{selectedIds.length} / {project.selectionLimit}</span>
@@ -299,7 +298,7 @@ export default function ClientGallery({ token }) {
               <Loader2 className="h-8 w-8 animate-spin text-[#7d2432]" />
             </div>
           ) : folders.length === 0 ? (
-            <div className="text-center py-24 border border-dashed border-black/10 rounded-3xl bg-white shadow-xs">
+            <div className="text-center py-24 border border-dashed border-black/10 rounded bg-white shadow-xs">
               <p className="text-black/55 text-sm font-medium">No event folders available for this project.</p>
             </div>
           ) : (
@@ -311,7 +310,7 @@ export default function ClientGallery({ token }) {
                     setSelectedFolderId(folder._id);
                     setSelectedFolderName(folder.folderName);
                   }}
-                  className="group rounded-3xl border border-black/8 hover:border-black bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-md transition text-left cursor-pointer flex flex-col justify-between h-44"
+                  className="group rounded border border-black/8 hover:border-black bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-md transition text-left cursor-pointer flex flex-col justify-between h-44"
                 >
                   <span className="text-4xl group-hover:scale-110 transition duration-300 transform origin-left">📁</span>
                   <div>
@@ -362,11 +361,10 @@ export default function ClientGallery({ token }) {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setViewSelectedOnly(!viewSelectedOnly)}
-            className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition ${
-              viewSelectedOnly
-                ? "bg-[#c8a24c] text-white"
-                : "bg-black/5 hover:bg-black/10 text-black/75"
-            } cursor-pointer`}
+            className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition ${viewSelectedOnly
+              ? "bg-[#c8a24c] text-white"
+              : "bg-black/5 hover:bg-black/10 text-black/75"
+              } cursor-pointer`}
           >
             {viewSelectedOnly ? "Show All Photos" : `Show Selected (${selectedIds.length})`}
           </button>
@@ -445,9 +443,8 @@ export default function ClientGallery({ token }) {
                 <div
                   key={photo._id}
                   onClick={() => handleToggleSelect(photo)}
-                  className={`group relative aspect-square rounded-2xl overflow-hidden bg-black/5 border transition duration-300 cursor-pointer ${
-                    isSelected ? "border-emerald-500 ring-4 ring-emerald-500/10 shadow-md" : "border-black/8 hover:border-black/15 shadow-xs"
-                  }`}
+                  className={`group relative aspect-square rounded-2xl overflow-hidden bg-black/5 border transition duration-300 cursor-pointer ${isSelected ? "border-emerald-500 ring-4 ring-emerald-500/10 shadow-md" : "border-black/8 hover:border-black/15 shadow-xs"
+                    }`}
                 >
                   <img
                     src={thumbUrl}
@@ -460,11 +457,10 @@ export default function ClientGallery({ token }) {
                   <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-between p-3.5 pointer-events-none">
                     <div className="flex justify-end w-full">
                       <div
-                        className={`h-7 w-7 rounded-full border shadow-md flex items-center justify-center transition ${
-                          isSelected
-                            ? "bg-emerald-500 border-emerald-500 text-white"
-                            : "bg-white/90 border-black/10 text-transparent"
-                        }`}
+                        className={`h-7 w-7 rounded-full border shadow-md flex items-center justify-center transition ${isSelected
+                          ? "bg-emerald-500 border-emerald-500 text-white"
+                          : "bg-white/90 border-black/10 text-transparent"
+                          }`}
                       >
                         <Check className="h-4.5 w-4.5" />
                       </div>

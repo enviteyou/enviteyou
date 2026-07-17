@@ -273,14 +273,14 @@ export default function PhotoSelectionManager() {
                 <h1 className="text-3xl font-bold tracking-tight text-black">{selectedProject.projectName}</h1>
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${isCompleted
-                      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                      : "bg-amber-50 border-amber-200 text-amber-700"
+                    ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                    : "bg-amber-50 border-amber-200 text-amber-700"
                     }`}
                 >
                   {isCompleted ? "Completed" : "Active"}
                 </span>
               </div>
-              <p className="text-xs text-black/55 mt-1 font-semibold uppercase tracking-wider">
+              <p className="text-xs text-black/55 mt-1 font-semibold tracking-wider">
                 Client: {selectedProject.clientName} ({selectedProject.clientEmail})
               </p>
             </div>
@@ -289,7 +289,7 @@ export default function PhotoSelectionManager() {
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={(e) => handleCopyLink(e, selectedProject.selectionToken)}
-              className="inline-flex items-center gap-1.5 border border-black/15 hover:bg-black/2 bg-white text-black text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-full transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 border border-black/15 hover:bg-black/2 bg-white text-black text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded transition cursor-pointer"
             >
               <Copy className="h-4 w-4" /> Copy Selection Link
             </button>
@@ -310,19 +310,19 @@ export default function PhotoSelectionManager() {
 
         {/* Client submission summary statistics */}
         {isCompleted && selectionSummary && (
-          <div className="rounded-3xl border border-emerald-500/20 bg-emerald-50/20 p-5 shadow-sm space-y-3">
+          <div className="rounded border border-emerald-500/20 bg-emerald-50/20 p-5 shadow-sm space-y-3">
             <div className="flex items-center gap-2 text-emerald-800">
               <Sparkles className="h-5 w-5 animate-pulse" />
               <h3 className="font-bold text-sm uppercase tracking-wider">Selection Completed Summary</h3>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 text-xs">
               {selectionSummary.map((item) => (
-                <div key={item.folderId} className="bg-white border border-emerald-100/50 rounded-2xl p-3 shadow-xs">
+                <div key={item.folderId} className="bg-white border border-emerald-100/50 rounded p-3 shadow-xs">
                   <p className="text-black/45 uppercase tracking-wider font-semibold truncate">{item.folderName}</p>
                   <p className="text-lg font-bold text-black mt-1">{item.selectedCount} Selected</p>
                 </div>
               ))}
-              <div className="bg-emerald-600 rounded-2xl p-3 text-white shadow-xs">
+              <div className="bg-emerald-600 rounded p-3 text-white shadow-xs">
                 <p className="uppercase tracking-wider font-semibold opacity-75">Total Selected</p>
                 <p className="text-lg font-bold mt-1">
                   {selectedProject.selectedCount} / {selectedProject.selectionLimit}
@@ -375,12 +375,12 @@ export default function PhotoSelectionManager() {
                         placeholder="e.g. Engagement"
                         value={newFolderName}
                         onChange={(e) => setNewFolderName(e.target.value)}
-                        className="rounded-xl border border-black/10 bg-white px-3 py-1.5 text-xs text-black placeholder-black/30 outline-none transition focus:border-black"
+                        className="rounded border border-black/10 bg-white px-3 py-1.5 text-xs text-black placeholder-black/30 outline-none transition focus:border-black"
                         autoFocus
                       />
                       <button
                         type="submit"
-                        className="bg-black hover:bg-black/90 text-white font-semibold text-xs px-3 py-1.5 rounded-xl cursor-pointer"
+                        className="bg-black hover:bg-black/90 text-white font-semibold text-xs px-3 py-1.5 rounded cursor-pointer"
                       >
                         Create
                       </button>
@@ -398,7 +398,7 @@ export default function PhotoSelectionManager() {
                   ) : (
                     <button
                       onClick={() => setShowCreateFolder(true)}
-                      className="rounded-full border border-black/15 hover:bg-black/5 text-black font-semibold text-xs px-4 py-2 transition flex items-center gap-1.5 cursor-pointer"
+                      className="rounded border border-black/15 hover:bg-black/5 text-black font-semibold text-xs px-4 py-2 transition flex items-center gap-1.5 cursor-pointer"
                     >
                       <Plus className="h-4 w-4" /> + New Folder
                     </button>
@@ -429,7 +429,7 @@ export default function PhotoSelectionManager() {
                   return (
                     <div
                       key={folder._id}
-                      className="group rounded-2xl border border-black/8 bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition flex flex-col justify-between"
+                      className="group rounded border border-black/8 bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-3">
@@ -481,8 +481,8 @@ export default function PhotoSelectionManager() {
                                 onClick={(e) => handleDeleteFolder(folder._id, e)}
                                 disabled={folder.totalPhotos > 0}
                                 className={`p-1 rounded cursor-pointer border border-transparent ${folder.totalPhotos > 0
-                                    ? "text-neutral-200 cursor-not-allowed"
-                                    : "hover:bg-red-50 text-red-400 hover:text-red-600 hover:border-red-200"
+                                  ? "text-neutral-200 cursor-not-allowed"
+                                  : "hover:bg-red-50 text-red-400 hover:text-red-600 hover:border-red-200"
                                   }`}
                                 title={folder.totalPhotos > 0 ? "Cannot delete folder containing photos" : "Delete Folder"}
                               >
@@ -508,7 +508,7 @@ export default function PhotoSelectionManager() {
                       {!isCompleted && (
                         <button
                           onClick={() => setActiveUploadFolder(folder)}
-                          className="mt-5 w-full flex items-center justify-center gap-1.5 bg-black hover:bg-black/90 text-white font-semibold text-xs py-2 rounded-xl transition cursor-pointer shadow-xs"
+                          className="mt-5 w-full flex items-center justify-center gap-1.5 bg-black hover:bg-black/90 text-white font-semibold text-xs py-2 rounded transition cursor-pointer shadow-xs"
                         >
                           <Upload className="h-3.5 w-3.5" /> Upload Photos
                         </button>
@@ -599,8 +599,8 @@ export default function PhotoSelectionManager() {
                     <div className="flex flex-col items-end gap-2">
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${isCompleted
-                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                            : "bg-amber-50 border-amber-200 text-amber-700"
+                          ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                          : "bg-amber-50 border-amber-200 text-amber-700"
                           }`}
                       >
                         {isCompleted ? "Completed" : "Active"}
