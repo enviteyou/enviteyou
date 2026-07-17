@@ -38,13 +38,13 @@ export default function Loading() {
             ENVITEYOU
           </h2>
 
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight font-serif text-[#1e1b18] opacity-90">
-            Polishing your workspace
-          </h1>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight font-serif text-[#1e1b18] opacity-90">
+            Designing your digital story
+          </h2>
 
           {/* Fading elegant status updates */}
           <p className="text-xs text-black/45 tracking-wide max-w-[280px] mx-auto animate-pulse duration-[1500ms]">
-            Preparing interactive layouts, theme animations, and customized invitation details...
+            Preparing premium layouts, theme animations, and interactive invitation details...
           </p>
         </div>
       </div>
