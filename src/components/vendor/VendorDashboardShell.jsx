@@ -289,7 +289,7 @@ export default function VendorDashboardShell({ children }) {
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3">
-                <Button
+                {/* <Button
                   type="button"
                   variant="outline"
                   className="hidden h-11 rounded border-black/10 bg-white px-4 text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] hover:bg-black hover:text-white sm:inline-flex"
@@ -297,7 +297,7 @@ export default function VendorDashboardShell({ children }) {
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Save Draft
-                </Button>
+                </Button> */}
 
                 {/* <button type="button" className="relative flex h-11 w-11 items-center justify-center rounded border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
                   <Bell className="h-5 w-5 text-black/70" />
