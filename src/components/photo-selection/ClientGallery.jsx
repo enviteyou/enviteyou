@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import api from "@/api/axios";
 import { toast } from "sonner";
-import { Check, Eye, CheckCircle, AlertTriangle, Loader2, Sparkles } from "lucide-react";
+import { Check, Eye, CheckCircle, AlertTriangle, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import PhotoViewerModal from "./PhotoViewerModal";
 
 // Helper to inject Cloudinary optimization parameters
@@ -25,12 +25,35 @@ export default function ClientGallery({ token }) {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+  // Folder states
+  const [folders, setFolders] = useState([]);
+  const [loadingFolders, setLoadingFolders] = useState(false);
+  const [selectedFolderId, setSelectedFolderId] = useState(null);
+  const [selectedFolderName, setSelectedFolderName] = useState("");
+  const [viewSelectedOnly, setViewSelectedOnly] = useState(false); // Toggle to filter selected photos
+
   // Lightbox viewer state
   const [viewerIndex, setViewerIndex] = useState(null);
 
   const observerRef = useRef(null);
 
-  // 1. Load project details on mount
+  // Fetch folders list
+  const fetchFoldersList = async () => {
+    try {
+      setLoadingFolders(true);
+      const res = await api.get(`/photo-selection/client/project/${token}/folders`);
+      if (res.data?.success) {
+        setFolders(res.data.folders || []);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load events.");
+    } finally {
+      setLoadingFolders(false);
+    }
+  };
+
+  // 1. Load project details and folders on mount
   useEffect(() => {
     async function loadProject() {
       try {
@@ -40,17 +63,8 @@ export default function ClientGallery({ token }) {
           const projectData = res.data.project;
           setProject(projectData);
 
-          // Restore selection from localStorage or DB
-          const localCache = localStorage.getItem(`photo_sel_${token}`);
-          if (localCache) {
-            try {
-              setSelectedIds(JSON.parse(localCache));
-            } catch {
-              setSelectedIds(projectData.selectedPhotoIds || []);
-            }
-          } else {
-            setSelectedIds(projectData.selectedPhotoIds || []);
-          }
+          // Restore selection from DB as single source of truth for multi-device sync
+          setSelectedIds(projectData.selectedPhotoIds || []);
 
           if (projectData.status === "completed") {
             setSubmitSuccess(true);
@@ -64,13 +78,19 @@ export default function ClientGallery({ token }) {
       }
     }
     loadProject();
+    fetchFoldersList();
   }, [token]);
 
   // 2. Fetch photos in paginated pages
-  const fetchPhotos = async (pageNum, reset = false) => {
+  const fetchPhotos = async (pageNum, reset = false, customSelectedOnly = null) => {
+    const isSelectedOnly = customSelectedOnly !== null ? customSelectedOnly : viewSelectedOnly;
+    if (!selectedFolderId && !isSelectedOnly) return;
     try {
       setLoadingMore(true);
-      const res = await api.get(`/photo-selection/client/project/${token}/photos?page=${pageNum}&limit=60`);
+      const url = isSelectedOnly
+        ? `/photo-selection/client/project/${token}/photos?onlySelected=true&page=${pageNum}&limit=60`
+        : `/photo-selection/client/project/${token}/photos?folderId=${selectedFolderId}&page=${pageNum}&limit=60`;
+      const res = await api.get(url);
       if (res.data?.success) {
         const newPhotos = res.data.photos;
         setPhotos((prev) => (reset ? newPhotos : [...prev, ...newPhotos]));
@@ -84,41 +104,49 @@ export default function ClientGallery({ token }) {
     }
   };
 
+  // Fetch photos when selectedFolderId or viewSelectedOnly changes
   useEffect(() => {
     if (project) {
+      setPage(1);
+      setPhotos([]);
+      setHasMore(true);
       fetchPhotos(1, true);
     }
-  }, [project]);
+  }, [project, selectedFolderId, viewSelectedOnly]);
 
-  // Save selected IDs to local storage on changes
-  useEffect(() => {
-    if (selectedIds.length > 0) {
-      localStorage.setItem(`photo_sel_${token}`, JSON.stringify(selectedIds));
-    }
-  }, [selectedIds, token]);
-
-  // 3. Selection toggler
-  const handleToggleSelect = (photo) => {
+  // 3. Selection toggler with real-time DB sync
+  const handleToggleSelect = async (photo) => {
     if (submitSuccess) return;
 
-    setSelectedIds((prev) => {
-      const isSelected = prev.includes(photo._id);
-      if (isSelected) {
-        return prev.filter((id) => id !== photo._id);
-      } else {
-        if (prev.length >= project.selectionLimit) {
-          toast.warning(`You can select a maximum of ${project.selectionLimit} photos.`);
-          return prev;
-        }
-        return [...prev, photo._id];
+    let nextIds = [];
+    const isSelected = selectedIds.includes(photo._id);
+    if (isSelected) {
+      nextIds = selectedIds.filter((id) => id !== photo._id);
+    } else {
+      if (selectedIds.length >= project.selectionLimit) {
+        toast.warning(`You can select a maximum of ${project.selectionLimit} photos.`);
+        return;
       }
-    });
+      nextIds = [...selectedIds, photo._id];
+    }
+
+    setSelectedIds(nextIds);
+
+    // Save selection progress to database in real-time
+    try {
+      await api.post(`/photo-selection/client/project/${token}/save-progress`, {
+        selectedPhotoIds: nextIds,
+      });
+    } catch (err) {
+      console.error("Failed to save selection progress", err);
+      toast.error("Network issue. Selection not synced to server.");
+    }
   };
 
   // 4. Infinite scroll intersection observer trigger
   const handleObserver = (entries) => {
     const target = entries[0];
-    if (target.isIntersecting && hasMore && !loadingMore && !loading) {
+    if (target.isIntersecting && hasMore && !loadingMore && !loading && (selectedFolderId || viewSelectedOnly)) {
       const nextPage = page + 1;
       setPage(nextPage);
       fetchPhotos(nextPage);
@@ -130,7 +158,7 @@ export default function ClientGallery({ token }) {
     const observer = new IntersectionObserver(handleObserver, option);
     if (observerRef.current) observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [photos, hasMore, loadingMore, loading, page]);
+  }, [photos, hasMore, loadingMore, loading, page, selectedFolderId, viewSelectedOnly]);
 
   // 5. Submit selection to MongoDB
   const handleSubmitSelection = async () => {
@@ -144,7 +172,6 @@ export default function ClientGallery({ token }) {
 
       if (res.data?.success) {
         setSubmitSuccess(true);
-        localStorage.removeItem(`photo_sel_${token}`);
         toast.success("Your selection has been submitted successfully!");
       }
     } catch (err) {
@@ -193,20 +220,157 @@ export default function ClientGallery({ token }) {
     );
   }
 
+  // EVENT SELECTION SCREEN (rendered if no folder has been selected yet)
+  if (!selectedFolderId && !viewSelectedOnly) {
+    return (
+      <div className="min-h-screen bg-[#fcfaf8] text-black flex flex-col font-sans">
+        {/* Header */}
+        <header className="sticky top-0 w-full bg-white/80 backdrop-blur-md border-b border-black/5 flex items-center justify-between px-6 py-4.5 z-40 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+          <div>
+            <h1 className="text-base sm:text-lg font-bold tracking-tight text-black flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-[#c8a24c] animate-pulse" /> {project.projectName}
+            </h1>
+            <p className="text-[10px] text-black/45 uppercase tracking-[0.2em] font-semibold mt-0.5">
+              Client: {project.clientName}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setViewSelectedOnly(!viewSelectedOnly)}
+              className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition ${
+                viewSelectedOnly
+                  ? "bg-[#c8a24c] text-white"
+                  : "bg-black/5 hover:bg-black/10 text-black/75"
+              } cursor-pointer`}
+            >
+              {viewSelectedOnly ? "Show All Photos" : `Show Selected (${selectedIds.length})`}
+            </button>
+
+            <div className="text-right">
+              <p className="text-sm font-bold text-black">
+                {selectedIds.length} / {project.selectionLimit}
+              </p>
+              <p className="text-[9px] text-black/45 uppercase tracking-wider font-semibold">Selected Photos</p>
+            </div>
+            <button
+              onClick={() => setShowConfirmModal(true)}
+              disabled={selectedIds.length === 0}
+              className="rounded-full bg-black hover:bg-black/90 disabled:bg-black/10 text-white disabled:text-black/30 px-6 py-2.5 text-xs font-bold uppercase tracking-widest transition duration-300 shadow-md cursor-pointer"
+            >
+              Submit Selection
+            </button>
+          </div>
+        </header>
+
+        {/* Welcome Section */}
+        <div className="max-w-7xl w-full mx-auto px-6 mt-8">
+          <div className="rounded-3xl border border-black/10 bg-linear-to-r from-white to-[#fdf9ef]/70 p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[0_15px_40px_rgba(0,0,0,0.02)]">
+            <div className="space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-serif text-black italic">Hello, {project.clientName}</h2>
+              <p className="text-sm text-black/60 max-w-2xl leading-relaxed">
+                Welcome to your invitation album workspace. Please select up to <span className="font-bold text-black">{project.selectionLimit}</span> of your favorite photos for your wedding album. Choose an event folder below to start selecting photos.
+              </p>
+            </div>
+            <div className="flex flex-col gap-1 w-full md:w-auto shrink-0 bg-white border border-black/10 rounded-2xl p-4 shadow-sm min-w-[220px]">
+              <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-black/60">
+                <span>Selected</span>
+                <span>{selectedIds.length} / {project.selectionLimit}</span>
+              </div>
+              <div className="h-2 w-full bg-black/5 rounded-full overflow-hidden mt-2">
+                <div
+                  className={`h-full transition-all duration-500 ${selectedIds.length === project.selectionLimit ? 'bg-emerald-500' : 'bg-black'}`}
+                  style={{ width: `${Math.min((selectedIds.length / project.selectionLimit) * 100, 100)}%` }}
+                />
+              </div>
+              <p className="text-xs text-black/40 mt-1.5 text-right font-medium">
+                {project.selectionLimit - selectedIds.length} photos remaining
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Choose Event Main Area */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12">
+          <h2 className="text-2xl font-serif italic text-black mb-6">Choose Event Folder</h2>
+
+          {loadingFolders ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-[#7d2432]" />
+            </div>
+          ) : folders.length === 0 ? (
+            <div className="text-center py-24 border border-dashed border-black/10 rounded-3xl bg-white shadow-xs">
+              <p className="text-black/55 text-sm font-medium">No event folders available for this project.</p>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {folders.map((folder) => (
+                <button
+                  key={folder._id}
+                  onClick={() => {
+                    setSelectedFolderId(folder._id);
+                    setSelectedFolderName(folder.folderName);
+                  }}
+                  className="group rounded-3xl border border-black/8 hover:border-black bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-md transition text-left cursor-pointer flex flex-col justify-between h-44"
+                >
+                  <span className="text-4xl group-hover:scale-110 transition duration-300 transform origin-left">📁</span>
+                  <div>
+                    <h3 className="text-xl font-bold text-black mt-4 truncate">{folder.folderName}</h3>
+                    <p className="text-xs text-black/45 font-semibold mt-1 uppercase tracking-wider">{folder.totalPhotos || 0} Photos</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  // EVENT PHOTOS GALLERY VIEW
   return (
     <div className="min-h-screen bg-[#fcfaf8] text-black flex flex-col font-sans">
       {/* Sticky Header */}
       <header className="sticky top-0 w-full bg-white/80 backdrop-blur-md border-b border-black/5 flex items-center justify-between px-6 py-4.5 z-40 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
-        <div>
-          <h1 className="text-base sm:text-lg font-bold tracking-tight text-black flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-[#c8a24c] animate-pulse" /> {project.projectName}
-          </h1>
-          <p className="text-[10px] text-black/45 uppercase tracking-[0.2em] font-semibold mt-0.5">
-            Client: {project.clientName}
-          </p>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (viewSelectedOnly) {
+                setViewSelectedOnly(false);
+              } else {
+                setSelectedFolderId(null);
+                setSelectedFolderName("");
+                setPhotos([]);
+                fetchFoldersList(); // Refresh photo counts on folders when going back
+              }
+            }}
+            className="p-2 hover:bg-black/5 rounded-full border border-black/10 transition cursor-pointer"
+            title={viewSelectedOnly ? "Show All Photos" : "Back to Event Folders"}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <div>
+            <h1 className="text-base sm:text-lg font-bold tracking-tight text-black flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-[#c8a24c]" /> {project.projectName} - {viewSelectedOnly ? "Selected Photos" : selectedFolderName}
+            </h1>
+            <p className="text-[10px] text-black/45 uppercase tracking-[0.2em] font-semibold mt-0.5">
+              Client: {project.clientName}
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => setViewSelectedOnly(!viewSelectedOnly)}
+            className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition ${
+              viewSelectedOnly
+                ? "bg-[#c8a24c] text-white"
+                : "bg-black/5 hover:bg-black/10 text-black/75"
+            } cursor-pointer`}
+          >
+            {viewSelectedOnly ? "Show All Photos" : `Show Selected (${selectedIds.length})`}
+          </button>
+
           <div className="text-right hidden sm:block">
             <p className="text-sm font-bold text-black">
               {selectedIds.length} / {project.selectionLimit}
@@ -236,9 +400,13 @@ export default function ClientGallery({ token }) {
       <div className="max-w-7xl w-full mx-auto px-6 mt-8">
         <div className="rounded-3xl border border-black/10 bg-linear-to-r from-white to-[#fdf9ef]/70 p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[0_15px_40px_rgba(0,0,0,0.02)]">
           <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-serif text-black italic">Hello, {project.clientName}</h2>
+            <h2 className="text-2xl sm:text-3xl font-serif text-black italic">
+              {viewSelectedOnly ? "Your Selection Workspace" : `${selectedFolderName} Workspace`}
+            </h2>
             <p className="text-sm text-black/60 max-w-2xl leading-relaxed">
-              Welcome to your invitation album workspace. Please select up to <span className="font-bold text-black">{project.selectionLimit}</span> of your favorite photos for your wedding album. Hover over any image to toggle selection or open fullscreen preview.
+              {viewSelectedOnly
+                ? "Viewing all your selected photos across all folders. Review your choices here before submitting. Toggling off selection on any photo will remove it from the list."
+                : `Viewing preview photos for the ${selectedFolderName} event. Hover over any image to toggle selection or open fullscreen preview. Click the back arrow in the header to view other event folders.`}
             </p>
           </div>
           <div className="flex flex-col gap-1 w-full md:w-auto shrink-0 bg-white border border-black/10 rounded-2xl p-4 shadow-sm min-w-[220px]">
@@ -261,10 +429,11 @@ export default function ClientGallery({ token }) {
 
       {/* Main Grid View */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
-        {photos.length === 0 ? (
+        {photos.length === 0 && !loadingMore ? (
           <div className="text-center py-24 border border-dashed border-black/10 rounded-3xl bg-white shadow-xs">
-            <Loader2 className="h-8 w-8 animate-spin text-black/25 mx-auto mb-3" />
-            <p className="text-black/55 text-sm font-medium">Waiting for preview photos to load...</p>
+            <p className="text-black/55 text-sm font-medium">
+              {viewSelectedOnly ? "You haven't selected any photos yet." : "No photos uploaded to this folder yet."}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
@@ -315,7 +484,7 @@ export default function ClientGallery({ token }) {
                     </div>
                   </div>
 
-                  {/* Static Selection badge check (Always visible on select, hides on hover for clean overlay look) */}
+                  {/* Static Selection badge check */}
                   {isSelected && (
                     <div className="absolute top-3.5 right-3.5 h-7 w-7 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md border border-emerald-500 group-hover:hidden transition">
                       <Check className="h-4.5 w-4.5" />

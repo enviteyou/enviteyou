@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Upload, AlertCircle, CheckCircle, RefreshCw, Loader2 } from "lucide-react";
 import { compressImageToMax20KB } from "@/lib/imageCompression";
 
-export default function PhotoUploader({ projectId, onUploadComplete }) {
+export default function PhotoUploader({ projectId, folderId, onUploadComplete }) {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [progress, setProgress] = useState({
@@ -59,7 +59,10 @@ export default function PhotoUploader({ projectId, onUploadComplete }) {
 
     try {
       // 1. Fetch Cloudinary signature from backend
-      const sigRes = await api.post("/photo-selection/cloudinary-signature");
+      const sigRes = await api.post("/photo-selection/cloudinary-signature", {
+        projectId,
+        folderId,
+      });
       if (!sigRes.data?.success) {
         throw new Error("Unable to retrieve upload signature");
       }
@@ -111,7 +114,7 @@ export default function PhotoUploader({ projectId, onUploadComplete }) {
         const batchSize = 50;
         for (let i = 0; i < results.length; i += batchSize) {
           const batch = results.slice(i, i + batchSize);
-          await api.post(`/photo-selection/projects/${projectId}/photos/bulk`, { photos: batch });
+          await api.post(`/photo-selection/projects/${projectId}/photos/bulk`, { photos: batch, folderId });
         }
       }
 

@@ -3,7 +3,22 @@
 import { useState, useEffect } from "react";
 import api from "@/api/axios";
 import { toast } from "sonner";
-import { Camera, Plus, Copy, Check, Upload, FolderSync, ExternalLink, Loader2, Sparkles, Trash2 } from "lucide-react";
+import {
+  Camera,
+  Plus,
+  Copy,
+  Check,
+  Upload,
+  FolderSync,
+  ExternalLink,
+  Loader2,
+  Sparkles,
+  Trash2,
+  ArrowLeft,
+  Edit3,
+  FolderOpen,
+  X
+} from "lucide-react";
 import PhotoUploader from "../photo-selection/PhotoUploader";
 import LocalCopyModal from "../photo-selection/LocalCopyModal";
 
@@ -12,16 +27,30 @@ export default function PhotoSelectionManager() {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  // Form states
+  // Form states for creating project
   const [projectName, setProjectName] = useState("");
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
   const [selectionLimit, setSelectionLimit] = useState(100);
   const [submitting, setSubmitting] = useState(false);
 
-  // Active project views
-  const [activeUploadProjectId, setActiveUploadProjectId] = useState(null);
+  // Active workspace state
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [folders, setFolders] = useState([]);
+  const [loadingFolders, setLoadingFolders] = useState(false);
+  const [activeUploadFolder, setActiveUploadFolder] = useState(null);
+  const [selectionSummary, setSelectionSummary] = useState(null);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+
+  // Folder actions UI states
+  const [showCreateFolder, setShowCreateFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
+  const [editingFolderId, setEditingFolderId] = useState(null);
+  const [editingFolderName, setEditingFolderName] = useState("");
+
+  // Copy modal state
   const [activeCopyProjectId, setActiveCopyProjectId] = useState(null);
+  const [activeCopyFolderName, setActiveCopyFolderName] = useState("");
 
   const fetchProjects = async () => {
     try {
@@ -41,6 +70,56 @@ export default function PhotoSelectionManager() {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  // Fetch folders for selected project
+  const fetchFolders = async (projectId) => {
+    try {
+      setLoadingFolders(true);
+      const res = await api.get(`/photo-selection/projects/${projectId}/folders`);
+      if (res.data?.success) {
+        setFolders(res.data.folders || []);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load folders.");
+    } finally {
+      setLoadingFolders(false);
+    }
+  };
+
+  // Fetch selection summary for selected project
+  const fetchSelectionSummary = async (projectId) => {
+    try {
+      setLoadingSummary(true);
+      const res = await api.get(`/photo-selection/projects/${projectId}/selection-summary`);
+      if (res.data?.success) {
+        setSelectionSummary(res.data.summary || []);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load selection summary.");
+    } finally {
+      setLoadingSummary(false);
+    }
+  };
+
+  const handleSelectProject = (project) => {
+    setSelectedProject(project);
+    fetchFolders(project._id);
+    if (project.status === "completed") {
+      fetchSelectionSummary(project._id);
+    } else {
+      setSelectionSummary(null);
+    }
+  };
+
+  const handleBackToProjects = () => {
+    setSelectedProject(null);
+    setFolders([]);
+    setActiveUploadFolder(null);
+    setSelectionSummary(null);
+    fetchProjects();
+  };
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
@@ -75,7 +154,8 @@ export default function PhotoSelectionManager() {
     }
   };
 
-  const handleDeleteProject = async (projectId) => {
+  const handleDeleteProject = async (projectId, e) => {
+    e.stopPropagation();
     if (!window.confirm("Are you sure you want to delete this project? This will permanently delete all uploaded photos from the server and database.")) {
       return;
     }
@@ -92,10 +172,75 @@ export default function PhotoSelectionManager() {
     }
   };
 
-  const handleCopyLink = (token) => {
+  const handleCopyLink = (e, token) => {
+    e.stopPropagation();
     const link = `${window.location.origin}/select/${token}`;
     navigator.clipboard.writeText(link);
     toast.success("Client link copied to clipboard!");
+  };
+
+  // Folder Operations
+  const handleCreateFolder = async (e) => {
+    e.preventDefault();
+    if (!newFolderName.trim()) {
+      toast.error("Folder name cannot be empty.");
+      return;
+    }
+
+    try {
+      const res = await api.post(`/photo-selection/projects/${selectedProject._id}/folders`, {
+        folderName: newFolderName.trim(),
+      });
+      if (res.data?.success) {
+        toast.success("Folder created successfully!");
+        setNewFolderName("");
+        setShowCreateFolder(false);
+        fetchFolders(selectedProject._id);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || "Failed to create folder.");
+    }
+  };
+
+  const handleRenameFolder = async (folderId) => {
+    if (!editingFolderName.trim()) {
+      toast.error("Folder name cannot be empty.");
+      return;
+    }
+
+    try {
+      const res = await api.put(`/photo-selection/folders/${folderId}`, {
+        folderName: editingFolderName.trim(),
+      });
+      if (res.data?.success) {
+        toast.success("Folder renamed successfully!");
+        setEditingFolderId(null);
+        setEditingFolderName("");
+        fetchFolders(selectedProject._id);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || "Failed to rename folder.");
+    }
+  };
+
+  const handleDeleteFolder = async (folderId, e) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this folder?")) {
+      return;
+    }
+
+    try {
+      const res = await api.delete(`/photo-selection/folders/${folderId}`);
+      if (res.data?.success) {
+        toast.success("Folder deleted successfully!");
+        fetchFolders(selectedProject._id);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || "Failed to delete folder.");
+    }
   };
 
   if (loading && projects.length === 0) {
@@ -107,6 +252,307 @@ export default function PhotoSelectionManager() {
     );
   }
 
+  // PROJECT WORKSPACE VIEW
+  if (selectedProject) {
+    const isCompleted = selectedProject.status === "completed";
+
+    return (
+      <div className="space-y-6">
+        {/* Workspace Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleBackToProjects}
+              className="p-2 hover:bg-black/5 rounded-full border border-black/10 transition cursor-pointer"
+              title="Back to Projects"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl font-bold tracking-tight text-black">{selectedProject.projectName}</h1>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${isCompleted
+                      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                      : "bg-amber-50 border-amber-200 text-amber-700"
+                    }`}
+                >
+                  {isCompleted ? "Completed" : "Active"}
+                </span>
+              </div>
+              <p className="text-xs text-black/55 mt-1 font-semibold uppercase tracking-wider">
+                Client: {selectedProject.clientName} ({selectedProject.clientEmail})
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={(e) => handleCopyLink(e, selectedProject.selectionToken)}
+              className="inline-flex items-center gap-1.5 border border-black/15 hover:bg-black/2 bg-white text-black text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-full transition cursor-pointer"
+            >
+              <Copy className="h-4 w-4" /> Copy Selection Link
+            </button>
+
+            {isCompleted && (
+              <button
+                onClick={() => {
+                  setActiveCopyProjectId(selectedProject._id);
+                  setActiveCopyFolderName("");
+                }}
+                className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-full transition cursor-pointer shadow-md shadow-emerald-600/10"
+              >
+                <FolderSync className="h-4 w-4" /> Create Selected Photos Folder
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Client submission summary statistics */}
+        {isCompleted && selectionSummary && (
+          <div className="rounded-3xl border border-emerald-500/20 bg-emerald-50/20 p-5 shadow-sm space-y-3">
+            <div className="flex items-center gap-2 text-emerald-800">
+              <Sparkles className="h-5 w-5 animate-pulse" />
+              <h3 className="font-bold text-sm uppercase tracking-wider">Selection Completed Summary</h3>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 text-xs">
+              {selectionSummary.map((item) => (
+                <div key={item.folderId} className="bg-white border border-emerald-100/50 rounded-2xl p-3 shadow-xs">
+                  <p className="text-black/45 uppercase tracking-wider font-semibold truncate">{item.folderName}</p>
+                  <p className="text-lg font-bold text-black mt-1">{item.selectedCount} Selected</p>
+                </div>
+              ))}
+              <div className="bg-emerald-600 rounded-2xl p-3 text-white shadow-xs">
+                <p className="uppercase tracking-wider font-semibold opacity-75">Total Selected</p>
+                <p className="text-lg font-bold mt-1">
+                  {selectedProject.selectedCount} / {selectedProject.selectionLimit}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic Folder Management & Upload Section */}
+        {activeUploadFolder ? (
+          <div className="border border-black/10 rounded-3xl p-5 bg-neutral-50 shadow-inner space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">📁</span>
+                <h4 className="font-bold text-black text-lg">
+                  Uploading Previews to: <span className="underline">{activeUploadFolder.folderName}</span>
+                </h4>
+              </div>
+              <button
+                onClick={() => {
+                  setActiveUploadFolder(null);
+                  fetchFolders(selectedProject._id);
+                }}
+                className="text-xs text-[#74313d] font-bold hover:underline cursor-pointer border border-black/10 px-3 py-1.5 rounded-full bg-white hover:bg-neutral-100"
+              >
+                Go Back to Folders
+              </button>
+            </div>
+            <PhotoUploader
+              projectId={selectedProject._id}
+              folderId={activeUploadFolder._id}
+              onUploadComplete={() => {
+                setActiveUploadFolder(null);
+                fetchFolders(selectedProject._id);
+              }}
+            />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold text-black">Event Folders</h2>
+
+              {!isCompleted && (
+                <div className="flex items-center gap-2">
+                  {showCreateFolder ? (
+                    <form onSubmit={handleCreateFolder} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. Engagement"
+                        value={newFolderName}
+                        onChange={(e) => setNewFolderName(e.target.value)}
+                        className="rounded-xl border border-black/10 bg-white px-3 py-1.5 text-xs text-black placeholder-black/30 outline-none transition focus:border-black"
+                        autoFocus
+                      />
+                      <button
+                        type="submit"
+                        className="bg-black hover:bg-black/90 text-white font-semibold text-xs px-3 py-1.5 rounded-xl cursor-pointer"
+                      >
+                        Create
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowCreateFolder(false);
+                          setNewFolderName("");
+                        }}
+                        className="p-1 hover:bg-black/5 rounded-full border border-black/10 cursor-pointer"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => setShowCreateFolder(true)}
+                      className="rounded-full border border-black/15 hover:bg-black/5 text-black font-semibold text-xs px-4 py-2 transition flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Plus className="h-4 w-4" /> + New Folder
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {loadingFolders ? (
+              <div className="flex h-40 flex-col items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-black/25 mb-2" />
+                <p className="text-xs text-black/45 uppercase tracking-wider font-semibold">Loading folders...</p>
+              </div>
+            ) : folders.length === 0 ? (
+              <div className="text-center py-16 border border-dashed border-black/10 rounded-2xl bg-white">
+                <FolderOpen className="h-8 w-8 text-black/30 mx-auto mb-2" />
+                <p className="text-sm font-semibold text-black">No folders found</p>
+                <p className="text-xs text-black/45 mt-1">Add a new event folder to get started.</p>
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {folders.map((folder) => {
+                  const isEditing = editingFolderId === folder._id;
+
+                  // Find selected counts for this folder if completed
+                  const folderSummary = selectionSummary?.find(s => s.folderId === folder._id);
+
+                  return (
+                    <div
+                      key={folder._id}
+                      className="group rounded-2xl border border-black/8 bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2 overflow-hidden w-full">
+                            <span className="text-2xl shrink-0">📁</span>
+                            {isEditing ? (
+                              <div className="flex items-center gap-1.5 w-full">
+                                <input
+                                  type="text"
+                                  value={editingFolderName}
+                                  onChange={(e) => setEditingFolderName(e.target.value)}
+                                  className="w-full rounded-lg border border-black/10 bg-white px-2 py-1 text-xs text-black outline-none focus:border-black font-semibold"
+                                  autoFocus
+                                />
+                                <button
+                                  onClick={() => handleRenameFolder(folder._id)}
+                                  className="bg-black hover:bg-black/90 text-white font-semibold text-[10px] px-2 py-1 rounded"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setEditingFolderId(null);
+                                    setEditingFolderName("");
+                                  }}
+                                  className="text-[10px] border border-black/10 rounded px-2 py-1"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            ) : (
+                              <h3 className="font-bold text-black truncate leading-snug">{folder.folderName}</h3>
+                            )}
+                          </div>
+
+                          {!isCompleted && !isEditing && (
+                            <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={() => {
+                                  setEditingFolderId(folder._id);
+                                  setEditingFolderName(folder.folderName);
+                                }}
+                                className="p-1 hover:bg-neutral-100 rounded text-neutral-500 hover:text-black cursor-pointer border border-transparent hover:border-black/5"
+                                title="Rename Folder"
+                              >
+                                <Edit3 className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                onClick={(e) => handleDeleteFolder(folder._id, e)}
+                                disabled={folder.totalPhotos > 0}
+                                className={`p-1 rounded cursor-pointer border border-transparent ${folder.totalPhotos > 0
+                                    ? "text-neutral-200 cursor-not-allowed"
+                                    : "hover:bg-red-50 text-red-400 hover:text-red-600 hover:border-red-200"
+                                  }`}
+                                title={folder.totalPhotos > 0 ? "Cannot delete folder containing photos" : "Delete Folder"}
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                          <span className="rounded-full bg-neutral-50 border border-neutral-100 px-3 py-1 font-semibold text-neutral-600">
+                            {folder.totalPhotos || 0} Photos
+                          </span>
+
+                          {isCompleted && folderSummary && (
+                            <span className="rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1 font-semibold text-emerald-700">
+                              {folderSummary.selectedCount} Selected
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {!isCompleted && (
+                        <button
+                          onClick={() => setActiveUploadFolder(folder)}
+                          className="mt-5 w-full flex items-center justify-center gap-1.5 bg-black hover:bg-black/90 text-white font-semibold text-xs py-2 rounded-xl transition cursor-pointer shadow-xs"
+                        >
+                          <Upload className="h-3.5 w-3.5" /> Upload Photos
+                        </button>
+                      )}
+
+                      {isCompleted && (
+                        <button
+                          onClick={() => {
+                            setActiveCopyProjectId(selectedProject._id);
+                            setActiveCopyFolderName(folder.folderName);
+                          }}
+                          className="mt-5 w-full flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-2 rounded-xl transition cursor-pointer shadow-xs"
+                        >
+                          <FolderSync className="h-3.5 w-3.5" /> Create Seperate Folder
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Local Folder Copy Modal overlay */}
+        {activeCopyProjectId && (
+          <LocalCopyModal
+            projectId={activeCopyProjectId}
+            filterFolderName={activeCopyFolderName}
+            onClose={() => {
+              setActiveCopyProjectId(null);
+              setActiveCopyFolderName("");
+              // Refresh selection summary counts
+              if (selectedProject) {
+                fetchSelectionSummary(selectedProject._id);
+              }
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // MAIN PROJECTS LIST VIEW
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -125,30 +571,6 @@ export default function PhotoSelectionManager() {
         </button>
       </div>
 
-      {activeUploadProjectId && (
-        <div className="border border-black/10 rounded-3xl p-5 bg-neutral-50 shadow-inner">
-          <div className="flex justify-between items-center mb-4">
-            <h4 className="font-semibold text-black">Uploading Previews for Project</h4>
-            <button
-              onClick={() => {
-                setActiveUploadProjectId(null);
-                fetchProjects();
-              }}
-              className="text-xs text-[#74313d] font-bold hover:underline"
-            >
-              Close Uploader
-            </button>
-          </div>
-          <PhotoUploader
-            projectId={activeUploadProjectId}
-            onUploadComplete={() => {
-              setActiveUploadProjectId(null);
-              fetchProjects();
-            }}
-          />
-        </div>
-      )}
-
       {projects.length === 0 ? (
         <div className="text-center py-20 border border-dashed border-black/10 rounded-2xl bg-white">
           <Camera className="h-10 w-10 text-black/30 mx-auto mb-3" />
@@ -162,13 +584,14 @@ export default function PhotoSelectionManager() {
             return (
               <div
                 key={project._id}
-                className={`group overflow-hidden rounded-[1.35rem] border bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 flex flex-col justify-between ${isCompleted ? "border-emerald-500/30" : "border-black/10"
+                onClick={() => handleSelectProject(project)}
+                className={`group overflow-hidden rounded border bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 flex flex-col justify-between cursor-pointer ${isCompleted ? "border-emerald-500/30" : "border-black/10"
                   }`}
               >
                 <div>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="text-lg font-bold text-black leading-snug">{project.projectName}</h3>
+                      <h3 className="text-lg font-bold text-black leading-snug group-hover:underline">{project.projectName}</h3>
                       <p className="text-xs text-black/45 mt-1 font-semibold uppercase tracking-wider">
                         Client: {project.clientName}
                       </p>
@@ -176,15 +599,15 @@ export default function PhotoSelectionManager() {
                     <div className="flex flex-col items-end gap-2">
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${isCompleted
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                          : "bg-amber-50 border-amber-200 text-amber-700"
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                            : "bg-amber-50 border-amber-200 text-amber-700"
                           }`}
                       >
                         {isCompleted ? "Completed" : "Active"}
                       </span>
                       <button
                         type="button"
-                        onClick={() => handleDeleteProject(project._id)}
+                        onClick={(e) => handleDeleteProject(project._id, e)}
                         className="p-1.5 text-black/40 hover:text-red-600 rounded-lg hover:bg-red-50 border border-transparent hover:border-red-200 transition cursor-pointer"
                         title="Delete Project"
                       >
@@ -212,7 +635,7 @@ export default function PhotoSelectionManager() {
                       /select/{project.selectionToken}
                     </span>
                     <button
-                      onClick={() => handleCopyLink(project.selectionToken)}
+                      onClick={(e) => handleCopyLink(e, project.selectionToken)}
                       className="text-black/65 hover:text-black font-semibold uppercase tracking-wider flex items-center gap-1 cursor-pointer"
                     >
                       <Copy className="h-3.5 w-3.5" /> Copy
@@ -220,22 +643,16 @@ export default function PhotoSelectionManager() {
                   </div>
                 </div>
 
-                <div className="mt-6 flex flex-col gap-2">
-                  {!isCompleted ? (
-                    <button
-                      onClick={() => setActiveUploadProjectId(project._id)}
-                      className="w-full flex items-center justify-center gap-2 border border-black/15 bg-white hover:bg-black/2 text-black font-semibold text-xs py-2.5 rounded-xl transition cursor-pointer"
-                    >
-                      <Upload className="h-4 w-4" /> Upload Previews
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setActiveCopyProjectId(project._id)}
-                      className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-2.5 rounded-xl transition cursor-pointer shadow-sm shadow-emerald-600/10"
-                    >
-                      <FolderSync className="h-4 w-4" /> Create Selected Photos Folder
-                    </button>
-                  )}
+                <div className="mt-6">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectProject(project);
+                    }}
+                    className="w-full flex items-center justify-center gap-2 border border-black/15 bg-white hover:bg-black/2 text-black font-semibold text-xs py-2.5 rounded-xl transition cursor-pointer"
+                  >
+                    Manage Workspace
+                  </button>
                 </div>
               </div>
             );
@@ -243,17 +660,9 @@ export default function PhotoSelectionManager() {
         </div>
       )}
 
-      {/* Local Folder Copy Modal overlay */}
-      {activeCopyProjectId && (
-        <LocalCopyModal
-          projectId={activeCopyProjectId}
-          onClose={() => setActiveCopyProjectId(null)}
-        />
-      )}
-
       {/* Create Project Modal Dialog */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-5000 flex items-center justify-center bg-black/40 backdrop-blur-md px-4">
+        <div className="fixed inset-0 z-500 flex items-center justify-center bg-black/40 backdrop-blur-md px-4">
           <form
             onSubmit={handleCreateProject}
             className="relative w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-2xl space-y-4"

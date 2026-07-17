@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "@/api/axios";
 import { FolderOpen, X, AlertTriangle, Check, Loader2, Download, Copy } from "lucide-react";
 import { toast as toastSonner } from "sonner";
 
 const rawExtensions = [".cr3", ".cr2", ".nef", ".arw", ".dng", ".raf"];
 
-export default function LocalCopyModal({ projectId, onClose }) {
+export default function LocalCopyModal({ projectId, filterFolderName = "", onClose }) {
   const [browserSupported] = useState(() => typeof window !== "undefined" && "showDirectoryPicker" in window);
   const [copyState, setCopyState] = useState("idle"); // "idle" | "indexing" | "copying" | "done"
   const [stats, setStats] = useState({
@@ -20,6 +20,47 @@ export default function LocalCopyModal({ projectId, onClose }) {
   const [missingList, setMissingList] = useState([]);
   const [duplicateList, setDuplicateList] = useState([]);
 
+  // States for dynamic folders select
+  const [selectedPhotos, setSelectedPhotos] = useState([]);
+  const [project, setProject] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(true);
+  const [selectedFoldersToCopy, setSelectedFoldersToCopy] = useState({});
+  const [uniqueFoldersList, setUniqueFoldersList] = useState([]);
+
+  useEffect(() => {
+    async function loadSelectionDetails() {
+      try {
+        setLoadingDetails(true);
+        const dbRes = await api.get(`/photo-selection/projects/${projectId}/selection-details`);
+        if (dbRes.data?.success) {
+          const photos = dbRes.data.selectedPhotos || [];
+          setSelectedPhotos(photos);
+          setProject(dbRes.data.project);
+
+          const folderNames = Array.from(new Set(photos.map(p => p.folderName || "Unassigned")));
+          setUniqueFoldersList(folderNames);
+
+          const initialChecked = {};
+          if (filterFolderName) {
+            const matchedName = folderNames.find(name => name.toLowerCase() === filterFolderName.toLowerCase()) || filterFolderName;
+            initialChecked[matchedName] = true;
+          } else {
+            folderNames.forEach(name => {
+              initialChecked[name] = true;
+            });
+          }
+          setSelectedFoldersToCopy(initialChecked);
+        }
+      } catch (err) {
+        console.error(err);
+        toastSonner.error("Failed to load project details.");
+      } finally {
+        setLoadingDetails(false);
+      }
+    }
+    loadSelectionDetails();
+  }, [projectId]);
+
   const copyFiles = async () => {
     if (!browserSupported) {
       toastSonner.error("Your browser does not support the File System Access API. Please use Chrome, Edge, or another Chromium browser.");
@@ -27,21 +68,16 @@ export default function LocalCopyModal({ projectId, onClose }) {
     }
 
     try {
-      // 1. Fetch exact client-selected photos from DB
-      setCopyState("indexing");
-      const dbRes = await api.get(`/photo-selection/projects/${projectId}/selection-details`);
-      if (!dbRes.data?.success) {
-        throw new Error("Failed to load project selection details from server");
-      }
-      const selectedPhotos = dbRes.data.selectedPhotos;
-      const project = dbRes.data.project;
-      if (selectedPhotos.length === 0) {
-        toastSonner.error("No photos have been selected/submitted for this project yet.");
-        setCopyState("idle");
+      const foldersToCopy = Object.keys(selectedFoldersToCopy).filter(k => selectedFoldersToCopy[k]);
+      const targetPhotos = selectedPhotos.filter(photo => foldersToCopy.includes(photo.folderName || "Unassigned"));
+
+      if (targetPhotos.length === 0) {
+        toastSonner.error("No photos to copy. Please check at least one event folder.");
         return;
       }
 
-      setStats((prev) => ({ ...prev, totalSelected: selectedPhotos.length }));
+      setCopyState("indexing");
+      setStats((prev) => ({ ...prev, totalSelected: targetPhotos.length, copied: 0, missing: 0, failed: 0 }));
 
       // Generate unique target folder name based on project name and date
       let targetFolderName = "Selected Album Photos";
@@ -56,8 +92,13 @@ export default function LocalCopyModal({ projectId, onClose }) {
         } catch (e) {
           // ignore date format error
         }
-        const safeName = (project.projectName || "Selected Album").replace(/[\\/:*?"<>|]/g, "_");
-        targetFolderName = `${safeName}${formattedDate}`;
+        const safeProjectName = (project.projectName || "Selected Album").replace(/[\\/:*?"<>|]/g, "_");
+        if (filterFolderName) {
+          const safeFolderName = filterFolderName.replace(/[\\/:*?"<>|]/g, "_");
+          targetFolderName = `${safeProjectName}_${safeFolderName}${formattedDate}`;
+        } else {
+          targetFolderName = `${safeProjectName}_Selected_Album${formattedDate}`;
+        }
       }
 
       // 2. Open directory picker
@@ -118,7 +159,7 @@ export default function LocalCopyModal({ projectId, onClose }) {
       let failedCount = 0;
       const missingArr = [];
 
-      for (const photo of selectedPhotos) {
+      for (const photo of targetPhotos) {
         const key = photo.originalBaseName.toLowerCase();
         const sourceHandle = filesMap.get(key);
 
@@ -139,9 +180,21 @@ export default function LocalCopyModal({ projectId, onClose }) {
 
         try {
           const originalFile = await sourceHandle.getFile();
-          const destinationHandle = await targetDirHandle.getFileHandle(originalFile.name, {
-            create: true,
-          });
+          
+          let destinationHandle;
+          if (filterFolderName) {
+            destinationHandle = await targetDirHandle.getFileHandle(originalFile.name, {
+              create: true,
+            });
+          } else {
+            const eventFolderName = photo.folderName || "Unassigned";
+            const eventDirHandle = await targetDirHandle.getDirectoryHandle(eventFolderName, {
+              create: true,
+            });
+            destinationHandle = await eventDirHandle.getFileHandle(originalFile.name, {
+              create: true,
+            });
+          }
 
           const writable = await destinationHandle.createWritable();
           await writable.write(originalFile);
@@ -217,7 +270,9 @@ export default function LocalCopyModal({ projectId, onClose }) {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-black/5 text-black mb-4">
             <FolderOpen className="h-5 w-5" />
           </div>
-          <h2 className="text-xl font-bold text-black">Create Selected Photos Folder</h2>
+          <h2 className="text-xl font-bold text-black">
+            {filterFolderName ? `Create Selected Folder: ${filterFolderName}` : "Create Selected Photos Folder"}
+          </h2>
           <p className="mt-2 text-xs text-black/50 leading-5">
             Your original photos stay on your device. EnviteYou only accesses the folder you explicitly select.
           </p>
@@ -235,21 +290,66 @@ export default function LocalCopyModal({ projectId, onClose }) {
 
         {browserSupported && copyState === "idle" && (
           <div className="mt-6 space-y-4">
-            <div className="rounded-2xl border border-black/8 bg-black/2 p-4 text-xs text-black/60 leading-5">
-              <span className="font-semibold text-black block mb-1">Process Overview:</span>
-              1. EnviteYou fetches client-selected photo names from the database.<br />
-              2. You select the local folder holding original high-quality photos.<br />
-              3. The browser matches base names (case-insensitive, ignoring extensions).<br />
-              4. A subfolder named <span className="font-mono text-black font-semibold">Selected Album Photos</span> is created.<br />
-              5. Matching local high-res photos are copied directly inside that subfolder.
-            </div>
+            {loadingDetails ? (
+              <div className="flex h-24 flex-col items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-black/35 mb-2" />
+                <p className="text-[10px] text-black/45 uppercase tracking-wider font-semibold">Loading selection details...</p>
+              </div>
+            ) : selectedPhotos.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-black/10 p-6 text-center text-xs text-black/55 leading-relaxed">
+                No photos have been selected/submitted for this project yet. Please check again after the client submits.
+              </div>
+            ) : (
+              <>
+                <div className="rounded-2xl border border-black/8 bg-black/2 p-4 text-xs text-black/60 leading-5">
+                  <span className="font-semibold text-black block mb-1">Process Overview:</span>
+                  {filterFolderName ? (
+                    <>
+                      1. You select the local folder holding original high-quality photos.<br />
+                      2. The browser matches base names (case-insensitive, ignoring extensions).<br />
+                      3. A subfolder named <span className="font-mono text-black font-semibold">{project?.projectName?.replace(/[\\/:*?"<>|]/g, "_")}_{filterFolderName.replace(/[\\/:*?"<>|]/g, "_")}</span> is created.<br />
+                      4. Matching high-res originals for the <span className="font-semibold">{filterFolderName}</span> event are copied directly inside that subfolder.
+                    </>
+                  ) : (
+                    <>
+                      1. You select the local folder holding original high-quality photos.<br />
+                      2. The browser matches base names (case-insensitive, ignoring extensions).<br />
+                      3. Event subfolders are created inside <span className="font-mono text-black font-semibold">{project?.projectName?.replace(/[\\/:*?"<>|]/g, "_")}_Selected_Album</span>.<br />
+                      4. Matching local high-res photos are copied into their respective event subfolders.
+                    </>
+                  )}
+                </div>
 
-            <button
-              onClick={copyFiles}
-              className="w-full bg-black hover:bg-black/90 text-white font-semibold text-sm py-3 rounded-xl transition cursor-pointer"
-            >
-              Select Folder &amp; Start Copying
-            </button>
+                {uniqueFoldersList.length > 0 && !filterFolderName && (
+                  <div className="space-y-2 border border-black/8 rounded-2xl p-4 bg-black/2 max-h-40 overflow-y-auto">
+                    <p className="text-xs font-bold uppercase tracking-wider text-black/55 mb-2">Select Event Folders to Copy:</p>
+                    {uniqueFoldersList.map(folderName => (
+                      <label key={folderName} className="flex items-center gap-2 text-sm text-black font-semibold cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={!!selectedFoldersToCopy[folderName]}
+                          onChange={(e) => {
+                            setSelectedFoldersToCopy(prev => ({
+                              ...prev,
+                              [folderName]: e.target.checked
+                            }));
+                          }}
+                          className="rounded border-black/20 focus:ring-0 cursor-pointer"
+                        />
+                        <span>{folderName} ({selectedPhotos.filter(p => (p.folderName || "Unassigned") === folderName).length} photos)</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  onClick={copyFiles}
+                  className="w-full bg-black hover:bg-black/90 text-white font-semibold text-sm py-3 rounded-xl transition cursor-pointer"
+                >
+                  Select Folder &amp; Start Copying
+                </button>
+              </>
+            )}
           </div>
         )}
 
