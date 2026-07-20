@@ -17,7 +17,9 @@ import {
   ArrowLeft,
   Edit3,
   FolderOpen,
-  X
+  X,
+  LayoutGrid,
+  List
 } from "lucide-react";
 import PhotoUploader from "../photo-selection/PhotoUploader";
 import LocalCopyModal from "../photo-selection/LocalCopyModal";
@@ -31,14 +33,18 @@ export default function PhotoSelectionManager() {
   const [projectName, setProjectName] = useState("");
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [enableLimitAlert, setEnableLimitAlert] = useState(true);
   const [selectionLimit, setSelectionLimit] = useState(100);
   const [submitting, setSubmitting] = useState(false);
+  const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
 
   // Active workspace state
   const [selectedProject, setSelectedProject] = useState(null);
   const [folders, setFolders] = useState([]);
   const [loadingFolders, setLoadingFolders] = useState(false);
   const [activeUploadFolder, setActiveUploadFolder] = useState(null);
+  const [showBulkUploader, setShowBulkUploader] = useState(false);
   const [selectionSummary, setSelectionSummary] = useState(null);
   const [loadingSummary, setLoadingSummary] = useState(false);
 
@@ -117,14 +123,15 @@ export default function PhotoSelectionManager() {
     setSelectedProject(null);
     setFolders([]);
     setActiveUploadFolder(null);
+    setShowBulkUploader(false);
     setSelectionSummary(null);
     fetchProjects();
   };
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
-    if (!projectName.trim() || !clientName.trim() || !clientEmail.trim() || !selectionLimit) {
-      toast.error("Please fill in all fields.");
+    if (!projectName.trim() || !clientName.trim() || !selectionLimit) {
+      toast.error("Please fill in all required fields.");
       return;
     }
 
@@ -134,6 +141,8 @@ export default function PhotoSelectionManager() {
         projectName,
         clientName,
         clientEmail,
+        clientPhone,
+        enableLimitAlert,
         selectionLimit: parseInt(selectionLimit),
       });
 
@@ -143,6 +152,8 @@ export default function PhotoSelectionManager() {
         setProjectName("");
         setClientName("");
         setClientEmail("");
+        setClientPhone("");
+        setEnableLimitAlert(true);
         setSelectionLimit(100);
         fetchProjects();
       }
@@ -281,7 +292,9 @@ export default function PhotoSelectionManager() {
                 </span>
               </div>
               <p className="text-xs text-black/55 mt-1 font-semibold tracking-wider">
-                Client: {selectedProject.clientName} ({selectedProject.clientEmail})
+                Client: {selectedProject.clientName}
+                {selectedProject.clientEmail && ` | ${selectedProject.clientEmail}`}
+                {selectedProject.clientPhone && ` | ${selectedProject.clientPhone}`}
               </p>
             </div>
           </div>
@@ -361,6 +374,34 @@ export default function PhotoSelectionManager() {
               }}
             />
           </div>
+        ) : showBulkUploader ? (
+          <div className="border border-black/10 rounded-3xl p-5 bg-neutral-50 shadow-inner space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">📁</span>
+                <h4 className="font-bold text-black text-lg">
+                  Bulk Upload Folder to Project
+                </h4>
+              </div>
+              <button
+                onClick={() => {
+                  setShowBulkUploader(false);
+                  fetchFolders(selectedProject._id);
+                }}
+                className="text-xs text-[#74313d] font-bold hover:underline cursor-pointer border border-black/10 px-3 py-1.5 rounded-full bg-white hover:bg-neutral-100"
+              >
+                Go Back to Folders
+              </button>
+            </div>
+            <PhotoUploader
+              projectId={selectedProject._id}
+              folderId={null}
+              onUploadComplete={() => {
+                setShowBulkUploader(false);
+                fetchFolders(selectedProject._id);
+              }}
+            />
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -396,12 +437,20 @@ export default function PhotoSelectionManager() {
                       </button>
                     </form>
                   ) : (
-                    <button
-                      onClick={() => setShowCreateFolder(true)}
-                      className="rounded border border-black/15 hover:bg-black/5 text-black font-semibold text-xs px-4 py-2 transition flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <Plus className="h-4 w-4" /> + New Folder
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setShowCreateFolder(true)}
+                        className="rounded border border-black/15 hover:bg-black/5 text-black font-semibold text-xs px-4 py-2 transition flex items-center gap-1.5 cursor-pointer bg-white"
+                      >
+                        <Plus className="h-4 w-4" />  New Folder
+                      </button>
+                      <button
+                        onClick={() => setShowBulkUploader(true)}
+                        className="rounded border border-black/15 bg-black hover:bg-black/90 text-white font-semibold text-xs px-4 py-2 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      >
+                        <Upload className="h-4 w-4" />  Upload Folders
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
@@ -563,12 +612,36 @@ export default function PhotoSelectionManager() {
             Create albums, upload preview photos, and copy client-selected high-res photos automatically.
           </p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="rounded-full bg-black hover:bg-black/90 text-white font-semibold text-sm px-6 py-2.5 transition flex items-center gap-2 cursor-pointer shadow-md"
-        >
-          <Plus className="h-4.5 w-4.5" /> Create Selection
-        </button>
+        <div className="flex items-center gap-3 self-end sm:self-auto">
+          {/* View Mode Toggle */}
+          <div className="flex items-center rounded-full border border-black/10 bg-white p-1 shadow-xs">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-1.5 rounded-full transition cursor-pointer ${
+                viewMode === "grid" ? "bg-black text-white" : "text-black/50 hover:text-black hover:bg-black/5"
+              }`}
+              title="Grid View"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              className={`p-1.5 rounded-full transition cursor-pointer ${
+                viewMode === "list" ? "bg-black text-white" : "text-black/50 hover:text-black hover:bg-black/5"
+              }`}
+              title="List View"
+            >
+              <List className="h-4 w-4" />
+            </button>
+          </div>
+
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="rounded-full bg-black hover:bg-black/90 text-white font-semibold text-sm px-6 py-2.5 transition flex items-center gap-2 cursor-pointer shadow-md shrink-0"
+          >
+            <Plus className="h-4.5 w-4.5" /> Create Selection
+          </button>
+        </div>
       </div>
 
       {projects.length === 0 ? (
@@ -577,7 +650,7 @@ export default function PhotoSelectionManager() {
           <h3 className="text-sm font-semibold text-black">No Photo Selections Created</h3>
           <p className="text-xs text-black/55 mt-1">Create your first client album list to upload photos.</p>
         </div>
-      ) : (
+      ) : viewMode === "grid" ? (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => {
             const isCompleted = project.status === "completed";
@@ -658,6 +731,82 @@ export default function PhotoSelectionManager() {
             );
           })}
         </div>
+      ) : (
+        <div className="space-y-3">
+          {projects.map((project) => {
+            const isCompleted = project.status === "completed";
+            return (
+              <div
+                key={project._id}
+                onClick={() => handleSelectProject(project)}
+                className={`group rounded border bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition hover:-translate-y-0.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer ${
+                  isCompleted ? "border-emerald-500/30" : "border-black/10"
+                }`}
+              >
+                <div className="flex items-center gap-4 min-w-[240px] max-w-sm overflow-hidden">
+                  <span className="text-3xl shrink-0">📷</span>
+                  <div className="truncate">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-bold text-black group-hover:underline truncate">{project.projectName}</h3>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border shrink-0 ${
+                          isCompleted
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                            : "bg-amber-50 border-amber-200 text-amber-700"
+                        }`}
+                      >
+                        {isCompleted ? "Completed" : "Active"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-black/50 font-medium mt-0.5 truncate">
+                      Client: {project.clientName}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6 text-xs shrink-0">
+                  <div className="text-center sm:text-left">
+                    <span className="text-black/45 block text-[10px] uppercase tracking-wider font-semibold">Uploaded</span>
+                    <span className="text-sm font-bold text-black mt-0.5 block">{project.totalPhotos || 0}</span>
+                  </div>
+
+                  <div className="text-center sm:text-left">
+                    <span className="text-black/45 block text-[10px] uppercase tracking-wider font-semibold">Selected</span>
+                    <span className="text-sm font-bold text-black mt-0.5 block">{project.selectedCount || 0} / {project.selectionLimit}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-auto" onClick={(e) => e.stopPropagation()}>
+                  {/* Copy Link */}
+                  <button
+                    onClick={(e) => handleCopyLink(e, project.selectionToken)}
+                    className="inline-flex items-center gap-1.5 border border-black/15 hover:bg-black/5 bg-white text-black text-xs font-semibold px-4 py-2 rounded transition cursor-pointer"
+                  >
+                    <Copy className="h-3.5 w-3.5" /> Copy Link
+                  </button>
+
+                  {/* Manage Workspace */}
+                  <button
+                    onClick={() => handleSelectProject(project)}
+                    className="inline-flex items-center gap-1.5 bg-black hover:bg-black/90 text-white text-xs font-semibold px-4 py-2 rounded transition cursor-pointer"
+                  >
+                    Manage Workspace
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                    type="button"
+                    onClick={(e) => handleDeleteProject(project._id, e)}
+                    className="p-2 text-black/40 hover:text-red-600 rounded hover:bg-red-50 border border-black/10 hover:border-red-200 transition cursor-pointer"
+                    title="Delete Project"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
 
       {/* Create Project Modal Dialog */}
@@ -716,17 +865,43 @@ export default function PhotoSelectionManager() {
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label htmlFor="cemail" className="text-xs font-semibold uppercase tracking-wider text-black/60">Client Email</label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label htmlFor="cemail" className="text-xs font-semibold uppercase tracking-wider text-black/60">Client Email (Optional)</label>
+                <input
+                  id="cemail"
+                  type="email"
+                  placeholder="rahul@example.com"
+                  value={clientEmail}
+                  onChange={(e) => setClientEmail(e.target.value)}
+                  className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-black placeholder-black/30 outline-none transition focus:border-black"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="cphone" className="text-xs font-semibold uppercase tracking-wider text-black/60">Client Mobile</label>
+                <input
+                  id="cphone"
+                  type="tel"
+                  placeholder="e.g. 9876543210"
+                  value={clientPhone}
+                  onChange={(e) => setClientPhone(e.target.value)}
+                  className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-black placeholder-black/30 outline-none transition focus:border-black"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5 pt-1.5 pb-1">
               <input
-                id="cemail"
-                type="email"
-                placeholder="e.g. rahul@example.com"
-                value={clientEmail}
-                onChange={(e) => setClientEmail(e.target.value)}
-                className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-black placeholder-black/30 outline-none transition focus:border-black"
-                required
+                id="enableLimitAlert"
+                type="checkbox"
+                checked={enableLimitAlert}
+                onChange={(e) => setEnableLimitAlert(e.target.checked)}
+                className="h-4 w-4 rounded border border-black/15 bg-white text-black accent-black focus:ring-black cursor-pointer transition"
               />
+              <label htmlFor="enableLimitAlert" className="text-xs font-bold uppercase tracking-wider text-black/60 cursor-pointer select-none">
+                Alert client if selection exceeds limit
+              </label>
             </div>
 
             <div className="pt-2 grid grid-cols-2 gap-3">

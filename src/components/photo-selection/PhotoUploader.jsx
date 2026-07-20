@@ -16,19 +16,55 @@ export default function PhotoUploader({ projectId, folderId, onUploadComplete })
   });
   const [failedList, setFailedList] = useState([]);
   const fileInputRef = useRef(null);
+  const folderInputRef = useRef(null);
+
+  const filterImageFiles = (files) => {
+    return files.filter(
+      (file) =>
+        file.type.startsWith("image/") ||
+        /\.(jpe?g|png|webp|gif)$/i.test(file.name)
+    );
+  };
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      setSelectedFiles(files);
+    const images = filterImageFiles(files);
+    if (images.length > 0) {
+      setSelectedFiles(images);
       setFailedList([]);
-      setProgress({ completed: 0, total: files.length, success: 0, failed: 0 });
+      setProgress({ completed: 0, total: images.length, success: 0, failed: 0 });
+    } else if (files.length > 0) {
+      toast.error("No valid image files selected.");
     }
+  };
+
+  const handleFolderChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    const images = filterImageFiles(files);
+    if (images.length > 0) {
+      setSelectedFiles(images);
+      setFailedList([]);
+      setProgress({ completed: 0, total: images.length, success: 0, failed: 0 });
+    } else if (files.length > 0) {
+      toast.error("No valid images found in the selected folder.");
+    }
+  };
+
+  const getTargetFolderName = (file) => {
+    if (folderId) return null;
+    if (!file.webkitRelativePath) return "General";
+    const parts = file.webkitRelativePath.split("/");
+    if (parts.length > 2) {
+      return parts[1]; // e.g. "Wedding/Haldi/photo.jpg" -> "Haldi"
+    } else if (parts.length === 2) {
+      return parts[0]; // e.g. "Wedding/photo.jpg" -> "Wedding"
+    }
+    return "General";
   };
 
   const uploadFileDirect = async (file, signatureData) => {
     const { signature, timestamp, apiKey, cloudName, folder } = signatureData;
-    
+
     // Compress the photo to max 20kb client-side before upload
     const compressedFile = await compressImageToMax20KB(file);
 
@@ -52,48 +88,129 @@ export default function PhotoUploader({ projectId, folderId, onUploadComplete })
     };
   };
 
-  const startUpload = async (filesToUpload) => {
-    if (filesToUpload.length === 0) return;
+  const startUpload = async (items) => {
+    if (items.length === 0) return;
     setUploading(true);
     setFailedList([]);
 
     try {
-      // 1. Fetch Cloudinary signature from backend
-      const sigRes = await api.post("/photo-selection/cloudinary-signature", {
-        projectId,
-        folderId,
+      // 1. Resolve flat upload queue with correct folder IDs
+      const uploadQueue = [];
+      const rawFiles = [];
+
+      items.forEach((item) => {
+        if (item.file && item.folderId) {
+          uploadQueue.push(item);
+        } else {
+          rawFiles.push(item);
+        }
       });
-      if (!sigRes.data?.success) {
-        throw new Error("Unable to retrieve upload signature");
+
+      if (rawFiles.length > 0) {
+        if (folderId) {
+          rawFiles.forEach((file) => {
+            uploadQueue.push({ file, folderId });
+          });
+        } else {
+          // Group by target folder name
+          const filesByFolderName = {};
+          rawFiles.forEach((file) => {
+            const fName = getTargetFolderName(file) || "General";
+            if (!filesByFolderName[fName]) {
+              filesByFolderName[fName] = [];
+            }
+            filesByFolderName[fName].push(file);
+          });
+
+          // Fetch existing project folders
+          const resFolders = await api.get(`/photo-selection/projects/${projectId}/folders`);
+          const existingFolders = resFolders.data?.folders || [];
+
+          const folderMap = {};
+          const folderNames = Object.keys(filesByFolderName);
+
+          // Resolve folders sequentially to prevent race conditions
+          for (const name of folderNames) {
+            const existing = existingFolders.find(
+              (f) => f.folderName.toLowerCase() === name.toLowerCase()
+            );
+            if (existing) {
+              folderMap[name] = existing._id;
+            } else {
+              try {
+                const createRes = await api.post(`/photo-selection/projects/${projectId}/folders`, {
+                  folderName: name,
+                });
+                if (createRes.data?.success) {
+                  folderMap[name] = createRes.data.folder._id;
+                }
+              } catch (err) {
+                console.error(`Failed to create folder: ${name}`, err);
+                if (existingFolders.length > 0) {
+                  folderMap[name] = existingFolders[0]._id;
+                }
+              }
+            }
+          }
+
+          // Map files to folder IDs
+          Object.entries(filesByFolderName).forEach(([name, files]) => {
+            const fId = folderMap[name];
+            if (fId) {
+              files.forEach((file) => {
+                uploadQueue.push({ file, folderId: fId });
+              });
+            }
+          });
+        }
       }
-      const signatureData = sigRes.data;
+
+      // Reset progress with the total queue length
+      setProgress({ completed: 0, total: uploadQueue.length, success: 0, failed: 0 });
 
       // 2. Perform concurrent uploads (concurrency = 4)
       const results = [];
       const failures = [];
       let index = 0;
       let completedCount = 0;
-      let successCount = progress.success;
+      let successCount = 0;
       let failedCount = 0;
 
+      // Cache signature details per folder ID
+      const signatureCache = {};
+      const getSignatureData = async (fId) => {
+        if (signatureCache[fId]) return signatureCache[fId];
+        const sigRes = await api.post("/photo-selection/cloudinary-signature", {
+          projectId,
+          folderId: fId,
+        });
+        if (!sigRes.data?.success) {
+          throw new Error("Unable to retrieve upload signature");
+        }
+        signatureCache[fId] = sigRes.data;
+        return sigRes.data;
+      };
+
       const runNext = async () => {
-        if (index >= filesToUpload.length) return;
+        if (index >= uploadQueue.length) return;
         const currentIdx = index++;
-        const file = filesToUpload[currentIdx];
+        const item = uploadQueue[currentIdx];
+        const { file, folderId: fileFolderId } = item;
 
         try {
+          const signatureData = await getSignatureData(fileFolderId);
           const uploadedPhoto = await uploadFileDirect(file, signatureData);
-          results.push(uploadedPhoto);
+          results.push({ ...uploadedPhoto, folderId: fileFolderId });
           successCount++;
         } catch (err) {
           console.error("Direct upload failed for", file.name, err);
-          failures.push(file);
+          failures.push(item);
           failedCount++;
         } finally {
           completedCount++;
           setProgress((prev) => ({
             completed: completedCount,
-            total: filesToUpload.length,
+            total: uploadQueue.length,
             success: successCount,
             failed: failedCount,
           }));
@@ -103,18 +220,36 @@ export default function PhotoUploader({ projectId, folderId, onUploadComplete })
 
       // Spawn concurrent workers
       const workers = [];
-      const concurrency = Math.min(4, filesToUpload.length);
+      const concurrency = Math.min(4, uploadQueue.length);
       for (let i = 0; i < concurrency; i++) {
         workers.push(runNext());
       }
       await Promise.all(workers);
 
-      // 3. Save uploaded photos metadata in bulk to backend (in batches of 50)
+      // 3. Save uploaded photos metadata in bulk to backend (grouped by folderId)
       if (results.length > 0) {
-        const batchSize = 50;
-        for (let i = 0; i < results.length; i += batchSize) {
-          const batch = results.slice(i, i + batchSize);
-          await api.post(`/photo-selection/projects/${projectId}/photos/bulk`, { photos: batch, folderId });
+        const resultsByFolder = {};
+        results.forEach((item) => {
+          if (!resultsByFolder[item.folderId]) {
+            resultsByFolder[item.folderId] = [];
+          }
+          resultsByFolder[item.folderId].push({
+            originalFileName: item.originalFileName,
+            originalBaseName: item.originalBaseName,
+            previewUrl: item.previewUrl,
+            cloudinaryPublicId: item.cloudinaryPublicId,
+          });
+        });
+
+        for (const [fId, photosList] of Object.entries(resultsByFolder)) {
+          const batchSize = 50;
+          for (let i = 0; i < photosList.length; i += batchSize) {
+            const batch = photosList.slice(i, i + batchSize);
+            await api.post(`/photo-selection/projects/${projectId}/photos/bulk`, {
+              photos: batch,
+              folderId: fId,
+            });
+          }
         }
       }
 
@@ -144,24 +279,57 @@ export default function PhotoUploader({ projectId, folderId, onUploadComplete })
 
   return (
     <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-black mb-4">Upload Preview Photos</h3>
+      <h3 className="text-lg font-semibold text-black mb-4">
+        {folderId ? "Upload Photos to Folder" : "Bulk Upload Folder"}
+      </h3>
 
       {!uploading && progress.completed === 0 && (
-        <div
-          onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-black/15 hover:border-black/30 transition rounded-xl p-8 text-center cursor-pointer flex flex-col items-center justify-center bg-black/2"
-        >
-          <Upload className="h-8 w-8 text-black/45 mb-3" />
-          <p className="text-sm font-semibold text-black">Click to select photos</p>
-          <p className="text-xs text-black/50 mt-1">Select compressed/preview photos (JPG, PNG, WebP)</p>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            multiple
-            accept="image/*"
-            className="hidden"
-          />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Option 1: Choose Photos */}
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-black/15 hover:border-black/30 hover:bg-black/[0.01] transition rounded-xl p-8 text-center cursor-pointer flex flex-col items-center justify-center bg-black/2 group"
+          >
+            <div className="p-3 bg-white rounded-full border border-black/5 shadow-xs mb-3 group-hover:scale-105 transition-transform duration-200">
+              <Upload className="h-6 w-6 text-black/70" />
+            </div>
+            <p className="text-sm font-bold text-black">Select Photos</p>
+            <p className="text-xs text-black/50 mt-1 max-w-[200px] mx-auto">
+              Select multiple photos from your local device.
+            </p>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              multiple
+              accept="image/*"
+              className="hidden"
+            />
+          </div>
+
+          {/* Option 2: Choose Folder */}
+          <div
+            onClick={() => folderInputRef.current?.click()}
+            className="border-2 border-dashed border-black/15 hover:border-black/30 hover:bg-black/[0.01] transition rounded-xl p-8 text-center cursor-pointer flex flex-col items-center justify-center bg-black/2 group"
+          >
+            <div className="p-3 bg-white rounded-full border border-black/5 shadow-xs mb-3 group-hover:scale-105 transition-transform duration-200">
+              <span className="text-2xl">📁</span>
+            </div>
+            <p className="text-sm font-bold text-black">Select Folder</p>
+            <p className="text-xs text-black/50 mt-1 max-w-[200px] mx-auto">
+              Choose a folder. Subfolders (Haldi, Mehndi, etc.) will be created.
+            </p>
+            <input
+              type="file"
+              ref={folderInputRef}
+              onChange={handleFolderChange}
+              webkitdirectory=""
+              directory=""
+              multiple
+              accept="image/*"
+              className="hidden"
+            />
+          </div>
         </div>
       )}
 

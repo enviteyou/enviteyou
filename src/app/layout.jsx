@@ -1,8 +1,8 @@
-
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "sonner";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import RecaptchaScript from "@/components/RecaptchaScript";
+import ClientPageLoader from "@/components/ClientPageLoader";
 
 export default function RootLayout({ children }) {
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -12,7 +12,9 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <SmoothScrollProvider>
             <RecaptchaScript siteKey={recaptchaSiteKey} />
-            {children}
+            <ClientPageLoader>
+              {children}
+            </ClientPageLoader>
           </SmoothScrollProvider>
         </AuthProvider>
         <Toaster position="top-center" richColors />

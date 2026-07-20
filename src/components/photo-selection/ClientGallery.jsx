@@ -123,11 +123,10 @@ export default function ClientGallery({ token }) {
     if (isSelected) {
       nextIds = selectedIds.filter((id) => id !== photo._id);
     } else {
-      if (selectedIds.length >= project.selectionLimit) {
-        toast.warning(`You can select a maximum of ${project.selectionLimit} photos.`);
-        return;
-      }
       nextIds = [...selectedIds, photo._id];
+      if (nextIds.length > project.selectionLimit && project.enableLimitAlert) {
+        toast.warning(`You have exceeded the recommended selection limit of ${project.selectionLimit} photos.`);
+      }
     }
 
     setSelectedIds(nextIds);
@@ -278,12 +277,12 @@ export default function ClientGallery({ token }) {
               </div>
               <div className="h-2 w-full bg-black/5 rounded-full overflow-hidden mt-2">
                 <div
-                  className={`h-full transition-all duration-500 ${selectedIds.length === project.selectionLimit ? 'bg-emerald-500' : 'bg-black'}`}
+                  className={`h-full transition-all duration-500 ${selectedIds.length > project.selectionLimit ? 'bg-amber-500' : selectedIds.length === project.selectionLimit ? 'bg-emerald-500' : 'bg-black'}`}
                   style={{ width: `${Math.min((selectedIds.length / project.selectionLimit) * 100, 100)}%` }}
                 />
               </div>
               <p className="text-xs text-black/40 mt-1.5 text-right font-medium">
-                {project.selectionLimit - selectedIds.length} photos remaining
+                {selectedIds.length > project.selectionLimit ? `${selectedIds.length - project.selectionLimit} over limit` : `${project.selectionLimit - selectedIds.length} photos remaining`}
               </p>
             </div>
           </div>
@@ -414,12 +413,12 @@ export default function ClientGallery({ token }) {
             </div>
             <div className="h-2 w-full bg-black/5 rounded-full overflow-hidden mt-2">
               <div
-                className={`h-full transition-all duration-500 ${selectedIds.length === project.selectionLimit ? 'bg-emerald-500' : 'bg-black'}`}
+                className={`h-full transition-all duration-500 ${selectedIds.length > project.selectionLimit ? 'bg-amber-500' : selectedIds.length === project.selectionLimit ? 'bg-emerald-500' : 'bg-black'}`}
                 style={{ width: `${Math.min((selectedIds.length / project.selectionLimit) * 100, 100)}%` }}
               />
             </div>
             <p className="text-[10px] text-black/40 mt-1.5 text-right font-medium">
-              {project.selectionLimit - selectedIds.length} photos remaining
+              {selectedIds.length > project.selectionLimit ? `${selectedIds.length - project.selectionLimit} over limit` : `${project.selectionLimit - selectedIds.length} photos remaining`}
             </p>
           </div>
         </div>
