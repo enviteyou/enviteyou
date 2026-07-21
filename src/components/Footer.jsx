@@ -9,13 +9,13 @@ const footerLinks = {
   'Quick Links': [
     { label: "Become a Partner", href: "/vendor/signup" },
     { label: "About Us", href: "/about" },
-    { label: "Blog", href: "/blogs" },
+    { label: "Blog", href: "/blog" },
 
   ],
   'Important ': [
     { label: "Refund Policy", href: "/refund_policy" },
     { label: "Shipping Policy", href: "/shipping_policy" },
-    { label: "Contact us", href: "mailto:care@enviteyou.com" },
+    { label: "Contact us", href: "/contact_us" },
 
   ],
   'Our Policy': [
