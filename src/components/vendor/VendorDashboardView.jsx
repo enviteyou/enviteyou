@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -247,7 +247,7 @@ function InvitationTable({
   );
 }
 
-export default function VendorDashboardView({ activeTab = "dashboard" }) {
+function VendorDashboardViewContent({ activeTab = "dashboard" }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [templates, setTemplates] = useState([]);
@@ -756,5 +756,22 @@ export default function VendorDashboardView({ activeTab = "dashboard" }) {
         </SectionCard>
       </div>
     </div>
+  );
+}
+
+export default function VendorDashboardView(props) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#faf7f3] text-black/60">
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-black/15 border-t-black" />
+            <p className="text-xs font-semibold uppercase tracking-widest text-black/45">Loading dashboard...</p>
+          </div>
+        </div>
+      }
+    >
+      <VendorDashboardViewContent {...props} />
+    </Suspense>
   );
 }
