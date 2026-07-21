@@ -500,7 +500,7 @@ function VendorDashboardViewContent({ activeTab = "dashboard" }) {
       <div className="space-y-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">My work</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">My Templates</h1>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-black">My Invitations</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">All invitations created with the vendor auth flow are listed here from your vendor invitation endpoint.</p>
         </div>
 
@@ -530,7 +530,7 @@ function VendorDashboardViewContent({ activeTab = "dashboard" }) {
               })}
             </div>
 
-            <SectionCard title="Template details">
+            <SectionCard title="Invitation details">
               {selectedInvitation ? (
                 <div className="space-y-4 text-sm text-black/65">
                   <div className="flex items-center gap-4 border-b border-black/8 pb-4">

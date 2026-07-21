@@ -19,10 +19,12 @@ import {
   FolderOpen,
   X,
   LayoutGrid,
-  List
+  List,
+  BookOpen
 } from "lucide-react";
 import PhotoUploader from "../photo-selection/PhotoUploader";
 import LocalCopyModal from "../photo-selection/LocalCopyModal";
+import CreateAlbumModal from "../photo-selection/CreateAlbumModal";
 
 export default function PhotoSelectionManager() {
   const [projects, setProjects] = useState([]);
@@ -57,6 +59,11 @@ export default function PhotoSelectionManager() {
   // Copy modal state
   const [activeCopyProjectId, setActiveCopyProjectId] = useState(null);
   const [activeCopyFolderName, setActiveCopyFolderName] = useState("");
+
+  // Digital Album states
+  const [showCreateAlbum, setShowCreateAlbum] = useState(false);
+  const [projectAlbums, setProjectAlbums] = useState([]);
+  const [loadingAlbums, setLoadingAlbums] = useState(false);
 
   const fetchProjects = async () => {
     try {
@@ -109,9 +116,37 @@ export default function PhotoSelectionManager() {
     }
   };
 
+  const fetchProjectAlbums = async (projectId) => {
+    try {
+      setLoadingAlbums(true);
+      const res = await api.get(`/album/project/${projectId}`);
+      if (res.data?.success) {
+        setProjectAlbums(res.data.albums || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch project albums:", err);
+    } finally {
+      setLoadingAlbums(false);
+    }
+  };
+
+  const handleDeleteAlbum = async (albumId) => {
+    if (!window.confirm("Are you sure you want to delete this album?")) return;
+    try {
+      const res = await api.delete(`/album/${albumId}`);
+      if (res.data?.success) {
+        toast.success("Album deleted successfully.");
+        if (selectedProject) fetchProjectAlbums(selectedProject._id);
+      }
+    } catch (err) {
+      toast.error("Failed to delete album.");
+    }
+  };
+
   const handleSelectProject = (project) => {
     setSelectedProject(project);
     fetchFolders(project._id);
+    fetchProjectAlbums(project._id);
     if (project.status === "completed") {
       fetchSelectionSummary(project._id);
     } else {
@@ -122,6 +157,7 @@ export default function PhotoSelectionManager() {
   const handleBackToProjects = () => {
     setSelectedProject(null);
     setFolders([]);
+    setProjectAlbums([]);
     setActiveUploadFolder(null);
     setShowBulkUploader(false);
     setSelectionSummary(null);
@@ -305,6 +341,13 @@ export default function PhotoSelectionManager() {
               className="inline-flex items-center gap-1.5 border border-black/15 hover:bg-black/2 bg-white text-black text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded transition cursor-pointer"
             >
               <Copy className="h-4 w-4" /> Copy Selection Link
+            </button>
+
+            <button
+              onClick={() => setShowCreateAlbum(true)}
+              className="inline-flex items-center gap-1.5 bg-black hover:bg-black/90 text-white text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded transition cursor-pointer shadow-sm"
+            >
+              <BookOpen className="h-4 w-4" /> Create Digital Album
             </button>
 
             {isCompleted && (
@@ -582,6 +625,67 @@ export default function PhotoSelectionManager() {
           </div>
         )}
 
+        {/* Digital Albums List Section */}
+        {projectAlbums.length > 0 && (
+          <div className="rounded-3xl border border-black/10 bg-white p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-amber-600" />
+                <h3 className="font-bold text-base text-black">Generated Digital Albums ({projectAlbums.length})</h3>
+              </div>
+              <button
+                onClick={() => setShowCreateAlbum(true)}
+                className="text-xs font-bold text-black border border-black/15 px-3 py-1.5 rounded-xl hover:bg-black/5 transition cursor-pointer"
+              >
+                + New Album
+              </button>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {projectAlbums.map((album) => {
+                const link = `${typeof window !== "undefined" ? window.location.origin : ""}/album/${album.albumToken}`;
+                return (
+                  <div key={album._id} className="rounded-2xl border border-black/10 bg-[#fbf9f5] p-4 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-start justify-between gap-2">
+                        <h4 className="font-bold text-sm text-black truncate">{album.albumTitle}</h4>
+                        <button
+                          onClick={() => handleDeleteAlbum(album._id)}
+                          className="text-neutral-400 hover:text-red-600 transition p-1 cursor-pointer"
+                          title="Delete Album"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      <p className="text-xs text-black/50 mt-1 font-medium">{album.photos?.length || 0} Photos • Client: {album.clientName}</p>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(link);
+                          toast.success("Album link copied!");
+                        }}
+                        className="flex-1 rounded-xl border border-black/15 bg-white py-2 text-[11px] font-bold uppercase tracking-wider text-black hover:bg-black/5 transition flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <Copy className="h-3 w-3" /> Copy Link
+                      </button>
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 rounded-xl bg-black py-2 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-black/90 transition flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <ExternalLink className="h-3 w-3" /> View Album
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Local Folder Copy Modal overlay */}
         {activeCopyProjectId && (
           <LocalCopyModal
@@ -590,10 +694,20 @@ export default function PhotoSelectionManager() {
             onClose={() => {
               setActiveCopyProjectId(null);
               setActiveCopyFolderName("");
-              // Refresh selection summary counts
               if (selectedProject) {
                 fetchSelectionSummary(selectedProject._id);
               }
+            }}
+          />
+        )}
+
+        {/* Create Digital Album Modal overlay */}
+        {showCreateAlbum && (
+          <CreateAlbumModal
+            project={selectedProject}
+            onClose={() => setShowCreateAlbum(false)}
+            onAlbumCreated={() => {
+              if (selectedProject) fetchProjectAlbums(selectedProject._id);
             }}
           />
         )}
