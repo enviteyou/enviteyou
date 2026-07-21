@@ -8,6 +8,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 
 function SigninContent() {
   const router = useRouter();
@@ -23,6 +24,7 @@ function SigninContent() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const role = "user";
 
@@ -140,9 +142,18 @@ function SigninContent() {
           </div>
 
           <div>
-            <label htmlFor="password" className="mb-1 block text-sm font-medium text-black/75">
-              Password
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-black/75">
+                Password
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-xs font-semibold text-black/60 hover:text-black hover:underline cursor-pointer"
+              >
+                Forgot password?
+              </button>
+            </div>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-black/40">
                 <Lock className="h-5 w-5" />
@@ -234,6 +245,12 @@ function SigninContent() {
             Create account
           </Link>
         </p>
+
+        <ForgotPasswordModal
+          isOpen={showForgotPassword}
+          onClose={() => setShowForgotPassword(false)}
+          initialEmail={formData.email}
+        />
       </section>
     </div>
   );

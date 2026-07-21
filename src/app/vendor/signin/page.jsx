@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, Shield } from "lucide-react";
 import VendorAuthShell from "@/components/vendor/VendorAuthShell";
+import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 
 function Field({ id, label, icon: Icon, ...inputProps }) {
 	return (
@@ -37,6 +38,7 @@ export default function VendorSigninPage() {
 		password: "",
 	});
 	const [showPassword, setShowPassword] = useState(false);
+	const [showForgotPassword, setShowForgotPassword] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
@@ -101,9 +103,18 @@ export default function VendorSigninPage() {
 					/>
 
 					<div>
-						<label htmlFor="password" className="mb-2 block text-sm font-semibold text-[#3c3840]">
-							Password
-						</label>
+						<div className="flex items-center justify-between mb-2">
+							<label htmlFor="password" className="block text-sm font-semibold text-[#3c3840]">
+								Password
+							</label>
+							<button
+								type="button"
+								onClick={() => setShowForgotPassword(true)}
+								className="text-xs font-semibold text-[#c07b55] hover:underline cursor-pointer"
+							>
+								Forgot password?
+							</button>
+						</div>
 						<div className="relative">
 							<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#8a8590]">
 								<Lock className="h-4 w-4" />
@@ -151,6 +162,12 @@ export default function VendorSigninPage() {
 						Create vendor account
 					</Link>
 				</p>
+
+				<ForgotPasswordModal
+					isOpen={showForgotPassword}
+					onClose={() => setShowForgotPassword(false)}
+					initialEmail={formData.email}
+				/>
 			</div>
 		</VendorAuthShell>
 	);
