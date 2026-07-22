@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import { toast } from "sonner";
+import { Copy, Download } from "lucide-react";
 
 function formatCurrency(value) {
   const amount = Number(value || 0) / 100; // stored in paise
@@ -31,6 +32,7 @@ function statusStyles(status) {
 export default function Invoice() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
 
   useEffect(() => {
     let ignore = false;
@@ -41,6 +43,9 @@ export default function Invoice() {
         if (ignore) return;
         const items = Array.isArray(res?.data?.data) ? res.data.data : [];
         setPayments(items);
+        if (items.length > 0) {
+          setSelectedPaymentId(items[0].id);
+        }
       })
       .catch((err) => {
         toast.error(err?.response?.data?.message || "Unable to load payments");
@@ -304,6 +309,8 @@ export default function Invoice() {
     }
   }
 
+  const selectedPayment = payments.find((p) => p.id === selectedPaymentId) || payments[0] || null;
+
   if (loading) {
     return (
       <div className="rounded-2xl border border-black/10 bg-white p-6">
@@ -313,122 +320,216 @@ export default function Invoice() {
   }
 
   return (
-    <div className="rounded-3xl border border-black/10 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.06)] sm:p-6">
-      <div className="flex flex-col gap-4 border-b border-black/5 pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">Invoices</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-black sm:text-3xl">Payment history</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-black/60">
-            Review every paid invitation, open the invite, print a copy, or download a standard PDF invoice.
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-3 sm:min-w-72">
-          <div className="rounded-2xl border border-black/8 bg-black/2 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/45">Total invoices</p>
-            <p className="mt-2 text-2xl font-semibold text-black">{payments.length}</p>
-          </div>
-          <div className="rounded-2xl border border-black/8 bg-black/2 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/45">Paid amount</p>
-            <p className="mt-2 text-2xl font-semibold text-black">
-              {formatCurrency(payments.reduce((sum, item) => sum + Number(item.amount || 0), 0))}
+    <div className="space-y-6">
+      {/* Metrics Row / Header */}
+      <div className="flex flex-col gap-4 rounded-3xl border border-black/10 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.06)] sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-black/45">Invoices</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-black sm:text-3xl">Payment history</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-black/60">
+              Review every paid invitation, open the invite, print a copy, or download a standard PDF invoice.
             </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:min-w-72">
+            <div className="rounded-2xl border border-black/8 bg-[#fbfbfa] p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/45">Total invoices</p>
+              <p className="mt-2 text-2xl font-semibold text-black">{payments.length}</p>
+            </div>
+            <div className="rounded-2xl border border-black/8 bg-[#fbfbfa] p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/45">Paid amount</p>
+              <p className="mt-2 text-2xl font-semibold text-black">
+                {formatCurrency(payments.reduce((sum, item) => sum + Number(item.amount || 0), 0))}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {payments.length === 0 ? (
-        <div className="mt-6 rounded-2xl border border-dashed border-black/10 bg-black/2 p-8 text-center">
-          <p className="text-base font-medium text-black">No payments found yet.</p>
-          <p className="mt-2 text-sm text-black/55">Once a user pays for an invitation, it will appear here automatically.</p>
+        <div className="rounded-3xl border border-dashed border-black/15 bg-white p-8 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/40">No payments found</p>
+          <h3 className="mt-3 text-2xl font-semibold tracking-tight text-black">No payments found yet</h3>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-black/60">
+            Once you pay for an invitation, it will appear here automatically.
+          </p>
         </div>
       ) : (
-        <div className="mt-6 space-y-4">
-          <div className="hidden overflow-hidden rounded-2xl border border-black/10 md:block">
-            <table className="min-w-full divide-y divide-black/10 text-left text-sm">
-              <thead className="bg-black/2 text-black/55">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Date</th>
-                  <th className="px-4 py-3 font-medium">Invoice</th>
-                  <th className="px-4 py-3 font-medium">Couple</th>
-                  <th className="px-4 py-3 font-medium">Amount</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-black/8 bg-white">
-                {payments.map((p) => (
-                  <tr key={p.id} className="align-top hover:bg-black/1.5">
-                    <td className="px-4 py-4 text-black/70">{formatDate(p.date)}</td>
-                    <td className="px-4 py-4 font-medium text-black">EVY-{String(p.id).slice(-8).toUpperCase()}</td>
-                    <td className="px-4 py-4 text-black/80">{p.couple || '—'}</td>
-                    <td className="px-4 py-4 font-medium text-black">{formatCurrency(p.amount)}</td>
-                    <td className="px-4 py-4">
-                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${statusStyles(p.status)}`}>
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="flex flex-wrap gap-2">
-                        <button onClick={() => openPrintable(p)} className="rounded-full border border-black/10 px-3 py-2 text-xs font-semibold text-black transition hover:bg-black hover:text-white">
-                          View / Print
-                        </button>
-                        <button onClick={() => downloadInvoice(p)} className="rounded-full border border-black/10 px-3 py-2 text-xs font-semibold text-black transition hover:bg-black hover:text-white">
-                          Download PDF
-                        </button>
-                        {p.inviteSlug ? (
-                          <a href={inviteUrl(p)} target="_blank" rel="noreferrer" className="rounded-full border border-black/10 px-3 py-2 text-xs font-semibold text-black transition hover:bg-black hover:text-white">
-                            Open Invite
-                          </a>
-                        ) : null}
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+          {/* Left Column: Payments list */}
+          <div className="overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.05)]">
+            <div className="flex items-center justify-between border-b border-black/10 px-6 py-5">
+              <div>
+                <h3 className="text-lg font-semibold text-black">Payments</h3>
+                <p className="text-xs text-black/50">Click on any payment to view full details</p>
+              </div>
+              <span className="rounded-full border border-black/10 bg-black/5 px-3 py-1 text-xs font-semibold text-black/70">
+                {payments.length} Payments
+              </span>
+            </div>
+
+            <div className="divide-y divide-black/10">
+              {payments.map((p) => {
+                const selected = selectedPaymentId === p.id;
+                const inviteLink = `${window.location.origin}/invite/${encodeURIComponent(p.inviteSlug || "")}`;
+
+                return (
+                  <div
+                    key={p.id}
+                    onClick={() => setSelectedPaymentId(p.id)}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      selected ? "bg-[#faf8f2]" : "hover:bg-black/[0.01]"
+                    }`}
+                  >
+                    <div className="p-5 sm:p-6">
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <h4 className="text-base font-semibold text-black">{p.couple || "—"}</h4>
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                              Paid
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs text-black/50">Wedding Invitation</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-black">{formatCurrency(p.amount)}</p>
+                          <p className="mt-1 text-xs text-black/50">{formatDate(p.date)}</p>
+                        </div>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+                      <div className="mt-4 rounded-2xl border border-black/10 bg-[#fbfbfa] p-4">
+                        <p className="truncate text-xs font-medium text-black/75">{inviteLink}</p>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(inviteLink);
+                            toast.success("Link copied!");
+                          }}
+                          className="mt-3 inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-amber-800 shadow-sm hover:bg-amber-50/50"
+                        >
+                          <Copy className="h-3 w-3" />
+                          Copy Link
+                        </button>
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+                        <div className="text-xs text-black/50">
+                          Transaction ID: <span className="font-semibold text-black/85">EVY-{String(p.id).slice(-8).toUpperCase()}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              downloadInvoice(p);
+                            }}
+                            className="inline-flex items-center gap-2 rounded-xl bg-black px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-black/85"
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                            Download Receipt
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="space-y-4 md:hidden">
-            {payments.map((p) => (
-              <article key={p.id} className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/45">{formatDate(p.date)}</p>
-                    <h3 className="mt-2 text-base font-semibold text-black">EVY-{String(p.id).slice(-8).toUpperCase()}</h3>
-                    <p className="mt-1 text-sm text-black/65">{p.couple || '—'}</p>
+          {/* Right Column: Payment Details Card */}
+          <section className="rounded-3xl border border-black/10 bg-white shadow-[0_24px_70px_rgba(0,0,0,0.05)] self-start">
+            <div className="border-b border-black/10 px-5 py-4">
+              <h2 className="text-lg font-semibold tracking-tight text-black">Payment Details</h2>
+            </div>
+            <div className="p-5">
+              {selectedPayment ? (
+                <div className="space-y-4 text-sm text-black/65">
+                  <div className="flex items-center gap-3">
+                    <div className="h-14 w-14 overflow-hidden rounded-full border border-black/10 bg-black/5 flex items-center justify-center">
+                      {selectedPayment.coverImage ? (
+                        <img
+                          src={selectedPayment.coverImage}
+                          alt="cover"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-xs text-black/30 font-semibold uppercase">EV</div>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-base font-semibold text-black">{selectedPayment.couple || "—"}</p>
+                      <span className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">Paid</span>
+                    </div>
                   </div>
-                  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${statusStyles(p.status)}`}>
-                    {p.status}
-                  </span>
-                </div>
 
-                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                  <div className="rounded-xl bg-black/2 p-3">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-black/45">Amount</p>
-                    <p className="mt-1 font-semibold text-black">{formatCurrency(p.amount)}</p>
+                  <div className="space-y-3 rounded-2xl border border-black/10 bg-[#fbfbfa] p-4 text-xs">
+                    <div>
+                      <p className="font-semibold uppercase tracking-[0.18em] text-black/40">Couple</p>
+                      <p className="mt-1 font-semibold text-black">{selectedPayment.couple || "—"}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold uppercase tracking-[0.18em] text-black/40">Amount</p>
+                      <p className="mt-1 font-semibold text-black">{formatCurrency(selectedPayment.amount)}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold uppercase tracking-[0.18em] text-black/40">Status</p>
+                      <p className="mt-1 font-semibold text-black capitalize">{selectedPayment.status}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold uppercase tracking-[0.18em] text-black/40">Payment Date</p>
+                      <p className="mt-1 font-semibold text-black">{formatDate(selectedPayment.date)}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold uppercase tracking-[0.18em] text-black/40">Template Link</p>
+                      <p className="mt-1 break-all font-semibold text-black">{`${window.location.origin}/invite/${encodeURIComponent(selectedPayment.inviteSlug || "")}`}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold uppercase tracking-[0.18em] text-black/40">Transaction ID</p>
+                      <p className="mt-1 font-semibold text-black">EVY-{String(selectedPayment.id).slice(-8).toUpperCase()}</p>
+                    </div>
+                    {selectedPayment.razorpayPaymentId ? (
+                      <div>
+                        <p className="font-semibold uppercase tracking-[0.18em] text-black/40">Razorpay Payment ID</p>
+                        <p className="mt-1 font-semibold text-black">{selectedPayment.razorpayPaymentId}</p>
+                      </div>
+                    ) : null}
                   </div>
-                  <div className="rounded-xl bg-black/2 p-3">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-black/45">Invoice</p>
-                    <p className="mt-1 font-semibold text-black">EVY-{String(p.id).slice(-8).toUpperCase()}</p>
-                  </div>
-                </div>
 
-                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                  <button onClick={() => openPrintable(p)} className="rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-black">
-                    View / Print
-                  </button>
-                  <button onClick={() => downloadInvoice(p)} className="rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-black">
-                    Download PDF
-                  </button>
-                  {p.inviteSlug ? (
-                    <a href={inviteUrl(p)} target="_blank" rel="noreferrer" className="rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-black text-center">
-                      Open Invite
-                    </a>
-                  ) : null}
+                  <div className="grid gap-2">
+                    <button
+                      type="button"
+                      onClick={() => downloadInvoice(selectedPayment)}
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-black px-4 text-sm font-semibold text-white transition hover:bg-black/85"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download Receipt
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openPrintable(selectedPayment)}
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold text-black transition hover:bg-black/5"
+                    >
+                      View / Print
+                    </button>
+                    {selectedPayment.inviteSlug ? (
+                      <button
+                        type="button"
+                        onClick={() => window.open(`/invite/${selectedPayment.inviteSlug}`, "_blank", "noopener,noreferrer")}
+                        className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold text-black transition hover:bg-black/5"
+                      >
+                        Open Invitation
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
-              </article>
-            ))}
-          </div>
+              ) : (
+                <p className="text-sm text-black/55 text-center">Select a payment from the list to view details.</p>
+              )}
+            </div>
+          </section>
         </div>
       )}
     </div>
