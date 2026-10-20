@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowRight, Building2, Check, Eye, EyeOff, Hash, Link2, Lock, Mail, Phone, Shield, User } from "lucide-react";
 import api from "@/api/axios";
 import VendorAuthShell from "@/components/vendor/VendorAuthShell";
 import { getRecaptchaToken } from "@/lib/recaptcha";
+import { getVendorSession } from "@/lib/vendorAuth";
 
 function Field({ id, label, icon: Icon, optional, ...inputProps }) {
 	return (
@@ -47,6 +48,22 @@ export default function VendorSignupPage() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
+
+	useEffect(() => {
+		let mounted = true;
+		(async () => {
+			try {
+				const session = await getVendorSession();
+				if (!mounted) return;
+				if (session?.user && session.user.role === "vendor") {
+					router.replace("/vendor/dashboard");
+				}
+			} catch {}
+		})();
+		return () => {
+			mounted = false;
+		};
+	}, [router]);
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;

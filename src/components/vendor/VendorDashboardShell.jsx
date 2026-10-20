@@ -6,36 +6,56 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Bell, CalendarPlus, CreditCard, LifeBuoy, LayoutGrid, Menu, Monitor, Plus, Users, Home, X, LogOut, Camera } from "lucide-react";
+import {
+  LayoutDashboard,
+  Monitor,
+  Camera,
+  BookOpen,
+  Crown,
+  CreditCard,
+  Gift,
+  User,
+  HelpCircle,
+  MessageSquare,
+  Menu,
+  X,
+  Bell,
+  LogOut,
+  ChevronDown,
+} from "lucide-react";
 import { getVendorSession } from "@/lib/vendorAuth";
 import api from "@/api/axios";
 import { useLenis } from "lenis/react";
 import Image from "next/image";
+
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
-  { label: "Create New Invitation", href: "/vendor/dashboard/create-new-template", icon: CalendarPlus },
-  { label: "Template Library", href: "/vendor/dashboard/template-library", icon: LayoutGrid },
-  { label: "My Invitations", href: "/vendor/dashboard/my-templates", icon: Monitor },
-  { label: "Photo Selections", href: "/vendor/dashboard/photo-selections", icon: Camera },
-  { label: "Payments", href: "/vendor/dashboard/payments", icon: CreditCard },
-  { label: "Clients", href: "/vendor/dashboard/clients", icon: Users },
+  { label: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard, key: "dashboard" },
+  { label: "Wedding Invitations", href: "/vendor/dashboard/wedding-invitations", icon: Monitor, key: "wedding-invitations" },
+  { label: "Photo Selection", href: "/vendor/dashboard/photo-selections", icon: Camera, key: "photo-selections" },
+  { label: "Digital Albums", href: "/vendor/dashboard/digital-albums", icon: BookOpen, key: "digital-albums" },
+  { label: "Plans", href: "/vendor/dashboard/plans", icon: Crown, key: "plans" },
+  { label: "My Plan & Billing", href: "/vendor/dashboard/billing", icon: CreditCard, key: "billing" },
+  { label: "Referrals & Wallet", href: "/vendor/dashboard/wallet", icon: Gift, key: "wallet" },
+  { label: "My Profile", href: "/vendor/dashboard/profile", icon: User, key: "profile" },
+  { label: "Help Center", href: "/vendor/dashboard/help", icon: HelpCircle, key: "help" },
+  { label: "Support Tickets", href: "/vendor/dashboard/support", icon: MessageSquare, key: "support" },
 ];
 
 export default function VendorDashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const lenis = useLenis();
-  const [workspace, setWorkspace] = useState("Business name");
-  const [vendorName, setVendorName] = useState("");
+  const [workspace, setWorkspace] = useState("Shubh Moments Studio");
+  const [vendorName, setVendorName] = useState("Abhigyan");
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
   const workspaceOptions = useMemo(() => {
-    const labels = [workspace].filter(Boolean);
-    if (vendorName && !labels.includes(vendorName)) {
-      labels.unshift(vendorName);
-    }
-    return labels;
+    const defaultLabels = ["Shubh Moments Studio", "Royal Heritage Studio", "Vows & Memories"];
+    const labels = [workspace, vendorName ? `${vendorName}'s Studio` : null, ...defaultLabels].filter(Boolean);
+    return Array.from(new Set(labels));
   }, [vendorName, workspace]);
 
   const handleLogout = async () => {
@@ -52,21 +72,29 @@ export default function VendorDashboardShell({ children }) {
     let mounted = true;
 
     (async () => {
-      const session = await getVendorSession();
+      try {
+        const session = await getVendorSession();
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      if (!session?.user) {
-        toast.error(session?.message || "Not authenticated");
-        router.replace("/vendor/signin");
-        return;
+        if (!session?.user || session.user.role !== "vendor") {
+          router.replace("/vendor/signin");
+          return;
+        }
+
+        const businessLabel = session.user.businessName || session.user.name || "Shubh Moments Studio";
+        setVendorName(session.user.name || "Abhigyan");
+        setWorkspace(businessLabel);
+        setIsAuthorized(true);
+      } catch {
+        if (mounted) {
+          router.replace("/vendor/signin");
+        }
+      } finally {
+        if (mounted) {
+          setCheckingAuth(false);
+        }
       }
-
-      const businessLabel = session.user.businessName || session.user.name || "Business name";
-      setVendorName(businessLabel);
-      setWorkspace(businessLabel);
-      setIsAuthorized(true);
-      setCheckingAuth(false);
     })();
 
     return () => {
@@ -94,9 +122,17 @@ export default function VendorDashboardShell({ children }) {
 
   if (checkingAuth) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f6f3ee] text-black">
-        <div className="rounded-[1.5rem] border border-black/10 bg-white px-6 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
-          <p className="text-sm text-black/65">Loading....</p>
+      <div className="flex min-h-screen items-center justify-center bg-[#fbf9f6] text-black font-sans">
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-stone-200/80 bg-white px-8 py-6 shadow-xs">
+          <Image
+            src="/logo.png"
+            alt="Envite You Logo"
+            width={120}
+            height={36}
+            priority
+            className="h-7 w-auto object-contain animate-pulse"
+          />
+          <p className="text-xs font-medium text-stone-500">Loading your studio dashboard...</p>
         </div>
       </div>
     );
@@ -106,108 +142,124 @@ export default function VendorDashboardShell({ children }) {
     return null;
   }
 
+  const isNavActive = (item) => {
+    if (item.href === "/vendor/dashboard") {
+      return pathname === "/vendor/dashboard" || pathname === "/vendor";
+    }
+    if (item.key === "wedding-invitations") {
+      return pathname === "/vendor/dashboard/wedding-invitations" || pathname === "/vendor/dashboard/wedding-websites";
+    }
+    return pathname === item.href || pathname?.startsWith(item.href);
+  };
+
   return (
-    <div className="min-h-screen bg-[#f6f3ee] text-black">
+    <div className="min-h-screen bg-[#fcfbfa] text-stone-900 font-sans antialiased">
       <div className="flex min-h-screen">
-        <aside data-lenis-prevent className="sticky top-0 hidden h-screen overflow-y-auto hide-scrollbar flex flex-col w-72 shrink-0 border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white lg:block">
-          <Link href="/vendor/dashboard" className="flex items-center gap-3 border-b border-white/8 pb-6">
-            <div className="flex h-9 w-9 items-center justify-center text-[#c8a24c]">
-              <Image src="/icon.png" alt="Logo" width={50} height={50} />
-            </div>
-            <div>
-              <div className="relative h-8 mb-2 w-25">
-                <Image src="/logo_white_.png" alt="Logo" height={150} width={150} />
-              </div>
-              <p className="text-xs uppercase tracking-[0.28em] text-[#c8a24c]">Partner Studio</p>
-            </div>
+        {/* Desktop Left Sidebar */}
+        <aside
+          data-lenis-prevent
+          className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-stone-200/80 bg-white px-4 py-5 lg:flex overflow-y-auto"
+        >
+          {/* Brand Header */}
+          <Link href="/vendor/dashboard" className="flex items-center gap-3 px-2 pb-5 border-b border-stone-100">
+            <Image
+              src="/logo.png"
+              alt="Envite You Logo"
+              width={145}
+              height={42}
+              priority
+              className="h-8.5 w-auto max-w-36.25 object-contain"
+            />
           </Link>
 
-          <nav className="mt-6 space-y-3">
+          {/* Navigation Menu */}
+          <nav className="mt-3 flex-1 space-y-1">
             {NAV_ITEMS.map((item) => {
-              const active = pathname === item.href || (item.href !== "/vendor/dashboard" && pathname?.startsWith(item.href));
+              const active = isNavActive(item);
               const Icon = item.icon;
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${active
-                    ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
-                    : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
-                    }`}
+                  className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all ${
+                    active
+                      ? "bg-[#6d162f] text-white shadow-xs"
+                      : "text-stone-600 hover:bg-stone-100/70 hover:text-stone-900"
+                  }`}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span>{item.label}</span>
+                  <Icon
+                    className={`h-4 w-4 shrink-0 stroke-[1.5] transition-colors ${
+                      active ? "text-white" : "text-stone-400 group-hover:text-stone-700"
+                    }`}
+                  />
+                  <span className="truncate">{item.label}</span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="mt-auto pt-4">
-            <div className="rounded border border-[#c8a24c]/40 bg-[linear-gradient(180deg,rgba(20,20,20,0.98),rgba(10,10,10,1))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c8a24c]/30 bg-[#0f0f0f] text-[#c8a24c]">
-                  <LifeBuoy className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#f4e8c2]">Need Help?</p>
-                  <p className="mt-1 text-sm leading-6 text-white/72">Our support team is just a message away.</p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                className="mt-4 h-11 w-full justify-start border-[#c8a24c]/45 bg-transparent text-white hover:bg-white/10"
-                onClick={() => window.open("https://wa.me/918828287278", "_blank")}
-              >
-                <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-current">◎</span>
-                Chat on WhatsApp
-              </Button>
-            </div>
+          {/* Sidebar Footer */}
+          <div className="mt-auto pt-4 border-t border-stone-100">
+            <p className="text-[11px] font-medium text-stone-400">
+              Beautiful Stories Together
+            </p>
             <button
+              type="button"
               onClick={handleLogout}
-              className="mt-4 flex w-full items-center gap-3 rounded border border-red-500/30 px-4 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
+              className="mt-3 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-medium text-stone-400 transition hover:bg-rose-50 hover:text-rose-700"
             >
-              <LogOut className="h-4 w-4 shrink-0" />
+              <LogOut className="h-3.5 w-3.5 stroke-[1.5]" />
               <span>Logout</span>
             </button>
           </div>
         </aside>
 
-        <div className={`fixed inset-0 z-40 bg-black/45 transition-opacity lg:hidden ${isMobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"}`} onClick={() => setIsMobileMenuOpen(false)} aria-hidden="true" />
+        {/* Mobile Sidebar Backdrop */}
+        <div
+          className={`fixed inset-0 z-40 bg-stone-900/40 backdrop-blur-xs transition-opacity lg:hidden ${
+            isMobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
 
+        {/* Mobile Sidebar */}
         <aside
           data-lenis-prevent
-          className={`fixed inset-y-0 left-0 z-50 w-[84vw] max-w-[320px] transform border-r border-black/8 bg-[#0b0b0b] px-5 py-6 text-white transition-transform duration-300 lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} flex flex-col overflow-y-auto`}
+          className={`fixed inset-y-0 left-0 z-50 flex h-full w-70 flex-col border-r border-stone-200 bg-white px-4 py-5 shadow-2xl transition-transform duration-300 lg:hidden ${
+            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          } overflow-y-auto`}
           aria-hidden={!isMobileMenuOpen}
         >
-          <div className="flex items-center justify-between border-b border-white/8 pb-5">
-            <Link href="/vendor/dashboard" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-              <div className="flex h-9 w-9 items-center justify-center text-[#c8a24c]">
-                <Image src="/icon.png" alt="Logo" width={50} height={50} />
-              </div>
-              <div>
-                <div className="relative h-8 mb-2 w-25">
-                  <Image src="/logo_white_.png" alt="Logo" height={150} width={150} />
-                </div>
-                <p className="text-[10px] uppercase tracking-[0.28em] text-[#c8a24c]">Partner Studio</p>
-              </div>
+          <div className="flex items-center justify-between border-b border-stone-100 pb-4">
+            <Link
+              href="/vendor/dashboard"
+              className="flex items-center gap-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Image
+                src="/logo.png"
+                alt="Envite You Logo"
+                width={130}
+                height={38}
+                priority
+                className="h-7.5 w-auto max-w-32.5 object-contain"
+              />
             </Link>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white"
+              className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-700"
               aria-label="Close menu"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4 stroke-[1.5]" />
             </button>
           </div>
 
-          <nav
-            className="mt-6 space-y-2 pr-1"
-          >
+          <nav className="mt-4 flex-1 space-y-1">
             {NAV_ITEMS.map((item) => {
-              const active = pathname === item.href || (item.href !== "/vendor/dashboard" && pathname?.startsWith(item.href));
+              const active = isNavActive(item);
               const Icon = item.icon;
 
               return (
@@ -215,109 +267,153 @@ export default function VendorDashboardShell({ children }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 rounded border px-4 py-3 text-sm font-medium transition ${active
-                    ? "border-[#c8a24c]/55 bg-white/8 text-white shadow-[0_0_0_1px_rgba(200,162,76,0.22)]"
-                    : "border-transparent text-white/70 hover:border-white/10 hover:bg-white/5 hover:text-white"
-                    }`}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition ${
+                    active
+                      ? "bg-[#6d162f] text-white"
+                      : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                  }`}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
+                  <Icon className="h-4 w-4 shrink-0 stroke-[1.5]" />
                   <span>{item.label}</span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="mt-6 pt-6">
-            <div className="rounded-[1.5rem] border border-[#c8a24c]/40 bg-[linear-gradient(180deg,rgba(20,20,20,0.98),rgba(10,10,10,1))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c8a24c]/30 bg-[#0f0f0f] text-[#c8a24c]">
-                  <LifeBuoy className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#f4e8c2]">Need Help?</p>
-                  <p className="mt-1 text-sm leading-6 text-white/72">Our support team is just a message away.</p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                className="mt-4 h-11 w-full justify-start border-[#c8a24c]/45 bg-transparent text-white hover:bg-white/10"
-                onClick={() => window.open("https://wa.me/919999999999", "_blank")}
-              >
-                <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-current">◎</span>
-                Chat on WhatsApp
-              </Button>
-            </div>
+          <div className="mt-auto border-t border-stone-100 pt-4">
             <button
+              type="button"
               onClick={handleLogout}
-              className="mt-4 flex w-full items-center gap-3 rounded border border-red-500/30 px-4 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50"
             >
-              <LogOut className="h-4 w-4 shrink-0" />
+              <LogOut className="h-4 w-4 stroke-[1.5]" />
               <span>Logout</span>
             </button>
           </div>
         </aside>
 
+        {/* Main Content Area */}
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 border-b border-black/8 bg-[rgba(246,243,238,0.88)] px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between gap-3 sm:gap-4">
-              <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          {/* Top Header Navbar */}
+          <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-white/90 px-4 py-3 backdrop-blur-md sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between gap-4">
+              {/* Left on Mobile: Hamburger Button & Logo */}
+              <div className="flex items-center gap-2.5 lg:hidden">
                 <button
                   type="button"
                   onClick={() => setIsMobileMenuOpen(true)}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded border border-black/10 bg-white text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] lg:hidden"
-                  aria-label="Open navigation menu"
+                  className="rounded-lg border border-stone-200 p-1.5 text-stone-700 hover:bg-stone-50"
+                  aria-label="Open menu"
                 >
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-4 w-4 stroke-[1.5]" />
                 </button>
-                <Select value={workspace} onValueChange={(value) => {
-                  setWorkspace(value);
-                  toast.success(`Workspace switched to ${value}`);
+                <Link href="/vendor/dashboard" className="flex items-center">
+                  <Image
+                    src="/logo.png"
+                    alt="Envite You Logo"
+                    width={110}
+                    height={32}
+                    priority
+                    className="h-6.5 w-auto object-contain"
+                  />
+                </Link>
+              </div>
+
+              {/* Desktop Empty Spacer / Search Placeholder */}
+              <div className="hidden lg:block min-w-0" />
+
+              {/* Top Right Controls */}
+              <div className="flex items-center gap-3 sm:gap-4 ml-auto">
+                {/* Studio Selector Dropdown */}
+                <Select value={workspace} onValueChange={(val) => {
+                  setWorkspace(val);
+                  toast.success(`Active Studio: ${val}`);
                 }}>
-                  <SelectTrigger className="h-11 flex-1 min-w-0 rounded border border-black/10 bg-white px-4 text-left text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] sm:h-12 sm:flex-none sm:w-auto sm:min-w-60">
-                    <SelectValue placeholder="Select workspace" />
+                  <SelectTrigger className="h-9 min-w-42.5 sm:min-w-47.5 rounded-lg border-0 bg-transparent px-2.5 text-xs sm:text-sm font-semibold text-stone-800 hover:bg-stone-100/80 focus:ring-0 shadow-none">
+                    <SelectValue placeholder="Select studio" />
                   </SelectTrigger>
-                  <SelectContent align="start" className="rounded border border-black/10 bg-white shadow-xl">
+                  <SelectContent align="end" className="rounded-xl border border-stone-200 bg-white shadow-lg">
                     {workspaceOptions.map((option) => (
-                      <SelectItem key={option} value={option} className="text-sm font-medium text-black">
+                      <SelectItem key={option} value={option} className="text-xs sm:text-sm font-medium text-stone-800">
                         {option}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {/* <div className="hidden text-xs text-black/45 sm:block">Lucknow, India</div> */}
-              </div>
 
-              <div className="flex items-center gap-2 sm:gap-3">
-                {/* <Button
+                {/* Help Button */}
+                <button
                   type="button"
-                  variant="outline"
-                  className="hidden h-11 rounded border-black/10 bg-white px-4 text-sm font-medium text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] hover:bg-black hover:text-white sm:inline-flex"
-                  onClick={() => toast.success("Draft saved")}
+                  onClick={() => toast.info("Vendor Support & Documentation: support@enviteyou.com")}
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100 hover:text-stone-800 transition"
+                  title="Help Center"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Save Draft
-                </Button> */}
-
-                {/* <button type="button" className="relative flex h-11 w-11 items-center justify-center rounded border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
-                  <Bell className="h-5 w-5 text-black/70" />
-                  <span className="absolute right-0 top-0 inline-flex h-5 min-w-5 items-center justify-center rounded-md bg-[#c8a24c] px-1 text-[10px] font-semibold text-white">3</span>
-                </button> */}
-
-                <button type="button" className="flex h-11 w-11 items-center justify-center rounded bg-black text-sm font-semibold text-[#c8a24c] shadow-[0_10px_24px_rgba(0,0,0,0.1)]">
-                  {(vendorName || workspace)
-                    .split(" ")
-                    .filter(Boolean)
-                    .slice(0, 2)
-                    .map((part) => part[0])
-                    .join("")
-                    .toUpperCase() || "VB"}
+                  <HelpCircle className="h-4 w-4" />
                 </button>
+
+                {/* Notifications Bell */}
+                <button
+                  type="button"
+                  onClick={() => toast.info("You have 4 attention alerts pending.")}
+                  className="relative flex h-9 w-9 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100 hover:text-stone-800 transition"
+                  title="Notifications"
+                >
+                  <Bell className="h-4 w-4" />
+                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+                </button>
+
+                {/* User Avatar Circle */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fce7ea] text-xs font-semibold text-[#8e1d3d] ring-1 ring-[#f5c2cb] hover:ring-2 hover:ring-[#8e1d3d] transition"
+                    title={vendorName}
+                  >
+                    {vendorName
+                      .split(" ")
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((p) => p[0])
+                      .join("")
+                      .toUpperCase() || "AA"}
+                  </button>
+
+                  {showProfileMenu && (
+                    <div className="absolute right-0 mt-2 w-48 rounded-xl border border-stone-200 bg-white p-2 shadow-xl z-50">
+                      <div className="border-b border-stone-100 px-3 py-2">
+                        <p className="text-xs font-semibold text-stone-900">{vendorName}</p>
+                        <p className="text-[10px] text-stone-500 truncate">{workspace}</p>
+                      </div>
+                      <Link
+                        href="/vendor/dashboard/profile"
+                        onClick={() => setShowProfileMenu(false)}
+                        className="block rounded-lg px-3 py-2 text-xs font-medium text-stone-700 hover:bg-stone-50"
+                      >
+                        Profile Settings
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          handleLogout();
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50"
+                      >
+                        <LogOut className="h-3.5 w-3.5" />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </header>
 
-          <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-6">{children}</main>
+          {/* Main Dashboard Body View */}
+          <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
+            {children}
+          </main>
         </div>
       </div>
     </div>

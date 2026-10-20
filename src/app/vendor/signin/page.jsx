@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/api/axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, Shield } from "lucide-react";
 import VendorAuthShell from "@/components/vendor/VendorAuthShell";
 import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
+import { getVendorSession } from "@/lib/vendorAuth";
 
 function Field({ id, label, icon: Icon, ...inputProps }) {
 	return (
@@ -42,6 +43,22 @@ export default function VendorSigninPage() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
+
+	useEffect(() => {
+		let mounted = true;
+		(async () => {
+			try {
+				const session = await getVendorSession();
+				if (!mounted) return;
+				if (session?.user && session.user.role === "vendor") {
+					router.replace("/vendor/dashboard");
+				}
+			} catch {}
+		})();
+		return () => {
+			mounted = false;
+		};
+	}, [router]);
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;

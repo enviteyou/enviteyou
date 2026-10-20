@@ -304,7 +304,7 @@ export default function PhotoSelectionManager() {
     const isCompleted = selectedProject.status === "completed";
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 font-sans antialiased">
         {/* Workspace Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
@@ -717,7 +717,7 @@ export default function PhotoSelectionManager() {
 
   // MAIN PROJECTS LIST VIEW
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans antialiased">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/40">Studio Workflow</p>
@@ -818,7 +818,7 @@ export default function PhotoSelectionManager() {
 
                   {/* Client shareable URL */}
                   <div className="mt-4 p-2 rounded-xl border border-black/5 bg-black/2 flex items-center justify-between text-xs">
-                    <span className="text-black/45 font-semibold tracking-wider font-mono truncate max-w-[200px]">
+                    <span className="text-black/45 font-semibold tracking-wider font-mono truncate max-w-50">
                       /select/{project.selectionToken}
                     </span>
                     <button
@@ -857,7 +857,7 @@ export default function PhotoSelectionManager() {
                   isCompleted ? "border-emerald-500/30" : "border-black/10"
                 }`}
               >
-                <div className="flex items-center gap-4 min-w-[240px] max-w-sm overflow-hidden">
+                <div className="flex items-center gap-4 min-w-60 max-w-sm overflow-hidden">
                   <span className="text-3xl shrink-0">📷</span>
                   <div className="truncate">
                     <div className="flex items-center gap-2">

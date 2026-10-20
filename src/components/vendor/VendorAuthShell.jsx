@@ -7,10 +7,10 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
   const pathname = usePathname();
   const isSignin = pathname == "/vendor/signin"
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f8f2ea_0%,#f5efe7_100%)]">
+    <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f8f2ea_0%,#f5efe7_100%)] font-sans antialiased">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.85),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(217,181,145,0.12),transparent_28%)]" />
 
-      <div className={`relative  flex min-h-[calc(100vh-2rem)] w-full  flex-col shadow-[0_28px_90px_rgba(37,24,16,0.12)] backdrop-blur-sm lg:flex-row ${isSignin ? "lg:min-h-[70rem]" : "lg:min-h-[60rem]"
+      <div className={`relative  flex min-h-[calc(100vh-2rem)] w-full  flex-col shadow-[0_28px_90px_rgba(37,24,16,0.12)] backdrop-blur-sm lg:flex-row ${isSignin ? "lg:min-h-280" : "lg:min-h-240"
         }`}>
         <aside className="relative flex overflow-hidden  bg-[#081326] text-white lg:w-[47%] ">
           <Image
@@ -19,7 +19,7 @@ export default function VendorAuthShell({ children, title, subtitle, footerText 
             fill
             priority
             sizes="(min-width: 1024px) 47vw, 100vw"
-            className="object-cover object-right-bottom"
+            className="object-cover object-bottom-right"
           />
           {/* <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,12,24,0.22)_0%,rgba(5,12,24,0.5)_45%,rgba(5,12,24,0.72)_100%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(255,170,105,0.18),transparent_24%)]" /> */}
