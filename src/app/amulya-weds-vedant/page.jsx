@@ -8,25 +8,27 @@ const WEDDING_TIME = Date.parse("2026-11-26T19:30:00+05:30");
 const PETAL_PATHS = [9, 24, 39, 57, 74, 91, 48];
 
 const PHOTOS = [
-  {
-    src: "/amulya-weds-vedant/assets/couple-ghats.webp",
-    alt: "Amulya and Vedant at the Varanasi ghats",
-    position: "50% 32%",
-  },
-  {
-    src: "/amulya-weds-vedant/assets/couple-dinner.webp",
-    alt: "Amulya and Vedant sharing a meal together",
-    position: "50% 42%",
-  },
+
+
   {
     src: "/amulya-weds-vedant/assets/couple-engagement.webp",
     alt: "Amulya and Vedant at their engagement celebration",
     position: "50% 28%",
   },
   {
+    src: "/amulya-weds-vedant/assets/image.png",
+    alt: "Amulya and Vedant sharing a meal together",
+    position: "50% 42%",
+  },
+  {
     src: "/amulya-weds-vedant/assets/couple-selfie.webp",
     alt: "Amulya and Vedant taking a mirror photograph together",
     position: "50% 30%",
+  },
+  {
+    src: "/amulya-weds-vedant/assets/couple-ghats.webp",
+    alt: "Amulya and Vedant at the Varanasi ghats",
+    position: "50% 32%",
   },
 ];
 
@@ -95,7 +97,7 @@ export default function VedAmInvitationPage() {
       musicGainRef.current = music;
     }
     if (audioContextRef.current.state === "suspended") {
-      audioContextRef.current.resume().catch(() => {});
+      audioContextRef.current.resume().catch(() => { });
     }
     return true;
   }, []);
@@ -448,7 +450,7 @@ export default function VedAmInvitationPage() {
       if (revealObserver) revealObserver.disconnect();
       if (sceneObserver) sceneObserver.disconnect();
       if (audioContextRef.current) {
-        audioContextRef.current.close().catch(() => {});
+        audioContextRef.current.close().catch(() => { });
       }
       document.body.removeAttribute("data-lenis-prevent");
       document.body.classList.remove(
@@ -1141,13 +1143,13 @@ export default function VedAmInvitationPage() {
           <div className="person person-bride reveal">
             <img src="/amulya-weds-vedant/assets/v3-rabbit.webp" width="300" height="300" alt="" loading="lazy" />
             <p>
-              <strong>Amulya</strong> — A foodie at heart, ambitious and hardworking.
+              <strong>Amulya</strong> — A perfect blend of bubbly, cute and beautifully rebellious! Meet the “Bride to Be”.
             </p>
           </div>
           <div className="person person-groom reveal">
             <img src="/amulya-weds-vedant/assets/v3-horse.webp" width="300" height="300" alt="" loading="lazy" />
             <p>
-              <strong>Vedant</strong> — An intellectual and a techie, equally at home with healthy meals and street food.
+              <strong>Vedant</strong> — The one with the Brightest mind and warmest heart. Meet the “Groom to Be”.
             </p>
           </div>
           <ol className="milestones">
@@ -1203,7 +1205,13 @@ export default function VedAmInvitationPage() {
                 }}
               />
             </figure>
-            <svg className="gallery-frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <svg
+              className="gallery-frame"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              style={{ width: "100%", height: "100%" }}
+            >
               <path d="M6 1H94Q94 3 97 3Q99 3 99 6V94Q99 97 97 97Q94 97 94 99H6Q6 97 3 97Q1 97 1 94V6Q1 3 3 3Q6 3 6 1Z" />
             </svg>
             <button
