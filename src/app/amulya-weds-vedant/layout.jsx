@@ -9,7 +9,7 @@ export const metadata = {
     url: "/amulya-weds-vedant",
     images: [
       {
-        url: "/amulya-weds-vedant/assets/social-preview.jpg",
+        url: "/amulya-weds-vedant/open-graph.png",
         width: 1200,
         height: 630,
         alt: "Amulya & Vedant Wedding Invitation",
@@ -22,7 +22,7 @@ export const metadata = {
     title: "Amulya & Vedant · You're Invited",
     description:
       "26 November 2026 · Hotel De Paris, Varanasi. With love and blessings, Agrawal Family.",
-    images: ["/amulya-weds-vedant/assets/social-preview.jpg"],
+    images: ["/amulya-weds-vedant/open-graph.png"],
   },
   icons: {
     icon: "/amulya-weds-vedant/assets/favicon.svg",
