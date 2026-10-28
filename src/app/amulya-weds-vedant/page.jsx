@@ -61,11 +61,7 @@ export default function VedAmInvitationPage() {
   const eventsTrackRef = useRef(null);
   const galleryStageRef = useRef(null);
   const toastTimerRef = useRef(null);
-  const audioTimerRef = useRef(null);
-  const audioContextRef = useRef(null);
-  const masterGainRef = useRef(null);
-  const musicGainRef = useRef(null);
-  const phraseIndexRef = useRef(0);
+  const audioRef = useRef(null);
   const musicOnRef = useRef(false);
   const openedRef = useRef(false);
 
@@ -78,106 +74,37 @@ export default function VedAmInvitationPage() {
     }, 3500);
   }, []);
 
-  // Web Audio ambient synthesizer
-  const initAudio = useCallback(() => {
-    if (!audioContextRef.current) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return false;
-      const ctx = new AudioCtx();
-      const master = ctx.createGain();
-      master.gain.value = 0.24;
-      master.connect(ctx.destination);
-
-      const music = ctx.createGain();
-      music.gain.value = 0;
-      music.connect(master);
-
-      audioContextRef.current = ctx;
-      masterGainRef.current = master;
-      musicGainRef.current = music;
-    }
-    if (audioContextRef.current.state === "suspended") {
-      audioContextRef.current.resume().catch(() => { });
-    }
-    return true;
-  }, []);
-
-  const playNote = useCallback(
-    (frequency, at, duration, gainValue, type = "sine", dest = null) => {
-      const ctx = audioContextRef.current;
-      if (!ctx) return;
-      const targetDest = dest || musicGainRef.current;
-      const osc = ctx.createOscillator();
-      const amp = ctx.createGain();
-      osc.type = type;
-      osc.frequency.value = frequency;
-      amp.gain.setValueAtTime(0.0001, at);
-      amp.gain.exponentialRampToValueAtTime(gainValue, at + 0.04);
-      amp.gain.exponentialRampToValueAtTime(0.0001, at + duration);
-      osc.connect(amp).connect(targetDest);
-      osc.start(at);
-      osc.stop(at + duration + 0.05);
-      osc.onended = () => {
-        osc.disconnect();
-        amp.disconnect();
-      };
-    },
-    []
-  );
+  // MP3 music player
+  const MUSIC_SRC = "/amulya-weds-vedant/assets/tera-naam-doon-entertainment-128-kbps_RsUEDGBg.mp3";
 
   const softBell = useCallback(() => {
-    if (!initAudio()) return;
-    const ctx = audioContextRef.current;
-    const at = ctx.currentTime;
-    [523.25, 784.88, 1046.5, 1569.75].forEach((freq, i) => {
-      playNote(freq, at + i * 0.018, 2.2 + i * 0.12, 0.23 / (i + 1), "sine", masterGainRef.current);
-    });
-  }, [initAudio, playNote]);
-
-  const instrumentalPhrase = useCallback(() => {
-    if (!musicOnRef.current || document.hidden || !audioContextRef.current) return;
-    const ctx = audioContextRef.current;
-    const at = ctx.currentTime + 0.06;
-    [130.81, 196.0, 261.63].forEach((freq, i) => {
-      playNote(freq, at, 8, 0.07 / (i + 1));
-    });
-    const melodies = [
-      [392, 440, 523.25, 587.33],
-      [523.25, 440, 392, 349.23],
-      [392, 523.25, 587.33, 523.25],
-      [440, 392, 349.23, 392],
-    ];
-    melodies[phraseIndexRef.current++ % 4].forEach((freq, i) => {
-      playNote(freq, at + i * 1.65 + 0.6, 2.6, 0.13);
-      playNote(freq * 2, at + i * 1.65 + 0.6, 1.5, 0.025);
-    });
-  }, [playNote]);
+    // no-op: bell sound removed with synthesizer
+  }, []);
 
   const setMusic = useCallback(
     (on, { announce = true } = {}) => {
-      if (on && !initAudio()) {
-        notify("Audio is not supported by this browser.");
-        return;
-      }
       musicOnRef.current = on;
       setMusicOn(on);
-      if (audioTimerRef.current) clearInterval(audioTimerRef.current);
 
-      if (audioContextRef.current && musicGainRef.current) {
-        const ctx = audioContextRef.current;
-        musicGainRef.current.gain.cancelScheduledValues(ctx.currentTime);
-        musicGainRef.current.gain.setTargetAtTime(on ? 0.72 : 0, ctx.currentTime, 0.3);
+      if (!audioRef.current) {
+        audioRef.current = new Audio(MUSIC_SRC);
+        audioRef.current.loop = true;
+        audioRef.current.volume = 0.72;
       }
 
       if (on) {
-        instrumentalPhrase();
-        audioTimerRef.current = setInterval(instrumentalPhrase, 8000);
+        audioRef.current.play().catch(() => {
+          notify("Audio playback was blocked by the browser.");
+        });
+      } else {
+        audioRef.current.pause();
       }
+
       if (announce) {
         notify(on ? "Music on" : "Music paused");
       }
     },
-    [initAudio, instrumentalPhrase, notify]
+    [notify]
   );
 
   // Smooth scroll to an invitation section
@@ -374,13 +301,11 @@ export default function VedAmInvitationPage() {
 
     // Visibility listener for audio
     const handleVisibility = () => {
-      if (!audioContextRef.current) return;
-      const ctx = audioContextRef.current;
+      if (!audioRef.current) return;
       if (document.hidden) {
-        musicGainRef.current.gain.setTargetAtTime(0, ctx.currentTime, 0.15);
+        audioRef.current.pause();
       } else if (musicOnRef.current) {
-        musicGainRef.current.gain.setTargetAtTime(0.72, ctx.currentTime, 0.4);
-        instrumentalPhrase();
+        audioRef.current.play().catch(() => { });
       }
     };
     document.addEventListener("visibilitychange", handleVisibility);
@@ -443,14 +368,14 @@ export default function VedAmInvitationPage() {
     return () => {
       clearTimeout(timer);
       clearInterval(cdInterval);
-      if (audioTimerRef.current) clearInterval(audioTimerRef.current);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       document.removeEventListener("visibilitychange", handleVisibility);
       window.removeEventListener("resize", handleResize);
       if (revealObserver) revealObserver.disconnect();
       if (sceneObserver) sceneObserver.disconnect();
-      if (audioContextRef.current) {
-        audioContextRef.current.close().catch(() => { });
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
       }
       document.body.removeAttribute("data-lenis-prevent");
       document.body.classList.remove(
@@ -461,7 +386,7 @@ export default function VedAmInvitationPage() {
         "ready"
       );
     };
-  }, [activeEventTab, instrumentalPhrase, showEvent]);
+  }, [activeEventTab, showEvent]);
 
   // Forward wheel events from window/margins to invitation container
   useEffect(() => {
@@ -616,7 +541,12 @@ export default function VedAmInvitationPage() {
       </div>
 
       {/* SVG Definitions */}
-      <svg className="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg
+        className="svg-defs"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", pointerEvents: "none" }}
+      >
         <defs>
           <symbol id="lotus" viewBox="0 0 64 48">
             <path d="M32 36C20 29 21 17 32 5c11 12 12 24 0 31ZM30 36C17 37 9 26 10 15c13 2 21 9 22 21ZM34 36c13 1 21-10 20-21-13 2-21 9-22 21ZM31 39C17 46 5 37 3 29c12-2 23 3 28 10Zm2 0c14 7 26-2 28-10-12-2-23 3-28 10Z" />
