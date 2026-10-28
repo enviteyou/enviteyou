@@ -1626,7 +1626,7 @@ svg.gallery-frame,
 
 .closing-monogram {
   position: absolute;
-  top: 9%;
+  top: 12.5%;
   left: 30%;
   width: 40%;
   font-size: 5.15cqw;
@@ -1637,16 +1637,17 @@ svg.gallery-frame,
 
 .closing-title {
   position: absolute;
-  top: 15.5%;
+  top: 22.5%;
   left: 10%;
   width: 80%;
-  font-size: 7.6cqw;
+  font-size: 8.3cqw;
   line-height: 1.1;
+  text-align: center;
 }
 
 .closing .closing-mark {
   position: absolute;
-  top: 24.2%;
+  top: 33.8%;
   left: 45%;
   width: 10%;
   height: 4.2%;
@@ -1656,37 +1657,38 @@ svg.gallery-frame,
 
 .family-blessing {
   position: absolute;
-  top: 29.8%;
+  top: 39.2%;
   left: 8%;
   width: 84%;
-  font-size: 4.5cqw;
-  line-height: 1.38;
+  font-size: 4.9cqw;
+  line-height: 1.4;
   font-weight: 500;
+  text-align: center;
 }
 
 .family-blessing strong {
-  font-size: 5.6cqw;
+  font-size: 6.1cqw;
   font-weight: 500;
 }
 
 .closing-actions {
   position: absolute;
-  top: 42%;
+  top: 48.5%;
   left: 14%;
   width: 72%;
   display: flex;
   flex-direction: column;
-  gap: 2.2cqw;
+  gap: 2.4cqw;
   z-index: 3;
 }
 
 .closing-actions .pill {
   width: 100%;
-  height: 10cqw;
+  height: 11.5cqw;
   min-height: 44px;
   padding: 0 4.5cqw;
   justify-content: flex-start;
-  font-size: max(13px, 4cqw);
+  font-size: max(14px, 4.3cqw);
   gap: 3cqw;
   border-color: #b27d40;
 }
@@ -1702,8 +1704,8 @@ svg.gallery-frame,
 }
 
 .closing-bloom-left {
-  left: -5%;
-  top: 30%;
+  left: -6%;
+  top: 47%;
   width: 14%;
   height: 23%;
   --lean: 0deg;
@@ -1712,8 +1714,8 @@ svg.gallery-frame,
 }
 
 .closing-bloom-right {
-  right: -5%;
-  top: 33%;
+  right: -6%;
+  top: 51%;
   width: 14%;
   height: 23%;
   --lean: 0deg;
