@@ -1,0 +1,41 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Amulya and Vedant//Wedding Invitation//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Amulya & Vedant — Wedding Celebrations
+X-WR-TIMEZONE:Asia/Kolkata
+BEGIN:VEVENT
+UID:mehendi-2026@amulya-vedant-lotus-invitation
+DTSTAMP:20261025T163628Z
+DTSTART:20261124T050000Z
+SUMMARY:Amulya & Vedant — Mehendi Ceremony
+LOCATION:Shakuntala Niwas\, Sunderpur\, Varanasi
+DESCRIPTION:With love and blessings\, Agrawal Family. All wedding times 
+ are in Indian Standard Time.
+URL:https://amulya-vedant-lotus-invitation.thehappyprintclub.chatgpt.sit
+ e/
+END:VEVENT
+BEGIN:VEVENT
+UID:haldi-2026@amulya-vedant-lotus-invitation
+DTSTAMP:20261025T163628Z
+DTSTART:20261126T033000Z
+SUMMARY:Amulya & Vedant — Haldi Ceremony
+LOCATION:Hotel De Paris\, The Mall Road\, Varanasi Cantonment
+DESCRIPTION:With love and blessings\, Agrawal Family. All wedding times 
+ are in Indian Standard Time.
+URL:https://amulya-vedant-lotus-invitation.thehappyprintclub.chatgpt.sit
+ e/
+END:VEVENT
+BEGIN:VEVENT
+UID:wedding-2026@amulya-vedant-lotus-invitation
+DTSTAMP:20261025T163628Z
+DTSTART:20261126T140000Z
+SUMMARY:Amulya & Vedant — Wedding Ceremony
+LOCATION:Hotel De Paris\, The Mall Road\, Varanasi Cantonment
+DESCRIPTION:With love and blessings\, Agrawal Family. All wedding times 
+ are in Indian Standard Time.
+URL:https://amulya-vedant-lotus-invitation.thehappyprintclub.chatgpt.sit
+ e/
+END:VEVENT
+END:VCALENDAR
