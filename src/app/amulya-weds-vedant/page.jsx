@@ -330,12 +330,6 @@ export default function VedAmInvitationPage() {
     updateCountdown();
     const cdInterval = setInterval(updateCountdown, 1000);
 
-    // Resize handler for event track
-    const handleResize = () => {
-      showEvent(activeEventTab);
-    };
-    window.addEventListener("resize", handleResize);
-
     // Scroll reveal observer
     let revealObserver, sceneObserver;
     if ("IntersectionObserver" in window) {
@@ -370,7 +364,6 @@ export default function VedAmInvitationPage() {
       clearInterval(cdInterval);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       document.removeEventListener("visibilitychange", handleVisibility);
-      window.removeEventListener("resize", handleResize);
       if (revealObserver) revealObserver.disconnect();
       if (sceneObserver) sceneObserver.disconnect();
       if (audioRef.current) {
@@ -386,7 +379,7 @@ export default function VedAmInvitationPage() {
         "ready"
       );
     };
-  }, [activeEventTab, showEvent]);
+  }, []);
 
   // Forward wheel events from window/margins to invitation container
   useEffect(() => {
