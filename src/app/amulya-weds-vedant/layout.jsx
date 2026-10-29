@@ -1,28 +1,53 @@
 export const metadata = {
-  title: "Amulya & Vedant · The Wedding Invitation",
+  metadataBase: new URL("https://enviteyou.com"),
+  title: "Amulya & Vedant · Wedding Invitation | 26 Nov 2026, Varanasi",
   description:
-    "With love and blessings, join Amulya Agrawal and Vedant Jain for their wedding celebrations in Varanasi, 24–26 November 2026.",
+    "With love and blessings, join Amulya Agrawal & Vedant Jain for their wedding celebrations on 26 November 2026 at Hotel De Paris, Varanasi. View events, schedule & directions.",
+  keywords: [
+    "Amulya and Vedant",
+    "Amulya Weds Vedant",
+    "VedAm",
+    "Wedding Invitation",
+    "Varanasi Wedding",
+    "Agrawal Family",
+    "Jain Family",
+  ],
+  alternates: {
+    canonical: "https://enviteyou.com/amulya-weds-vedant",
+  },
   openGraph: {
-    title: "Amulya & Vedant · You're Invited",
+    type: "website",
+    locale: "en_IN",
+    url: "https://enviteyou.com/amulya-weds-vedant",
+    siteName: "Amulya & Vedant · #VedAm",
+    title: "Amulya & Vedant · Wedding Invitation",
     description:
-      "26 November 2026 · Hotel De Paris, Varanasi. With love and blessings, Agrawal Family.",
-    url: "/amulya-weds-vedant",
+      "26 November 2026 · Hotel De Paris, Varanasi. Join us to celebrate with love and blessings. Tap to open the invitation for ceremonies, schedule & directions.",
     images: [
       {
-        url: "/amulya-weds-vedant/open-graph.png",
+        url: "https://enviteyou.com/amulya-weds-vedant/open-graph.jpg",
+        secureUrl: "https://enviteyou.com/amulya-weds-vedant/open-graph.jpg",
         width: 1200,
-        height: 630,
-        alt: "Amulya & Vedant Wedding Invitation",
+        height: 631,
+        type: "image/jpeg",
+        alt: "Amulya & Vedant Wedding Invitation — 26 November 2026, Varanasi",
+      },
+      {
+        url: "https://enviteyou.com/amulya-weds-vedant/open-graph.png",
+        secureUrl: "https://enviteyou.com/amulya-weds-vedant/open-graph.png",
+        width: 1200,
+        height: 631,
+        type: "image/png",
+        alt: "Amulya & Vedant Wedding Invitation — 26 November 2026, Varanasi",
       },
     ],
-    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Amulya & Vedant · You're Invited",
+    title: "Amulya & Vedant · Wedding Invitation",
     description:
-      "26 November 2026 · Hotel De Paris, Varanasi. With love and blessings, Agrawal Family.",
-    images: ["/amulya-weds-vedant/open-graph.png"],
+      "26 November 2026 · Hotel De Paris, Varanasi. Join us for the wedding celebrations of Amulya & Vedant.",
+    images: ["https://enviteyou.com/amulya-weds-vedant/open-graph.jpg"],
   },
   icons: {
     icon: "/amulya-weds-vedant/assets/favicon.svg",
